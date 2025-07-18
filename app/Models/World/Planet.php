@@ -14,6 +14,8 @@ namespace App\Models\World;
  */
 class Planet extends \Eloquent
 {
+    public const int HOME_PLANET = 1;
+
     protected $table = DB . '_planet';
     public $timestamps = false;
 

@@ -10,6 +10,9 @@ class Migrator implements MigratorInterface
 
     private const array MIGRATIONS = [
         PlanetMigration::class,
+        PersonMigration::class,
+        LifeTypeMigration::class,
+        LifeMigration::class,
     ];
 
     public static function migrate(): void
@@ -18,6 +21,13 @@ class Migrator implements MigratorInterface
             if (!Schema::hasTable($migration::tableName())) {
                 $migration::migrate();
             }
+        }
+    }
+
+    public static function drop(): void
+    {
+        foreach (array_reverse(self::MIGRATIONS) as $migration) {
+            Schema::dropIfExists($migration::tableName());
         }
     }
 }

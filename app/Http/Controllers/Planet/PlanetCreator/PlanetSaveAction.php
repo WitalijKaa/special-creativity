@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Planet\PlanerCreator;
+namespace App\Http\Controllers\Planet\PlanetCreator;
 
 use App\Models\World\Planet;
 use App\Requests\World\PlanetSaveRequest;
