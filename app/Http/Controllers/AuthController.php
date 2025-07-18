@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Middleware\DbLoginMiddleware;
+use App\Migrations\Migrator;
 use App\Models\User;
 use App\Requests\WebAuthRequest;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +29,8 @@ class AuthController extends Controller
         }
 
         Auth::guard('web')->login($model);
+        (new DbLoginMiddleware())->handle($request, fn () => true);
+        Migrator::migrate();
         return redirect(route('web.planet.params'));
     }
 }

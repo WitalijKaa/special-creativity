@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<?php
 
-    <title>Creativity</title>
+$planet ??= new \App\Models\World\Planet();
 
-    @vite(['resources/styles/app.scss', 'resources/js/app.js'])
-</head>
-<body>
-<header class="container text-center">
-    <h1>Planet params</h1>
-    <hr class="border border-danger border-2">
-</header>
-</body>
-</html>
+$fName = new \App\Dto\Form\FormFieldInputDto();
+$fName->id = 'name';
+$fName->label = 'PlanetName';
+$fName->value = $planet->name;
+
+?><x-layout.main>
+    <header class="container text-center">
+        <h1>Planet params</h1>
+        <hr class="border border-danger border-2">
+    </header>
+
+    <x-form.basic :route="route('web.planet.save')"
+                  :btn="!$planet->id ? 'Create the Planet' : 'Change Everything'"
+                  :fields="[$fName]"></x-form.basic>
+</x-layout.main>
