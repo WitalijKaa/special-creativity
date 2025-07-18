@@ -5,6 +5,9 @@
 _ide_helper.php
 
 
+/app/Http/Controllers/DevController.php
+
+
 .DS_Store
 .env.backup
 .env.production
