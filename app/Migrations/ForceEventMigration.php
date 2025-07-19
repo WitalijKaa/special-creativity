@@ -19,9 +19,9 @@ class ForceEventMigration implements MigratorInterface
             $table->unsignedBigInteger('life_id')->nullable(false);
             $table->unsignedBigInteger('type_id')->nullable(false);
 
-            $table->foreign('person_id', 'ef_person')->references('id')->on(PersonMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('life_id', 'ef_life')->references('id')->on(LifeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('type_id', 'ef_type')->references('id')->on(ForceEventTypeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('person_id', DB . '_ef_person')->references('id')->on(PersonMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('life_id', DB . '_ef_life')->references('id')->on(LifeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('type_id', DB . '_ef_type')->references('id')->on(ForceEventTypeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
         });
     }
 }

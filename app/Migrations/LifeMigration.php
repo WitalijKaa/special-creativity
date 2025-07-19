@@ -24,9 +24,9 @@ class LifeMigration implements MigratorInterface
             $table->unsignedBigInteger('type_id')->nullable(false);
             $table->unsignedBigInteger('planet_id')->nullable(true);
 
-            $table->foreign('person_id', 'l_person')->references('id')->on(PersonMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('type_id', 'l_type')->references('id')->on(LifeTypeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('planet_id', 'l_planet')->references('id')->on(PlanetMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('person_id', DB . '_l_person')->references('id')->on(PersonMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('type_id', DB . '_l_type')->references('id')->on(LifeTypeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('planet_id', DB . '_l_planet')->references('id')->on(PlanetMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
         });
     }
 }

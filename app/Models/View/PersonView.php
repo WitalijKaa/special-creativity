@@ -8,6 +8,8 @@ use App\Models\World\Life;
 
 class PersonView
 {
+    private const string SPACE = '&nbsp;&nbsp;&nbsp;&nbsp;';
+
     public function labelAuthor(Person $model): string
     {
         if (!$model->author) {
@@ -21,7 +23,7 @@ class PersonView
         if (!$model->creations->count()) {
             return '';
         }
-        return ' <small>👼🏻</small>' . $model->creations->count();
+        return self::SPACE . ' <small>👼🏻</small>' . $model->creations->count();
     }
 
     public function labelLives(Person $model): string
@@ -45,15 +47,15 @@ class PersonView
     {
         if ($model instanceof Life) {
             if (!$model->forceEvents->count()) {
-                return 'has FORCE ' . $model->begin_force_person;
+                return 'has <small>🧪</small> ' . $model->begin_force_person;
             }
             $force = $model->begin_force_person;
-            $return = $force . ' FORCE';
+            $return = $force . ' <small>🧪</small>';
             foreach ($model->forceEvents as $event) {
                 $return .= $this->labelForceEventOfLife($event, $model);
                 $force = $event->diffSimple($force);
             }
-            $return .= ' THE END is ' . $force;
+            $return .= ' THE END <small>🧪</small> is ' . $force;
             return $return;
         }
         return '<small>🧪</small> ' . $model->force_person;
@@ -72,6 +74,6 @@ class PersonView
         if (!$model->lives->count()) {
             return ' <small>⌚️</small> ' . $model->begin . 'Y';
         }
-        return '&nbsp;&nbsp;&nbsp;&nbsp; <small>⌚️</small> ' . $model->last_life->end . 'Y';
+        return self::SPACE . ' <small>⌚️</small> ' . $model->last_life->end . 'Y';
     }
 }

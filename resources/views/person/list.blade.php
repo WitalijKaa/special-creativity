@@ -53,6 +53,8 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-form.container>
         <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
+        <a href="{{route('web.person.list')}}" type="button" class="btn btn-outline-primary btn-lg">Basic</a>
+        <a href="{{route('web.person.list', ['sort' => 'desc_last_year'])}}" type="button" class="btn btn-outline-primary btn-lg">Last Year</a>
     </x-form.container>
 
 </x-layout.main>

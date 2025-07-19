@@ -109,4 +109,20 @@ class Life extends \Eloquent
     public function type(): HasOne { return $this->hasOne(LifeType::class, 'id', 'type_id'); }
     public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
     public function forceEvents(): HasMany { return $this->hasMany(ForceEvent::class, 'life_id', 'id')->orderBy('id'); }
+
+    public function archive(): array
+    {
+        return [
+            'export' => 'life',
+            'export_id' => $this->person->name,
+
+            'begin' => $this->begin,
+            'end' => $this->end,
+            'type' => $this->type_id,
+            'role' => $this->role,
+            'parents' => $this->parents_type_id,
+            'father' => null,
+            'mother' => null,
+        ];
+    }
 }

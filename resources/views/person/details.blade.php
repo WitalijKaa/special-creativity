@@ -16,7 +16,7 @@ $fBegin = new \App\Dto\Form\FormFieldInputDto();
 $fBegin->id = 'begin';
 $fBegin->type = 'number';
 $fBegin->value = old($fBegin->id) ?? $model->lives->last()?->end ?? $model->begin;
-$fBegin->label = 'the year of Beginning of Life';
+$fBegin->label = 'the year of Beginning of Existence';
 $fEnd = new \App\Dto\Form\FormFieldInputDto();
 $fEnd->id = 'end';
 $fEnd->type = 'number';
@@ -24,7 +24,7 @@ $fEnd->label = 'Death, the End';
 $fType = new \App\Dto\Form\FormFieldInputDto();
 $fType->id = 'type';
 $fType->label = 'What is the Life?';
-$fType->value = old($fType->id) ?? ($model->lives->last()?->type_id == \App\Models\World\LifeType::PLANET ? \App\Models\World\LifeType::ALLODS : \App\Models\World\LifeType::PLANET);
+$fType->value = old($fType->id) ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->type_id == \App\Models\World\LifeType::ALLODS) ? \App\Models\World\LifeType::PLANET : \App\Models\World\LifeType::ALLODS);
 $fType->options = \App\Models\World\LifeType::selectOptions();
 $fRole = new \App\Dto\Form\FormFieldInputDto();
 $fRole->id = 'role';
@@ -34,6 +34,7 @@ $fRole->options = \App\Models\World\Life::selectRoleOptions();
 $fParents = new \App\Dto\Form\FormFieldInputDto();
 $fParents->id = 'parents';
 $fParents->label = 'What kind of Parents?';
+$fParents->value = old($fParents->id) ?? ($fType->value == \App\Models\World\LifeType::PLANET ? \App\Models\Person\ParentsType::WILD : \App\Models\Person\ParentsType::MIXED);
 $fParents->options = \App\Models\Person\ParentsType::selectOptions();
 $fFather = new \App\Dto\Form\FormFieldInputDto();
 $fFather->id = 'father';
@@ -55,13 +56,7 @@ $vPerson = new \App\Models\View\PersonView();
 
     <div class="mb-5 mt-5"></div>
 
-    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->type_id == \App\Models\World\LifeType::ALLODS)
-        <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
-                      btn="create Persona"
-                      :fields="[$fName, $fBegin]"></x-form.basic>
 
-        <div class="mb-5 mt-5"></div>
-    @endif
 
     <x-layout.container>
         <div class="list-group">
@@ -81,14 +76,25 @@ $vPerson = new \App\Models\View\PersonView();
                         </small>
                     </div>
                     <p class="mb-1">Years {{$life->begin}}-{{$life->end}} <strong>{{$life->role_name}}</strong></p>
-                    <small>{{ $vPerson->labelForce($life) }}</small>
+                    <small>{!! $vPerson->labelForce($life) !!}</small>
                 </a>
             @endforeach
         </div>
     </x-layout.container>
 
-    <x-layout.header-second>Scripting Life at
-        year {{$model->lives->last()?->end ?? $model->begin}}</x-layout.header-second>
+    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->type_id == \App\Models\World\LifeType::ALLODS)
+        <x-layout.header-second>a new Persona may be created</x-layout.header-second>
+
+        <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
+                      btn="create Persona"
+                      :fields="[$fName, $fBegin]"></x-form.basic>
+
+        <div class="mb-5 mt-5"></div>
+    @endif
+    @php($fBegin->label = 'the year of Beginning of Life')
+
+
+    <x-layout.header-second>Scripting Life at year {{$model->lives->last()?->end ?? $model->begin}}</x-layout.header-second>
 
     <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
                   btn="add Life"

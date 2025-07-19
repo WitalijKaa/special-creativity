@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int $count_man_lives
  * @property-read int $count_woman_lives
  * @property-read bool $may_be_girl_easy
+ * @property-read int $last_year
  *
  * @property-read Life|null $last_life
  * @property-read \Illuminate\Database\Eloquent\Collection|Life[] $lives
@@ -60,6 +61,11 @@ class Person extends \Eloquent
         return $this->lives->last();
     }
 
+    public function getLastYearAttribute() // last_year
+    {
+        return $this->lives->last()?->end ?? $this->begin;
+    }
+
     public function getCountManLivesAttribute() // count_man_lives
     {
         return $this->lives->filter(fn (Life $model) => $model->type_id == LifeType::PLANET && $model->role == Life::MAN)->count();
@@ -77,14 +83,28 @@ class Person extends \Eloquent
 
     public function getMayBeGirlEasyAttribute() // may_be_girl_easy
     {
-        if ($this->is_original && ($this->lives->count() || !$this->count_woman_lives)) {
+        if ($this->is_original && (!$this->lives->count() || !$this->count_woman_lives)) {
             return true;
         }
-        return $this->last_life?->may_be_girl_easy;
+
+        return $this->last_life?->type_id != LifeType::PLANET &&
+            $this->last_life?->role != Life::WOMAN &&
+            $this->last_life?->may_be_girl_easy;
     }
 
     public function lives(): HasMany { return $this->hasMany(Life::class, 'person_id', 'id')->orderBy('id'); }
     public function creations(): HasMany { return $this->hasMany(Person::class, 'person_author_id', 'id')->orderBy('id'); }
     public function type(): HasOne { return $this->hasOne(PersonType::class, 'id', 'type_id'); }
     public function author(): BelongsTo { return $this->belongsTo(Person::class, 'person_author_id', 'id', 'creations'); }
+
+    public function archive(): array
+    {
+        return [
+            'export' => 'person',
+            'export_id' => $this->person_author_id ? $this->author->name : null,
+
+            'name' => $this->name,
+            'begin' => $this->begin,
+        ];
+    }
 }

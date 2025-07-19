@@ -20,4 +20,9 @@ class Planet extends \Eloquent
     public $timestamps = false;
 
     protected $guarded = ['id'];
+
+    public function archive(): array
+    {
+        return ['name' => $this->name];
+    }
 }

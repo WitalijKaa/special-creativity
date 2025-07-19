@@ -9,15 +9,16 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
 
     Route::group(['as' => 'planet.', 'prefix' => 'planet'], function() {
         Route::get('params', App\Http\Controllers\Planet\PlanetCreator\PlanetParamsAction::class)->name('params');
+        Route::get('export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');
         Route::post('params/save', App\Http\Controllers\Planet\PlanetCreator\PlanetSaveAction::class)->name('save');
     });
 
     Route::group(['as' => 'person.', 'prefix' => 'life'], function() {
         Route::get('personas', \App\Http\Controllers\Person\PersonListAction::class)->name('list');
-        Route::get('life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]')->name('details');
+        Route::get('life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]+')->name('details');
         Route::get('create', \App\Http\Controllers\Person\PersonFormAction::class)->name('form');
-        Route::post('add-person/{author_id}', \App\Http\Controllers\Person\PersonAddAction::class)->where('author_id', '[0-9]')->name('add');
-        Route::post('add-life/{id}', \App\Http\Controllers\Person\PersonLifeAction::class)->where('id', '[0-9]')->name('add-life');
+        Route::post('add-person/{author_id}', \App\Http\Controllers\Person\PersonAddAction::class)->where('author_id', '[0-9]+')->name('add');
+        Route::post('add-life/{id}', \App\Http\Controllers\Person\PersonLifeAction::class)->where('id', '[0-9]+')->name('add-life');
     });
 
     Route::group(['as' => 'basic.', 'prefix' => 'basic'], function() {
