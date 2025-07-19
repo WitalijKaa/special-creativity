@@ -9,6 +9,9 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property-read integer $end
  * @property-read integer $type
  * @property-read integer $role
+ * @property-read integer $parents
+ * @property-read string|null $father
+ * @property-read string|null $mother
  */
 class PersonAddLifeRequest extends FormRequest
 {
@@ -21,6 +24,9 @@ class PersonAddLifeRequest extends FormRequest
             'end' => 'required|integer',
             'type' => 'required|integer',
             'role' => 'required|integer',
+            'parents' => 'required|integer',
+            'father' => 'sometimes',
+            'mother' => 'sometimes',
         ];
     }
 }

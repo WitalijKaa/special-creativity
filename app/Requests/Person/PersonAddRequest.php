@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property-read string $name
+ * @property-read int $begin
  */
 class PersonAddRequest extends FormRequest
 {
@@ -15,6 +16,7 @@ class PersonAddRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:4|max:128',
+            'begin' => 'required|integer',
         ];
     }
 }

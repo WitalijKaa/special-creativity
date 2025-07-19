@@ -16,7 +16,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('personas', \App\Http\Controllers\Person\PersonListAction::class)->name('list');
         Route::get('life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]')->name('details');
         Route::get('create', \App\Http\Controllers\Person\PersonFormAction::class)->name('form');
-        Route::post('add-person', \App\Http\Controllers\Person\PersonAddAction::class)->name('add');
+        Route::post('add-person/{author_id}', \App\Http\Controllers\Person\PersonAddAction::class)->where('author_id', '[0-9]')->name('add');
         Route::post('add-life/{id}', \App\Http\Controllers\Person\PersonLifeAction::class)->where('id', '[0-9]')->name('add-life');
     });
 

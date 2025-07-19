@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models\World;
+namespace App\Models\Person;
 
+
+use App\Models\World\LifeType;
 
 /**
  * @property int $id
@@ -15,12 +17,14 @@ namespace App\Models\World;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereSystem($value)
  * @mixin \Eloquent
  */
-class LifeType extends \Eloquent
+class ParentsType extends \Eloquent
 {
-    public const int ALLODS = 1;
-    public const int PLANET = 2;
+    public const int WILD = 1;
+    public const int SAPIENS = 2;
+    public const int INVADERS = 3;
+    public const int MIXED = 4;
 
-    protected $table = DB . '_life_type';
+    protected $table = DB . '_parents_type';
     public $timestamps = false;
 
     protected function casts(): array

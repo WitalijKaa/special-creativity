@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Person;
 
+use App\Models\Person\Person;
 use App\Models\World\Life;
 use App\Models\World\LifeType;
 use App\Models\World\Planet;
@@ -11,7 +12,8 @@ class PersonLifeAction
 {
     public function __invoke(PersonAddLifeRequest $request, int $id)
     {
-        $prevLife = Life::wherePersonId($id)->orderByDesc('id')->first();
+        $person = Person::whereId($id)->first();
+        $prevLife = $person->lives->last();
 
         // validations
 
@@ -21,6 +23,9 @@ class PersonLifeAction
 
         if ($request->begin >= $request->end) {
             return $back('end', 'End should be after Begin');
+        }
+        if (!$prevLife && $request->begin != $person->begin) {
+            return $back('begin', 'First life should be Started at ' . $person->begin);
         }
         if ($prevLife && $request->begin != $prevLife->end) {
             return $back('begin', 'Next live should began after previous ' . $prevLife->end);
@@ -40,6 +45,9 @@ class PersonLifeAction
             $model->planet_id = Planet::HOME_PLANET;
         }
         $model->person_id = $id;
+        $model->begin_force_person = $person->force_person;
+        $model->begin_force_woman = $person->force_woman;
+        $model->parents_type_id = $request->parents;
         $model->save();
 
         return redirect(route('web.person.details', ['id' => $id]));

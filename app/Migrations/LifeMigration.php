@@ -13,10 +13,15 @@ class LifeMigration implements MigratorInterface
     {
         Schema::create(static::tableName(), function (Blueprint $table) {
             $table->id();
-            $table->integer('begin')->nullable(false); // year
-            $table->integer('end')->nullable(false); // year
-            $table->tinyInteger('role')->nullable(false);
+            $table->integer('begin')->nullable(false)->unsigned(); // year
+            $table->integer('end')->nullable(false)->unsigned(); // year
+            $table->tinyInteger('role')->nullable(false)->unsigned();
             $table->unsignedBigInteger('person_id')->nullable(false);
+            $table->tinyInteger('begin_force_person')->nullable(false)->default(0);
+            $table->tinyInteger('begin_force_woman')->nullable(false)->default(0);
+            $table->tinyInteger('parents_type_id')->nullable(false)->unsigned();
+            $table->unsignedBigInteger('person_father_id')->nullable(true);
+            $table->unsignedBigInteger('person_mother_id')->nullable(true);
             $table->unsignedBigInteger('type_id')->nullable(false);
             $table->unsignedBigInteger('planet_id')->nullable(true);
 

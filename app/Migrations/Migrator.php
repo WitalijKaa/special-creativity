@@ -10,6 +10,8 @@ class Migrator implements MigratorInterface
 
     private const array MIGRATIONS = [
         PlanetMigration::class,
+        PersonTypeMigration::class,
+        ParentsTypeMigration::class,
         PersonMigration::class,
         LifeTypeMigration::class,
         LifeMigration::class,
