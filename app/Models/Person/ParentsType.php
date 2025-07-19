@@ -24,7 +24,7 @@ class ParentsType extends \Eloquent
     public const int INVADERS = 3;
     public const int MIXED = 4;
 
-    protected $table = DB . '_parents_type';
+    protected $table = DB . '_type_parents';
     public $timestamps = false;
 
     protected function casts(): array

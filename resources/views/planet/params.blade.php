@@ -47,7 +47,6 @@ $fLifeType->label = 'LifeType';
 
         <x-form.container>
             <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-{{--            <a href="{{route('web.person.form')}}" type="button" class="btn btn-success btn-lg">new Persona</a>--}}
         </x-form.container>
 
     @endif

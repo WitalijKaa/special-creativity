@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 class LifeTypeMigration implements MigratorInterface
 {
-    public static function tableName(): string { return DB . '_life_type'; }
+    public static function tableName(): string { return DB . '_type_life'; }
 
     public static function migrate(): void
     {

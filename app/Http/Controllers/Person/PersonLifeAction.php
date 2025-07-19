@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Person;
 
 use App\Models\Person\Person;
+use App\Models\World\ForceEvent;
 use App\Models\World\Life;
 use App\Models\World\LifeType;
 use App\Models\World\Planet;
@@ -46,9 +47,10 @@ class PersonLifeAction
         }
         $model->person_id = $id;
         $model->begin_force_person = $person->force_person;
-        $model->begin_force_woman = $person->force_woman;
         $model->parents_type_id = $request->parents;
         $model->save();
+
+        ForceEvent::liveLife($person, $model);
 
         return redirect(route('web.person.details', ['id' => $id]));
     }

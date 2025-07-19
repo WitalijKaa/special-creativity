@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Person;
 
 use App\Models\Person\Person;
+use App\Models\World\ForceEvent;
 use App\Models\World\LifeType;
 use App\Requests\Person\PersonAddRequest;
 
@@ -18,6 +19,9 @@ class PersonAddAction
         $prevAuthorLife = $author->lives->last();
         /** @var \App\Models\World\Life $prevAuthorLife */
 
+        if ($author->force_person < Person::FORCE) {
+            return $back('begin', 'May create only during Allods life');
+        }
         if ($prevAuthorLife->type_id != LifeType::ALLODS) {
             return $back('begin', 'May create only during Allods life');
         }
@@ -32,8 +36,7 @@ class PersonAddAction
         $model->begin = $request->begin;
         $model->save();
 
-        $author->force_person -= 95;
-        $author->save();
+        ForceEvent::createPerson($author, $request->begin);
 
         return redirect(route('web.person.details', ['id' => $author_id]));
     }

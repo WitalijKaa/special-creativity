@@ -17,7 +17,6 @@ class PersonMigration implements MigratorInterface
             $table->unsignedBigInteger('type_id')->nullable(true);
             $table->unsignedBigInteger('person_author_id')->nullable(true);
             $table->tinyInteger('force_person')->nullable(false)->default(0);
-            $table->tinyInteger('force_woman')->nullable(false)->default(0);
             $table->integer('begin')->nullable(false)->unsigned(); // year
 
             $table->foreign('type_id', 'p_type')->references('id')->on(PersonTypeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');

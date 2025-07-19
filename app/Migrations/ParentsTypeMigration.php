@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 class ParentsTypeMigration implements MigratorInterface
 {
-    public static function tableName(): string { return DB . '_parents_type'; }
+    public static function tableName(): string { return DB . '_type_parents'; }
 
     public static function migrate(): void
     {

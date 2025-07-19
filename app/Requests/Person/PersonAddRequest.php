@@ -15,7 +15,7 @@ class PersonAddRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:4|max:128',
+            'name' => 'required|string|min:2|max:128',
             'begin' => 'required|integer',
         ];
     }

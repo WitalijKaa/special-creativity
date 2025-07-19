@@ -43,10 +43,10 @@ $fMother->id = 'mother';
 $fMother->label = 'the Name of the Mother';
 
 $lifeBacked = [1 => 'primary', 2 => 'success', 3 => 'danger', 4 => 'warning'];
+$vPerson = new \App\Models\View\PersonView();
 
-$vPerson = new \App\Models\Person\PersonView();
-
-?><x-layout.main>
+?>
+<x-layout.main>
     <x-layout.header-main>{{$model->name}}</x-layout.header-main>
 
     <x-form.basic :route="route('web.planet.params')"
@@ -55,7 +55,7 @@ $vPerson = new \App\Models\Person\PersonView();
 
     <div class="mb-5 mt-5"></div>
 
-    @if($model->force_person == 100 && $model->lives->last()?->type_id == \App\Models\World\LifeType::ALLODS)
+    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->type_id == \App\Models\World\LifeType::ALLODS)
         <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
                       btn="create Persona"
                       :fields="[$fName, $fBegin]"></x-form.basic>
@@ -71,19 +71,24 @@ $vPerson = new \App\Models\Person\PersonView();
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">{{$life->type->name}}</h5>
                         <small>
-                            @if($life->begin_force_person == 100)<span class="badge text-bg-success">Can create Life</span>@endif
-                            @if($life->begin_force_woman == 100)<span class="badge text-bg-warning">May be a Girl</span>@endif
+                            @if($life->begin_force_person == \App\Models\Person\Person::FORCE)
+                                <span class="badge text-bg-success">Can create Life</span>
+                            @endif
+                            @if($life->may_be_girl_easy)
+                                <span class="badge text-bg-warning">May be a Girl</span>
+                            @endif
                             <span class="badge text-bg-secondary">{{$life->end - $life->begin}} years</span>
                         </small>
                     </div>
-                    <p class="mb-1">Years {{$life->begin}}-{{$life->end}} {{$life->role_name}}</p>
+                    <p class="mb-1">Years {{$life->begin}}-{{$life->end}} <strong>{{$life->role_name}}</strong></p>
                     <small>{{ $vPerson->labelForce($life) }}</small>
                 </a>
             @endforeach
         </div>
     </x-layout.container>
 
-    <x-layout.header-second>Scripting Life at year {{$model->lives->last()?->end ?? $model->begin}}</x-layout.header-second>
+    <x-layout.header-second>Scripting Life at
+        year {{$model->lives->last()?->end ?? $model->begin}}</x-layout.header-second>
 
     <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
                   btn="add Life"
@@ -93,10 +98,7 @@ $vPerson = new \App\Models\Person\PersonView();
 
     <x-form.container>
         <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-{{--        <a href="{{route('web.person.form')}}" type="button" class="btn btn-success btn-lg">new Persona</a>--}}
         <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
     </x-form.container>
-
-{{--    <div style="height: 100px;"></div>--}}
 
 </x-layout.main>

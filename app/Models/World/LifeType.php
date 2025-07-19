@@ -20,7 +20,7 @@ class LifeType extends \Eloquent
     public const int ALLODS = 1;
     public const int PLANET = 2;
 
-    protected $table = DB . '_life_type';
+    protected $table = DB . '_type_life';
     public $timestamps = false;
 
     protected function casts(): array

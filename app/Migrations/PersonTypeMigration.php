@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 
 class PersonTypeMigration implements MigratorInterface
 {
-    public static function tableName(): string { return DB . '_person_type'; }
+    public static function tableName(): string { return DB . '_type_person'; }
 
     public static function migrate(): void
     {

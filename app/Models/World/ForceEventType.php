@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Person;
+namespace App\Models\World;
 
 
-use App\Models\World\LifeType;
+use App\Models\Person\Person;
 
 /**
  * @property int $id
@@ -17,12 +17,23 @@ use App\Models\World\LifeType;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereSystem($value)
  * @mixin \Eloquent
  */
-class PersonType extends \Eloquent
+class ForceEventType extends \Eloquent
 {
-    public const int SAPIENS = 1;
-    public const int INVADERS = 2;
+    public const int CREATE_PERSON = 1;
+    public const int PLANET_LIFE_MAN = 2;
+    public const int PLANET_LIFE_MAN_AT_BEGINNING = 3;
+    public const int PLANET_LIFE_WOMAN = 4;
+    public const int PLANET_LIFE_WOMAN_RARE = 5;
 
-    protected $table = DB . '_type_person';
+    public const DIFF_PERSON = [
+        self::CREATE_PERSON => -95,
+        self::PLANET_LIFE_MAN => 100,
+        self::PLANET_LIFE_MAN_AT_BEGINNING => 25,
+        self::PLANET_LIFE_WOMAN => 35,
+        self::PLANET_LIFE_WOMAN_RARE => 95,
+    ];
+
+    protected $table = DB . '_type_force_event';
     public $timestamps = false;
 
     protected function casts(): array

@@ -30,8 +30,7 @@ class PlanetSaveAction
             $model->name = $request->person;
             $model->type_id = PersonType::SAPIENS;
             $model->begin = 0;
-            $model->force_person = 100;
-            $model->force_woman = 100;
+            $model->force_person = Person::FORCE;
             $model->save();
         }
 
