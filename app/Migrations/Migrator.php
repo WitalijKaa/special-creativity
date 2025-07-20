@@ -2,7 +2,6 @@
 
 namespace App\Migrations;
 
-use App\Models\World\ForceEventType;
 use Illuminate\Support\Facades\Schema;
 
 class Migrator implements MigratorInterface
@@ -18,6 +17,9 @@ class Migrator implements MigratorInterface
         LifeMigration::class,
         ForceEventTypeMigration::class,
         ForceEventMigration::class,
+        EventTypeMigration::class,
+        EventMigration::class,
+        EventConnectMigration::class,
     ];
 
     public static function migrate(): void

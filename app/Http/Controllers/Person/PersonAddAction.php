@@ -19,6 +19,8 @@ class PersonAddAction
         $prevAuthorLife = $author->lives->last();
         /** @var \App\Models\World\Life $prevAuthorLife */
 
+        // validation
+
         if ($author->force_person < Person::FORCE) {
             return $back('begin', 'May create only during Allods life');
         }
@@ -29,8 +31,11 @@ class PersonAddAction
             return $back('begin', 'Should create new Life during last Life');
         }
 
+        // save
+
         $model = new Person();
         $model->name = $request->name;
+        $model->nick = $request->nick;
         $model->person_author_id = $author_id;
         $model->type_id = $author->type_id;
         $model->begin = $request->begin;

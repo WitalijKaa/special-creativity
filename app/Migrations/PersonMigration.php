@@ -14,6 +14,7 @@ class PersonMigration implements MigratorInterface
         Schema::create(static::tableName(), function (Blueprint $table) {
             $table->id();
             $table->string('name', 128)->nullable(false)->unique();
+            $table->string('nick', 32)->nullable(false)->unique();
             $table->unsignedBigInteger('type_id')->nullable(true);
             $table->unsignedBigInteger('person_author_id')->nullable(true);
             $table->tinyInteger('force_person')->nullable(false)->default(0);

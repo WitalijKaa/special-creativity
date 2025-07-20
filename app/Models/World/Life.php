@@ -4,8 +4,10 @@ namespace App\Models\World;
 
 
 use App\Models\Person\Person;
+use App\Models\Person\PersonEventSynthetic;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -22,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Life where($column, $operator = null, $value = null, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereEnd($value)
@@ -33,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePersonMotherId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePlanetId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereTypeId($value)
  *
  * @property-read string $role_name
  * @property-read bool $may_be_girl_easy
@@ -54,16 +58,6 @@ class Life extends \Eloquent
     public const int PLANET_MAN_LIVES_TO_BE_GIRL_EASY = 4;
 
     protected $table = DB . '_life';
-    public $timestamps = false;
-
-    protected function casts(): array
-    {
-        return [
-            'begin' => 'integer',
-            'end' => 'integer',
-            'role' => 'integer',
-        ];
-    }
 
     public function getRoleNameAttribute() // role_name
     {
@@ -95,20 +89,16 @@ class Life extends \Eloquent
         return false;
     }
 
-    public static function selectRoleOptions(): array
+    public function synthetic(int $type_id, int $begin, ?int $end = null): PersonEventSynthetic
     {
-        return [
-            ['opt' => self::MAN, 'lbl' => self::ROLE[self::MAN]],
-            ['opt' => self::WOMAN, 'lbl' => self::ROLE[self::WOMAN]],
-            ['opt' => self::SPIRIT, 'lbl' => self::ROLE[self::SPIRIT]],
-        ];
+        $model = new PersonEventSynthetic();
+        $model->type_id = $type_id;
+        $model->life_id = $this->id;
+        $model->person_id = $this->person_id;
+        $model->begin = $begin;
+        $model->end = $end ?? $begin;
+        return $model;
     }
-
-    protected $guarded = ['id'];
-
-    public function type(): HasOne { return $this->hasOne(LifeType::class, 'id', 'type_id'); }
-    public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
-    public function forceEvents(): HasMany { return $this->hasMany(ForceEvent::class, 'life_id', 'id')->orderBy('id'); }
 
     public function archive(): array
     {
@@ -124,5 +114,36 @@ class Life extends \Eloquent
             'father' => null,
             'mother' => null,
         ];
+    }
+
+    public $timestamps = false;
+    protected $guarded = ['id'];
+    public function type(): HasOne { return $this->hasOne(LifeType::class, 'id', 'type_id'); }
+    public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
+    public function forceEvents(): HasMany { return $this->hasMany(ForceEvent::class, 'life_id', 'id')->orderBy('id'); }
+    protected function casts(): array
+    {
+        return [
+            'begin' => 'integer',
+            'end' => 'integer',
+            'role' => 'integer',
+        ];
+    }
+
+    public static function selectRoleOptions(): array
+    {
+        return [
+            ['opt' => self::MAN, 'lbl' => self::ROLE[self::MAN]],
+            ['opt' => self::WOMAN, 'lbl' => self::ROLE[self::WOMAN]],
+            ['opt' => self::SPIRIT, 'lbl' => self::ROLE[self::SPIRIT]],
+        ];
+    }
+
+    public static function selectConnectionOptions(Collection $lives): array
+    {
+        $return = $lives->sortBy('id')
+            ->map(fn (self $model) => ['opt' => $model->id, 'lbl' => $model->person->name . ' ' . $model->begin . '-' . $model->end])
+            ->toArray();
+        return array_merge([['opt' => '0', 'lbl' => 'NoBody']], $return);
     }
 }

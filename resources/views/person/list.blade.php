@@ -43,7 +43,7 @@ $vPerson = new \App\Models\View\PersonView();
                         <strong>{!!$vPerson->labelLives($person)!!}</strong>
                         <small>{!!$vPerson->labelLastYearOfExistence($person)!!}</small>
                     </p>
-                    <small>{!!$vPerson->labelForce($person)!!}</small>
+                    <small><strong><em>{{$person->nick}}</em></strong> {!!$vPerson->labelForce($person)!!}</small>
                 </a>
             @endforeach
         </div>

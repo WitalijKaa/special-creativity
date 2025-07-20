@@ -1,6 +1,7 @@
 <?php
 
 /** @var \App\Models\Person\Person $model */
+/** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 
 $fYear = new \App\Dto\Form\FormFieldInputDto();
 $fYear->id = 'year';
@@ -11,6 +12,9 @@ $fYear->value = $year ?? 0;
 $fName = new \App\Dto\Form\FormFieldInputDto();
 $fName->id = 'name';
 $fName->label = 'Full Name';
+$fNick = new \App\Dto\Form\FormFieldInputDto();
+$fNick->id = 'nick';
+$fNick->label = 'Nick-Name';
 
 $fBegin = new \App\Dto\Form\FormFieldInputDto();
 $fBegin->id = 'begin';
@@ -56,13 +60,17 @@ $vPerson = new \App\Models\View\PersonView();
 
     <div class="mb-5 mt-5"></div>
 
+    <x-layout.container>
+        @include('widgets.person.events', ['events' => $events, 'personID' => $model->id])
+    </x-layout.container>
 
+    <div class="mb-5 mt-5"></div>
 
     <x-layout.container>
         <div class="list-group">
             @foreach($model->lives as $life)
                 @php($backClass = $lifeBacked[$life->type_id] ?? 'light')
-                <a href="#" class="list-group-item list-group-item-action list-group-item-{{$backClass}}">
+                <a href="{{route('web.person.details-life', ['person_id' => $life->person_id, 'life_id' => $life->id])}}" class="list-group-item list-group-item-action list-group-item-{{$backClass}}">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">{{$life->type->name}}</h5>
                         <small>
@@ -87,7 +95,7 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
                       btn="create Persona"
-                      :fields="[$fName, $fBegin]"></x-form.basic>
+                      :fields="[$fName, $fNick, $fBegin]"></x-form.basic>
 
         <div class="mb-5 mt-5"></div>
     @endif

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @property int $id
  * @property string $name
+ * @property string $nick
  * @property int $force_person
  * @property int $begin
  * @property int|null $type_id
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereNick($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereForcePerson($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereTypeId($value)
@@ -47,9 +49,6 @@ class Person extends \Eloquent
     public const int FORCE = 100;
 
     protected $table = DB . '_person';
-    public $timestamps = false;
-
-    protected $guarded = ['id'];
 
     public function getIsOriginalAttribute() // is_original
     {
@@ -92,10 +91,19 @@ class Person extends \Eloquent
             $this->last_life?->may_be_girl_easy;
     }
 
+    public $timestamps = false;
+    protected $guarded = ['id'];
     public function lives(): HasMany { return $this->hasMany(Life::class, 'person_id', 'id')->orderBy('id'); }
     public function creations(): HasMany { return $this->hasMany(Person::class, 'person_author_id', 'id')->orderBy('id'); }
     public function type(): HasOne { return $this->hasOne(PersonType::class, 'id', 'type_id'); }
     public function author(): BelongsTo { return $this->belongsTo(Person::class, 'person_author_id', 'id', 'creations'); }
+    protected function casts(): array
+    {
+        return [
+            'force_person' => 'integer',
+            'begin' => 'integer',
+        ];
+    }
 
     public function archive(): array
     {
@@ -104,6 +112,7 @@ class Person extends \Eloquent
             'export_id' => $this->person_author_id ? $this->author->name : null,
 
             'name' => $this->name,
+            'nick' => 'nick__' . $this->name,
             'begin' => $this->begin,
         ];
     }

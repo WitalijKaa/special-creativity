@@ -13,14 +13,14 @@ class PersonLifeAction
 {
     public function __invoke(PersonAddLifeRequest $request, int $id)
     {
+        $back = fn (string $field, string $msg) => redirect(route('web.person.details', ['id' => $id]))
+            ->withErrors([$field => [$msg]])
+            ->withInput($request->toArray());
+
         $person = Person::whereId($id)->first();
         $prevLife = $person->lives->last();
 
         // validations
-
-        $back = fn (string $field, string $msg) => redirect(route('web.person.details', ['id' => $id]))
-            ->withErrors([$field => [$msg]])
-            ->withInput($request->toArray());
 
         if ($request->begin >= $request->end) {
             return $back('end', 'End should be after Begin');

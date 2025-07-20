@@ -9,12 +9,12 @@ use App\Models\Person\Person;
  * @property int $id
  * @property string $name
  * @property boolean $system
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForceEventType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForceEventType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForceEventType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForceEventType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForceEventType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForceEventType whereSystem($value)
  * @mixin \Eloquent
  */
 class ForceEventType extends \Eloquent

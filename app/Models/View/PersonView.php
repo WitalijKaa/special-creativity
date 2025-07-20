@@ -6,10 +6,8 @@ use App\Models\Person\Person;
 use App\Models\World\ForceEvent;
 use App\Models\World\Life;
 
-class PersonView
+class PersonView extends AbstractView
 {
-    private const string SPACE = '&nbsp;&nbsp;&nbsp;&nbsp;';
-
     public function labelAuthor(Person $model): string
     {
         if (!$model->author) {
@@ -23,7 +21,7 @@ class PersonView
         if (!$model->creations->count()) {
             return '';
         }
-        return self::SPACE . ' <small>👼🏻</small>' . $model->creations->count();
+        return static::SPACE . ' <small>👼🏻</small>' . $model->creations->count();
     }
 
     public function labelLives(Person $model): string
@@ -74,6 +72,6 @@ class PersonView
         if (!$model->lives->count()) {
             return ' <small>⌚️</small> ' . $model->begin . 'Y';
         }
-        return self::SPACE . ' <small>⌚️</small> ' . $model->last_life->end . 'Y';
+        return static::SPACE . ' <small>⌚️</small> ' . $model->last_life->end . 'Y';
     }
 }

@@ -3,11 +3,13 @@
 /** @var \App\Models\World\Planet $planet */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\Person[] $persons */
 /** @var \Illuminate\Support\Collection|\App\Models\World\Life[] $lives */
+/** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 
 $json = [
     'planet' => $planet->archive(),
     'persons' => $persons->map(fn (\App\Models\Person\Person $model) => $model->archive()),
     'lives' => $lives->map(fn (\App\Models\World\Life $model) => $model->archive()),
+    'events' => $events->map(fn (\App\Models\Person\PersonEvent $model) => $model->archive()),
 ];
 
 ?><x-layout.main>

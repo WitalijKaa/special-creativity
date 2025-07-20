@@ -17,9 +17,13 @@ class PlanetSaveAction
 
         $model = Planet::first() ?? new Planet();
 
+        // validation
+
         if (!$request->person && !$model->id) {
             return $back('person', 'You should name a first Person too');
         }
+
+        // save
 
         $model->name = $request->name;
         $model->save();

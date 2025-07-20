@@ -4,7 +4,24 @@
             <form action="{{$route}}" method="post">
                 @csrf
                 @foreach($fields as $field)
-                    @if ($field instanceof \App\Dto\Form\FormFieldInputDto && is_null($field->options))
+                    @if ($field instanceof \App\Dto\Form\FormFieldInputDto && $field->type == 'textarea')
+                        <div class="mb-4">
+                            <label for="{{$field->id}}" class="form-label">{{$field->label}}</label>
+                            <textarea rows="8" id="{{$field->id}}" name="{{$field->id}}" id="exampleFormControlTextarea1" class="form-control" aria-describedby="{{$field->id}}Tip">{{ $field->value ?? old($field->id) }}</textarea>
+                            @if(!empty($errors->get($field->id)[0]))
+                                <div id="{{$field->id}}Tip" class="form-text text-danger">{{$errors->get($field->id)[0]}}</div>
+                            @elseif(!empty($field->nonErrorTip))
+                                <div id="loginTip" class="form-text">{{$field->nonErrorTip}}</div>
+                            @endif
+                        </div>
+                    @elseif ($field instanceof \App\Dto\Form\FormFieldInputDto && $field->type == 'checkbox')
+                        <div class="form-check">
+                            <input id="{{$field->id}}" name="{{$field->id}}" class="form-check-input" type="checkbox">
+                            <label class="form-check-label" for="{{$field->id}}">
+                                {{$field->label}}
+                            </label>
+                        </div>
+                    @elseif ($field instanceof \App\Dto\Form\FormFieldInputDto && is_null($field->options))
                         <div class="mb-4">
                             <label for="{{$field->id}}" class="form-label">{{$field->label}}</label>
                             <input id="{{$field->id}}" name="{{$field->id}}" value="{{$field->value ?? old($field->id)}}" type="{{$field->type}}" class="form-control" aria-describedby="{{$field->id}}Tip">
