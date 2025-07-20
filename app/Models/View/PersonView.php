@@ -29,8 +29,8 @@ class PersonView extends AbstractView
         if (!$model->count_man_lives && !$model->count_woman_lives) {
             return 'Has zero Lives on a Planet';
         }
-        return ($model->count_man_lives ? ' <small>🧑🏻</small> ' . $model->count_man_lives : '') .
-               ($model->count_woman_lives ? ' <small>👩🏻</small> ' . $model->count_woman_lives : '');
+        return ($model->count_man_lives ? $this->gender(Life::MAN) . $model->count_man_lives : '') .
+               ($model->count_woman_lives ? $this->gender(Life::WOMAN) . $model->count_woman_lives : '');
     }
 
     public function labelLivesTotalSimple(Person $model): string

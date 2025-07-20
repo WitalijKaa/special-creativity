@@ -51,8 +51,8 @@ $lifeBacked = [1 => 'primary', 2 => 'success', 3 => 'danger', 4 => 'warning'];
 $vPerson = new \App\Models\View\PersonView();
 
 ?>
-<x-layout.main>
-    <x-layout.header-main>{{$model->name}}</x-layout.header-main>
+<x-layout.main :title="$model->name . ' ' . $model->nick">
+    <x-layout.header-main>{{$model->name}} {{$model->nick}}</x-layout.header-main>
 
     <x-form.basic :route="route('web.planet.params')"
                   btn="show Year"

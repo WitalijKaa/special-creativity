@@ -15,10 +15,12 @@ class PersonEventSynthetic
 {
     public const int BIRTH = -1;
     public const int DEATH = -2;
+    public const int ALLODS = -3;
 
     private const array NAME = [
         self::BIRTH => 'birth on a Planet',
         self::DEATH => 'went to Allods',
+        self::ALLODS => 'back to Allods',
     ];
 
     public int $begin;
@@ -45,13 +47,13 @@ class PersonEventSynthetic
             }
             return $this->_type;
         }
-        if ('person' == $name) {
+        if ('life' == $name) {
             if (empty($this->_life)) {
                 $this->_life = Life::whereId($this->life_id)->first();
             }
             return $this->_life;
         }
-        if ('life' == $name) {
+        if ('person' == $name) {
             if (empty($this->_person)) {
                 $this->_person = Person::whereId($this->person_id)->first();
             }

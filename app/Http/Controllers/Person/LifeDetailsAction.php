@@ -6,6 +6,7 @@ use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventConnect;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\World\Life;
+use App\Models\World\LifeType;
 use Illuminate\Database\Eloquent\Builder;
 
 class LifeDetailsAction
@@ -29,12 +30,14 @@ class LifeDetailsAction
             ->get();
 
         $events = PersonEvent::whereLifeId($life_id)
-            ->orWhereIn('id', PersonEventConnect::whereLifeId($life_id)->pluck('id'))
+            ->orWhereIn('id', PersonEventConnect::whereLifeId($life_id)->pluck('event_id')->unique())
             ->with(['connections', 'type', 'person'])
             ->orderBy('begin')
             ->get();
-        $events->unshift($model->synthetic(PersonEventSynthetic::BIRTH, $model->begin));
-        $events->push($model->synthetic(PersonEventSynthetic::DEATH, $model->end));
+        if ($model->type_id == LifeType::PLANET) {
+            $events->unshift($model->synthetic(PersonEventSynthetic::BIRTH, $model->begin));
+            $events->push($model->synthetic(PersonEventSynthetic::DEATH, $model->end));
+        }
 
         return view('person.life-details', compact('model', 'connections', 'events'));
     }

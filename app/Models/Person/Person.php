@@ -112,7 +112,7 @@ class Person extends \Eloquent
             'export_id' => $this->person_author_id ? $this->author->name : null,
 
             'name' => $this->name,
-            'nick' => 'nick__' . $this->name,
+            'nick' => $this->nick,
             'begin' => $this->begin,
         ];
     }

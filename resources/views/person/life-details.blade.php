@@ -31,13 +31,13 @@ for ($ix = 1; $ix <= 13; $ix++) {
     $fConnect->options = \App\Models\World\Life::selectConnectionOptions($connections);
     $formFields[] = $fConnect;
 
-    if (count($formFields) >= $connections->count()) {
+    if ($ix >= $connections->count()) {
         break;
     }
 }
 
-?><x-layout.main>
-    <x-layout.header-main>{{$model->person->name}} {{$model->role_name}} {{$model->begin}}-{{$model->end}}</x-layout.header-main>
+?><x-layout.main :title="$model->person->name">
+    <x-layout.header-main>{{$model->person->name}} {{$model->person->nick}} {{$model->role_name}} {{$model->begin}}-{{$model->end}}</x-layout.header-main>
 
     <x-layout.container>
         @include('widgets.person.events', ['events' => $events, 'personID' => $model->person_id])

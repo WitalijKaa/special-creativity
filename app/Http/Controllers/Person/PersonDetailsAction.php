@@ -6,6 +6,8 @@ use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventConnect;
 use App\Models\Person\PersonEventSynthetic;
+use App\Models\World\Life;
+use App\Models\World\LifeType;
 
 class PersonDetailsAction
 {
@@ -16,12 +18,14 @@ class PersonDetailsAction
         }
 
         $events = PersonEvent::wherePersonId($id)
-            ->orWhereIn('id', PersonEventConnect::wherePersonId($id)->pluck('id'))
+            ->orWhereIn('id', PersonEventConnect::wherePersonId($id)->pluck('event_id')->unique())
             ->with(['connections', 'type', 'person'])
-            ->orderBy('begin')
             ->get();
-//        $events->unshift($model->synthetic(PersonEventSynthetic::BIRTH, $model->begin));
-//        $events->push($model->synthetic(PersonEventSynthetic::DEATH, $model->end));
+
+        foreach (Life::wherePersonId($id)->whereTypeId(LifeType::ALLODS)->get() as $allodsLife) {
+            $events->push($allodsLife->synthetic(PersonEventSynthetic::ALLODS, $allodsLife->begin, $allodsLife->end));
+        }
+        $events = $events->sortBy('begin')->values();
 
         return view('person.details', compact('model', 'events'));
     }
