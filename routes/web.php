@@ -24,7 +24,6 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'basic.', 'prefix' => 'basic'], function() {
-        Route::post('life-type', \App\Http\Controllers\Planet\LifeCreator\LifeTypeAddAction::class)->name('life-type');
     });
 });
 

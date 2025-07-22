@@ -27,23 +27,39 @@ $vPerson = new \App\Models\View\PersonView();
                 @php($backClass = !$person->last_life ? 'secondary' : ($lifeBacked[$person->last_life->type_id] ?? 'light'))
                 <a href="{{route('web.person.details', ['id' => $person->id])}}"
                    class="list-group-item list-group-item-action list-group-item-{{$backClass}}">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h4 class="mb-1">{{$person->name}} {!!$vPerson->labelAuthor($person)!!} {!!$vPerson->labelCreations($person)!!}</h4>
-                        <small>
-                            {!!$vPerson->labelLivesTotalSimple($person)!!}
-                            @if($person->force_person == \App\Models\Person\Person::FORCE)
-                                <span class="badge text-bg-success">Can create Life</span>
-                            @endif
-                            @if($person->may_be_girl_easy)
-                                <span class="badge text-bg-warning">May be a Girl</span>
-                            @endif
-                        </small>
+                    <div class="d-flex w-100 justify-content-between mb-1">
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <h4>{{$person->name}}</h4>
+                            <h4><small><small><strong><em>{{$person->nick}}</em></strong></small></small> {!!$vPerson->labelAuthor($person)!!}</h4>
+                        </div>
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <h4>{!!$vPerson->labelLives($person)!!} {!!$vPerson->labelCreations($person)!!}</h4>
+                            <small>
+                                {!!$vPerson->labelLivesTotalSimple($person)!!}
+                                @if($person->force_person == \App\Models\Person\Person::FORCE)
+                                    <span class="badge text-bg-success">Can create Life</span>
+                                @endif
+                                @if($person->may_be_girl_easy)
+                                    <span class="badge text-bg-warning">May be a Girl</span>
+                                @endif
+                            </small>
+                        </div>
                     </div>
-                    <p class="mb-1">
-                        <strong>{!!$vPerson->labelLives($person)!!}</strong>
-                        <small>{!!$vPerson->labelLastYearOfExistence($person)!!}</small>
-                    </p>
-                    <small><strong><em>{{$person->nick}}</em></strong> {!!$vPerson->labelForce($person)!!}</small>
+
+                    <div class="d-flex w-100 justify-content-between">
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <span>{!!$vPerson->labelForce($person)!!}</span>
+                            <h4>{!!$vPerson->labelVizavi($person)!!}</h4>
+                        </div>
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <h5>&nbsp;</h5>
+                            <small><small>{!!$vPerson->labelLastYearOfExistence($person)!!}</small></small>
+                        </div>
+                    </div>
                 </a>
             @endforeach
         </div>

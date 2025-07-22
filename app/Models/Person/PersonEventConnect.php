@@ -25,7 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class PersonEventConnect extends \Eloquent
 {
-    protected $table = DB . '_event_connect';
+    public const string TABLE_NAME = DB . '_event_connect';
+    protected $table = self::TABLE_NAME;
 
     public $timestamps = false;
     protected $guarded = ['id'];

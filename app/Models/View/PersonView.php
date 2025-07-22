@@ -11,9 +11,9 @@ class PersonView extends AbstractView
     public function labelAuthor(Person $model): string
     {
         if (!$model->author) {
-            return '';
+            return parent::space4();
         }
-        return '[' . $model->author->name . '-' . (1 + $model->author->creations->search(fn (Person $created) => $created->id == $model->id)) . '] <small>in ' . $model->begin . 'Y</small>';
+        return '<small>[' . $model->author->name . '-' . (1 + $model->author->creations->search(fn (Person $created) => $created->id == $model->id)) . '] <small><small> ' . $model->begin . 'Y</small></small></small>' . parent::space4();
     }
 
     public function labelCreations(Person $model): string
@@ -22,6 +22,14 @@ class PersonView extends AbstractView
             return '';
         }
         return static::SPACE . ' <small>👼🏻</small>' . $model->creations->count();
+    }
+
+    public function labelVizavi(Person $model): string
+    {
+        if (!$model->only_vizavi) {
+            return parent::space4();
+        }
+        return '<small><small><small><small>❤️</small></small> ' . $model->only_vizavi?->name . '</small></small>' . parent::space4();
     }
 
     public function labelLives(Person $model): string

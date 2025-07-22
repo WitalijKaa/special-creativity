@@ -16,4 +16,9 @@ class AbstractView
             default => '',
         };
     }
+
+    public function space4(): string
+    {
+        return self::SPACE . self::SPACE . self::SPACE . self::SPACE;
+    }
 }

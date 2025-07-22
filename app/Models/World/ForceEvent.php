@@ -43,13 +43,13 @@ class ForceEvent extends \Eloquent
 
     public static function liveLife(Person $model, Life $life): void
     {
-        if (LifeType::PLANET != $life->type_id) {
+        if (!$life->is_planet) {
             return;
         }
 
         $event = null;
 
-        if (Life::MAN == $life->role) {
+        if ($life->is_man) {
             $event = $life->person->creations->count() ? ForceEventType::PLANET_LIFE_MAN : ForceEventType::PLANET_LIFE_MAN_AT_BEGINNING;
         }
         else if (Life::WOMAN == $life->role) {

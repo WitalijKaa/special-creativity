@@ -7,13 +7,12 @@ use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventConnect;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\World\Life;
-use App\Models\World\LifeType;
 
 class PersonDetailsAction
 {
     public function __invoke(int $id)
     {
-        if (!$model = Person::whereId($id)->with(['lives.type'])->first()) {
+        if (!$model = Person::whereId($id)->with(['lives'])->first()) {
             return redirect(route('web.person.list'));
         }
 
@@ -22,7 +21,7 @@ class PersonDetailsAction
             ->with(['connections', 'type', 'person'])
             ->get();
 
-        foreach (Life::wherePersonId($id)->whereTypeId(LifeType::ALLODS)->get() as $allodsLife) {
+        foreach (Life::wherePersonId($id)->whereTypeId(Life::ALLODS)->get() as $allodsLife) {
             $events->push($allodsLife->synthetic(PersonEventSynthetic::ALLODS, $allodsLife->begin, $allodsLife->end));
         }
         $events = $events->sortBy('begin')->values();

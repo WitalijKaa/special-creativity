@@ -39,9 +39,15 @@ use Illuminate\Support\Collection;
  * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereTypeId($value)
  *
  * @property-read string $role_name
+ * @property-read string $type_name
+ * @property-read bool $is_man
+ * @property-read bool $is_woman
+ * @property-read bool $is_planet
+ * @property-read bool $is_allods
+ * @property-read bool $is_dream
+ * @property-read bool $is_virtual
  * @property-read bool $may_be_girl_easy
  *
- * @property-read \App\Models\World\LifeType $type
  * @property-read \App\Models\Person\Person $person
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\World\ForceEvent[] $forceEvents
  *
@@ -55,6 +61,13 @@ class Life extends \Eloquent
 
     public const array ROLE = [self::MAN => 'MAN', self::WOMAN => 'WOMAN', self::SPIRIT => 'SPIRIT'];
 
+    public const int ALLODS = 1;
+    public const int PLANET = 2;
+    public const int DREAM = 3;
+    public const int VIRTUAL = 4;
+
+    public const array NAME = [self::ALLODS => 'Allods', self::PLANET => 'Planet', self::DREAM => 'Dream', self::VIRTUAL => 'Virtual'];
+
     public const int PLANET_MAN_LIVES_TO_BE_GIRL_EASY = 4;
 
     protected $table = DB . '_life';
@@ -64,18 +77,30 @@ class Life extends \Eloquent
         return self::ROLE[$this->role];
     }
 
+    public function getTypeNameAttribute() // type_name
+    {
+        return self::NAME[$this->type_id];
+    }
+
+    public function getIsManAttribute() { return self::MAN == $this->role; }
+    public function getIsWomanAttribute() { return self::WOMAN == $this->role; }
+    public function getIsPlanetAttribute() { return self::PLANET == $this->type_id; }
+    public function getIsAllodsAttribute() { return self::ALLODS == $this->type_id; }
+    public function getIsDreamAttribute() { return self::DREAM == $this->type_id; }
+    public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type_id; }
+
     public function getMayBeGirlEasyAttribute() // may_be_girl_easy
     {
         $lives = $this->person->livesBeforeReversed($this->id);
 
-        if ($this->person->is_original && !$lives->filter(fn (Life $model) => $model->type_id == LifeType::PLANET && $model->role == Life::WOMAN)->count()) {
+        if ($this->person->is_original && !$lives->filter(fn (Life $model) => $model->type_id == static::PLANET && $model->role == static::WOMAN)->count()) {
             return true;
         }
 
         $manLivesNonStop = 0;
         foreach ($this->person->livesBeforeReversed($this->id) as $life) {
             /** @var \App\Models\World\Life $life */
-            if ($life->type_id != LifeType::PLANET) {
+            if (!$life->is_planet) {
                 continue;
             }
 
@@ -118,7 +143,6 @@ class Life extends \Eloquent
 
     public $timestamps = false;
     protected $guarded = ['id'];
-    public function type(): HasOne { return $this->hasOne(LifeType::class, 'id', 'type_id'); }
     public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
     public function forceEvents(): HasMany { return $this->hasMany(ForceEvent::class, 'life_id', 'id')->orderBy('id'); }
     protected function casts(): array
@@ -136,6 +160,16 @@ class Life extends \Eloquent
             ['opt' => self::MAN, 'lbl' => self::ROLE[self::MAN]],
             ['opt' => self::WOMAN, 'lbl' => self::ROLE[self::WOMAN]],
             ['opt' => self::SPIRIT, 'lbl' => self::ROLE[self::SPIRIT]],
+        ];
+    }
+
+    public static function selectTypeOptions(): array
+    {
+        return [
+            ['opt' => self::ALLODS, 'lbl' => self::NAME[self::ALLODS]],
+            ['opt' => self::PLANET, 'lbl' => self::NAME[self::PLANET]],
+            // ['opt' => self::DREAM, 'lbl' => self::NAME[self::DREAM]],
+            // ['opt' => self::VIRTUAL, 'lbl' => self::NAME[self::VIRTUAL]],
         ];
     }
 

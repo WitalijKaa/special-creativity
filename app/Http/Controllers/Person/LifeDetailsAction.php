@@ -6,7 +6,6 @@ use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventConnect;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\World\Life;
-use App\Models\World\LifeType;
 use Illuminate\Database\Eloquent\Builder;
 
 class LifeDetailsAction
@@ -34,7 +33,7 @@ class LifeDetailsAction
             ->with(['connections', 'type', 'person'])
             ->orderBy('begin')
             ->get();
-        if ($model->type_id == LifeType::PLANET) {
+        if ($model->is_planet) {
             $events->unshift($model->synthetic(PersonEventSynthetic::BIRTH, $model->begin));
             $events->push($model->synthetic(PersonEventSynthetic::DEATH, $model->end));
         }

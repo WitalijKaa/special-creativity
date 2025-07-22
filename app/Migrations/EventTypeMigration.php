@@ -17,7 +17,7 @@ class EventTypeMigration implements MigratorInterface
             $table->string('name', 64)->nullable(false);
             $table->boolean('system')->nullable(false)->default(false);
             $table->boolean('is_relation')->nullable(false)->default(false);
-            $table->boolean('is_Work')->nullable(false)->default(false);
+            $table->boolean('is_work')->nullable(false)->default(false);
         });
 
         $model = new EventType();

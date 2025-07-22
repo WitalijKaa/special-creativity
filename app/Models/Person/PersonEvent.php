@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent wherePersonId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereTypeId($value)
  *
- * @property-read \App\Models\World\LifeType $type
+ * @property-read \App\Models\Person\EventType $type
  * @property-read \App\Models\Person\Person $person
  * @property-read \App\Models\World\Life $life
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Person\PersonEventConnect[] $connections
@@ -33,7 +33,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class PersonEvent extends \Eloquent
 {
-    protected $table = DB . '_event';
+    public const string TABLE_NAME = DB . '_event';
+    protected $table = self::TABLE_NAME;
 
     public function archive(): array
     {

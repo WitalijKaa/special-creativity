@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Person;
 use App\Models\Person\Person;
 use App\Models\World\ForceEvent;
 use App\Models\World\Life;
-use App\Models\World\LifeType;
 use App\Models\World\Planet;
 use App\Requests\Person\PersonAddLifeRequest;
 
@@ -32,7 +31,7 @@ class PersonLifeAction
             return $back('begin', 'Next live should began after previous ' . $prevLife->end);
         }
         if ($prevLife && $request->type == $prevLife->id) {
-            return $back('type', 'The same Life Type as the previous ' . LifeType::whereId($request->type)->first()?->name);
+            return $back('type', 'The same Life Type as the previous ' . Life::NAME[$request->type]);
         }
 
         // save
@@ -42,7 +41,7 @@ class PersonLifeAction
         $model->end = $request->end;
         $model->role = $request->role;
         $model->type_id = $request->type;
-        if (LifeType::PLANET == $model->type_id) {
+        if ($model->is_planet) {
             $model->planet_id = Planet::HOME_PLANET;
         }
         $model->person_id = $id;

@@ -28,17 +28,17 @@ $fEnd->label = 'Death, the End';
 $fType = new \App\Dto\Form\FormFieldInputDto();
 $fType->id = 'type';
 $fType->label = 'What is the Life?';
-$fType->value = old($fType->id) ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->type_id == \App\Models\World\LifeType::ALLODS) ? \App\Models\World\LifeType::PLANET : \App\Models\World\LifeType::ALLODS);
-$fType->options = \App\Models\World\LifeType::selectOptions();
+$fType->value = old($fType->id) ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->type_id == \App\Models\World\Life::ALLODS) ? \App\Models\World\Life::PLANET : \App\Models\World\Life::ALLODS);
+$fType->options = \App\Models\World\Life::selectTypeOptions();
 $fRole = new \App\Dto\Form\FormFieldInputDto();
 $fRole->id = 'role';
 $fRole->label = 'Who was the Persona?';
-$fRole->value = old($fRole->id) ?? ($fType->value == \App\Models\World\LifeType::PLANET ? \App\Models\World\Life::MAN : \App\Models\World\Life::SPIRIT);
+$fRole->value = old($fRole->id) ?? ($fType->value == \App\Models\World\Life::PLANET ? \App\Models\World\Life::MAN : \App\Models\World\Life::SPIRIT);
 $fRole->options = \App\Models\World\Life::selectRoleOptions();
 $fParents = new \App\Dto\Form\FormFieldInputDto();
 $fParents->id = 'parents';
 $fParents->label = 'What kind of Parents?';
-$fParents->value = old($fParents->id) ?? ($fType->value == \App\Models\World\LifeType::PLANET ? \App\Models\Person\ParentsType::WILD : \App\Models\Person\ParentsType::MIXED);
+$fParents->value = old($fParents->id) ?? ($fType->value == \App\Models\World\Life::PLANET ? \App\Models\Person\ParentsType::WILD : \App\Models\Person\ParentsType::MIXED);
 $fParents->options = \App\Models\Person\ParentsType::selectOptions();
 $fFather = new \App\Dto\Form\FormFieldInputDto();
 $fFather->id = 'father';
@@ -72,7 +72,7 @@ $vPerson = new \App\Models\View\PersonView();
                 @php($backClass = $lifeBacked[$life->type_id] ?? 'light')
                 <a href="{{route('web.person.details-life', ['person_id' => $life->person_id, 'life_id' => $life->id])}}" class="list-group-item list-group-item-action list-group-item-{{$backClass}}">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{$life->type->name}}</h5>
+                        <h5 class="mb-1">{{$life->type_name}}</h5>
                         <small>
                             @if($life->begin_force_person == \App\Models\Person\Person::FORCE)
                                 <span class="badge text-bg-success">Can create Life</span>
@@ -90,7 +90,7 @@ $vPerson = new \App\Models\View\PersonView();
         </div>
     </x-layout.container>
 
-    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->type_id == \App\Models\World\LifeType::ALLODS)
+    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->is_allods)
         <x-layout.header-second>a new Persona may be created</x-layout.header-second>
 
         <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"

@@ -2,19 +2,14 @@
 
 namespace App\Models\Person;
 
-
-use App\Models\World\LifeType;
-
 /**
  * @property int $id
  * @property string $name
  * @property boolean $system
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LifeType whereSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ParentsType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ParentsType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ParentsType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ParentsType whereSystem($value)
  * @mixin \Eloquent
  */
 class ParentsType extends \Eloquent

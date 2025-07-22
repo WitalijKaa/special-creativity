@@ -1,7 +1,5 @@
 <?php
 
-/** @var \App\Models\World\LifeType[] $lifeTypes */
-
 $fName = new \App\Dto\Form\FormFieldInputDto();
 $fName->id = 'name';
 $fName->label = 'Full Name';

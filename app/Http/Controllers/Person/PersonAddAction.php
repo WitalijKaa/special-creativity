@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Person;
 
 use App\Models\Person\Person;
 use App\Models\World\ForceEvent;
-use App\Models\World\LifeType;
 use App\Requests\Person\PersonAddRequest;
 
 class PersonAddAction
@@ -24,7 +23,7 @@ class PersonAddAction
         if ($author->force_person < Person::FORCE) {
             return $back('begin', 'May create only during Allods life');
         }
-        if ($prevAuthorLife->type_id != LifeType::ALLODS) {
+        if (!$prevAuthorLife->is_allods) {
             return $back('begin', 'May create only during Allods life');
         }
         if ($request->begin < $prevAuthorLife->begin || $request->begin > $prevAuthorLife->end) {

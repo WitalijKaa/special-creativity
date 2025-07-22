@@ -13,7 +13,6 @@ class Migrator implements MigratorInterface
         PersonTypeMigration::class,
         ParentsTypeMigration::class,
         PersonMigration::class,
-        LifeTypeMigration::class,
         LifeMigration::class,
         ForceEventTypeMigration::class,
         ForceEventMigration::class,

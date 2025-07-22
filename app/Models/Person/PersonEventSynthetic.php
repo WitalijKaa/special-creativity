@@ -6,7 +6,7 @@ use App\Models\World\Life;
 use Illuminate\Support\Collection;
 
 /**
- * @property-read \App\Models\World\LifeType $type
+ * @property-read \App\Models\Person\EventType $type
  * @property-read \App\Models\Person\Person $person
  * @property-read \App\Models\World\Life $life
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Person\PersonEventConnect[] $connections
