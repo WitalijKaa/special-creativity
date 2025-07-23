@@ -36,12 +36,25 @@ class PersonEvent extends \Eloquent
     public const string TABLE_NAME = DB . '_event';
     protected $table = self::TABLE_NAME;
 
+    public function lifeOfPerson(int $personID): Life
+    {
+        $life = $this->life;
+        if (!$this->person_id == $personID) {
+            foreach ($this->connections as $connect) {
+                if ($connect->person_id == $personID) {
+                    $life = $connect->life;
+                }
+            }
+        }
+        return $life;
+    }
+
     public function archive(): array
     {
         $return = [
             'export' => 'event',
             'export_id' => $this->person->name,
-            'export_type' => $this->life->type_id,
+            'export_type' => $this->life->type,
 
             'begin' => $this->begin,
             'end' => $this->end,

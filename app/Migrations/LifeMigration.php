@@ -16,7 +16,7 @@ class LifeMigration implements MigratorInterface
             $table->unsignedBigInteger('person_id')->nullable(false);
             $table->integer('begin')->nullable(false)->unsigned(); // year
             $table->integer('end')->nullable(false)->unsigned(); // year
-            $table->tinyInteger('type_id')->nullable(false)->unsigned(); // kill _id
+            $table->tinyInteger('type')->nullable(false)->unsigned(); // kill _id
             $table->tinyInteger('role')->nullable(false)->unsigned();
             $table->tinyInteger('begin_force_person')->nullable(false)->default(0);
             $table->unsignedBigInteger('person_father_id')->nullable(true);

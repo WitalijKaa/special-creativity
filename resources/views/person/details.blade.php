@@ -28,7 +28,7 @@ $fEnd->label = 'Death, the End';
 $fType = new \App\Dto\Form\FormFieldInputDto();
 $fType->id = 'type';
 $fType->label = 'What is the Life?';
-$fType->value = old($fType->id) ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->type_id == \App\Models\World\Life::ALLODS) ? \App\Models\World\Life::PLANET : \App\Models\World\Life::ALLODS);
+$fType->value = old($fType->id) ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->is_allods) ? \App\Models\World\Life::PLANET : \App\Models\World\Life::ALLODS);
 $fType->options = \App\Models\World\Life::selectTypeOptions();
 $fRole = new \App\Dto\Form\FormFieldInputDto();
 $fRole->id = 'role';
@@ -42,7 +42,6 @@ $fMother = new \App\Dto\Form\FormFieldInputDto();
 $fMother->id = 'mother';
 $fMother->label = 'the Name of the Mother';
 
-$lifeBacked = [1 => 'primary', 2 => 'success', 3 => 'danger', 4 => 'warning'];
 $vPerson = new \App\Models\View\PersonView();
 
 ?>
@@ -56,7 +55,7 @@ $vPerson = new \App\Models\View\PersonView();
     <div class="mb-5 mt-5"></div>
 
     <x-layout.container>
-        @include('widgets.person.events', ['events' => $events, 'personID' => $model->id])
+        @include('widgets.person.events', ['events' => $events, 'person' => $model])
     </x-layout.container>
 
     <div class="mb-5 mt-5"></div>
@@ -64,22 +63,40 @@ $vPerson = new \App\Models\View\PersonView();
     <x-layout.container>
         <div class="list-group">
             @foreach($model->lives as $life)
-                @php($backClass = $lifeBacked[$life->type_id] ?? 'light')
-                <a href="{{route('web.person.details-life', ['person_id' => $life->person_id, 'life_id' => $life->id])}}" class="list-group-item list-group-item-action list-group-item-{{$backClass}}">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{$life->type_name}}</h5>
-                        <small>
-                            @if($life->begin_force_person == \App\Models\Person\Person::FORCE)
-                                <span class="badge text-bg-success">Can create Life</span>
-                            @endif
-                            @if($life->may_be_girl_easy)
-                                <span class="badge text-bg-warning">May be a Girl</span>
-                            @endif
-                            <span class="badge text-bg-secondary">{{$life->end - $life->begin}} years</span>
-                        </small>
+                <a href="{{route('web.person.details-life', ['person_id' => $life->person_id, 'life_id' => $life->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($life)}}">
+
+                    <div class="d-flex w-100 justify-content-between mb-1">
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <h4>{{$life->type_name . '-' . $life->current_type_no}}</h4>
+                            <h4>Years {{$life->begin}}-{{$life->end}} {!!$vPerson->space4()!!}</h4>
+                        </div>
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <h4>{!!$vPerson->space4()!!}</h4>
+                            <small>
+                                @if($life->begin_force_person == \App\Models\Person\Person::FORCE)
+                                    <span class="badge text-bg-success">Can create Life</span>
+                                @endif
+                                @if($life->may_be_girl_easy)
+                                    <span class="badge text-bg-warning">May be a Girl</span>
+                                @endif
+                                <span class="badge text-bg-secondary">{{$life->end - $life->begin}} years</span>
+                            </small>
+                        </div>
                     </div>
-                    <p class="mb-1">Years {{$life->begin}}-{{$life->end}} <strong>{{$life->role_name}}</strong></p>
-                    <small>{!! $vPerson->labelForce($life) !!}</small>
+
+                    <div class="d-flex w-100 justify-content-between">
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <strong>{{$life->role_name}} {!! $vPerson->lifeGenre($life) !!}</strong>
+                        </div>
+
+                        <div class="d-flex w-50 justify-content-between">
+                            <h5>&nbsp;</h5>
+                            <small>{!! $vPerson->labelForce($life) !!}</small>
+                        </div>
+                    </div>
                 </a>
             @endforeach
         </div>

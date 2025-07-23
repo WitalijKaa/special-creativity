@@ -18,10 +18,8 @@ use Illuminate\Support\Collection;
  * @property int $begin_force_person
  * @property int|null $person_father_id
  * @property int|null $person_mother_id
- * @property int $type_id
+ * @property int $type
  * @property int|null $planet_id
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Life newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Life newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life where($column, $operator = null, $value = null, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereId($value)
@@ -32,9 +30,9 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereBeginForcePerson($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePersonFatherId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePersonMotherId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePlanetId($value)
- * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereTypeId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereType($value)
  *
  * @property-read string $role_name
  * @property-read string $type_name
@@ -79,20 +77,20 @@ class Life extends \Eloquent
 
     public function getTypeNameAttribute() // type_name
     {
-        return self::NAME[$this->type_id];
+        return self::NAME[$this->type];
     }
 
     public function getIsManAttribute() { return self::MAN == $this->role; }
     public function getIsWomanAttribute() { return self::WOMAN == $this->role; }
-    public function getIsPlanetAttribute() { return self::PLANET == $this->type_id; }
-    public function getIsAllodsAttribute() { return self::ALLODS == $this->type_id; }
-    public function getIsDreamAttribute() { return self::DREAM == $this->type_id; }
-    public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type_id; }
+    public function getIsPlanetAttribute() { return self::PLANET == $this->type; }
+    public function getIsAllodsAttribute() { return self::ALLODS == $this->type; }
+    public function getIsDreamAttribute() { return self::DREAM == $this->type; }
+    public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type; }
 
     public function getCurrentTypeNoAttribute() // current_type_no
     {
         return Life::wherePersonId($this->person_id)
-            ->whereTypeId($this->type_id)
+            ->whereType($this->type)
             ->where('id', '<=', $this->id)
             ->count();
     }
@@ -101,7 +99,7 @@ class Life extends \Eloquent
     {
         $lives = $this->person->livesBeforeReversed($this->id);
 
-        if ($this->person->is_original && !$lives->filter(fn (Life $model) => $model->type_id == static::PLANET && $model->role == static::WOMAN)->count()) {
+        if ($this->person->is_original && !$lives->filter(fn (Life $model) => $model->is_planet && $model->is_woman)->count()) {
             return true;
         }
 
@@ -141,7 +139,7 @@ class Life extends \Eloquent
 
             'begin' => $this->begin,
             'end' => $this->end,
-            'type' => $this->type_id,
+            'type' => $this->type,
             'role' => $this->role,
             'father' => null,
             'mother' => null,

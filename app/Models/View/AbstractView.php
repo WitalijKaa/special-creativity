@@ -17,6 +17,11 @@ class AbstractView
         };
     }
 
+    public function lifeGenre(Life $model): string
+    {
+        return $this->gender($model->role);
+    }
+
     public function space4(): string
     {
         return self::SPACE . self::SPACE . self::SPACE . self::SPACE;

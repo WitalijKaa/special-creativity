@@ -8,7 +8,6 @@ $fYear->label = 'Year of current moment';
 $fYear->type = 'number';
 $fYear->value = $year ?? 0;
 
-$lifeBacked = [1 => 'primary', 2 => 'success', 3 => 'danger', 4 => 'warning'];
 $vPerson = new \App\Models\View\PersonView();
 
 ?>
@@ -24,9 +23,7 @@ $vPerson = new \App\Models\View\PersonView();
     <x-layout.container>
         <div class="list-group">
             @foreach($models as $person)
-                @php($backClass = !$person->last_life ? 'secondary' : ($lifeBacked[$person->last_life->type_id] ?? 'light'))
-                <a href="{{route('web.person.details', ['id' => $person->id])}}"
-                   class="list-group-item list-group-item-action list-group-item-{{$backClass}}">
+                <a href="{{route('web.person.details', ['id' => $person->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($person->last_life)}}">
                     <div class="d-flex w-100 justify-content-between mb-1">
 
                         <div class="d-flex w-50 justify-content-between">

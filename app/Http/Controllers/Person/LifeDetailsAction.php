@@ -25,12 +25,12 @@ class LifeDetailsAction
                     return $builder->where('begin', '<=', $model->end)->where('end', '>=', $model->end);
                 });
             })
-            ->whereTypeId($model->type_id)
+            ->whereType($model->type)
             ->get();
 
         $events = PersonEvent::whereLifeId($life_id)
             ->orWhereIn('id', PersonEventConnect::whereLifeId($life_id)->pluck('event_id')->unique())
-            ->with(['connections', 'type', 'person'])
+            ->with(['connections.life', 'type', 'person'])
             ->orderBy('begin')
             ->get();
         if ($model->is_planet) {

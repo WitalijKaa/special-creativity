@@ -40,7 +40,7 @@ class PersonLifeAction
         $model->begin = $request->begin;
         $model->end = $request->end;
         $model->role = $request->role;
-        $model->type_id = $request->type;
+        $model->type = $request->type;
         if ($model->is_planet) {
             $model->planet_id = Planet::HOME_PLANET;
         }

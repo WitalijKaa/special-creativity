@@ -36,7 +36,7 @@ class PersonAddAction
         $model->name = $request->name;
         $model->nick = $request->nick;
         $model->person_author_id = $author_id;
-        $model->type_id = $author->type_id;
+        $model->type = $author->type;
         $model->begin = $request->begin;
         $model->save();
 

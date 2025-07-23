@@ -40,7 +40,7 @@ for ($ix = 1; $ix <= 13; $ix++) {
     <x-layout.header-main>{{$model->person->name}} {{$model->person->nick}} {{$model->role_name}} {{$model->begin}}-{{$model->end}}</x-layout.header-main>
 
     <x-layout.container>
-        @include('widgets.person.events', ['events' => $events, 'personID' => $model->person_id])
+        @include('widgets.person.events', ['events' => $events, 'person' => $model->person])
     </x-layout.container>
 
     <x-layout.header-second>work with Events of this Life</x-layout.header-second>

@@ -5,6 +5,7 @@ namespace App\Models\View;
 use App\Models\Person\EventType;
 use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventSynthetic;
+use App\Models\World\Life;
 
 class EventView extends AbstractView
 {
@@ -57,13 +58,31 @@ class EventView extends AbstractView
         return ($model->begin == $model->end ? $model->begin : ($model->begin . '-' . $model->end)) . 'Y';
     }
 
-    public function labelGenreMy(PersonEvent|PersonEventSynthetic $model, bool $myLabel): string
+    public function loveConnectionGenre(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
     {
-        return $myLabel ? $this->labelGenre($model) : '';
+        if ($model instanceof PersonEventSynthetic || !$model->type->is_relation) {
+            return '';
+        }
+        $genre = '';
+        if ($model->life_id != $viewLife->id) {
+            $genre .= $this->gender($viewLife->role);
+        }
+        foreach ($model->connections as $connect) {
+            if ($connect->life_id != $viewLife->id) {
+                $genre .= $this->gender($connect->life->role);
+            }
+        }
+        return $genre;
     }
 
-    public function labelGenre(PersonEvent|PersonEventSynthetic $model): string
+
+
+    public function labelStartAge(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
     {
-        return $this->gender($model->life->role);
+        if ($model instanceof PersonEventSynthetic) {
+            return '';
+        }
+        return '<u>_' . ($model->begin - $viewLife->begin)  . '_</u>' .
+            ($model->begin == $model->end ? '' : '<u>-_' . ($model->end - $viewLife->begin)  . '_</u>');
     }
 }

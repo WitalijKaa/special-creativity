@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +17,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $nick
  * @property int $force_person
  * @property int $begin
- * @property int|null $type_id
+ * @property int|null $type
  * @property int|null $person_author_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person newQuery()
@@ -28,7 +27,7 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereNick($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereForcePerson($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereBegin($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person wherePersonAuthorId($value)
  *
  * @property-read boolean $is_original

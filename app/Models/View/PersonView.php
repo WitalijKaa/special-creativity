@@ -67,6 +67,17 @@ class PersonView extends AbstractView
         return '<small>🧪</small> ' . $model->force_person;
     }
 
+    public function lifeBack(?Life $model): string
+    {
+        return match ($model?->type) {
+            Life::ALLODS => CC_PRIMARY,
+            Life::PLANET => CC_SUCCESS,
+            Life::DREAM => CC_DARK,
+            Life::VIRTUAL => CC_WARNING,
+            default => CC_SECONDARY,
+        };
+    }
+
     public function labelForceEventOfLife(ForceEvent $event, Life $life): string
     {
         if ($event->diff < 0) {

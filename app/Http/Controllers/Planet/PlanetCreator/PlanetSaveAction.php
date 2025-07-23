@@ -32,7 +32,7 @@ class PlanetSaveAction
             $model->id = Person::ORIGINAL;
             $model->name = $request->person;
             $model->nick = $request->nick;
-            $model->type_id = Person::IMPERIUM;
+            $model->type = Person::IMPERIUM;
             $model->begin = 0;
             $model->force_person = Person::FORCE;
             $model->save();

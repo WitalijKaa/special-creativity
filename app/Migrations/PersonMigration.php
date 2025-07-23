@@ -15,7 +15,7 @@ class PersonMigration implements MigratorInterface
             $table->id();
             $table->string('name', 128)->nullable(false)->unique();
             $table->string('nick', 32)->nullable(false);
-            $table->tinyInteger('type_id')->nullable(false)->unsigned(); // kill _id
+            $table->tinyInteger('type')->nullable(false)->unsigned();
             $table->unsignedBigInteger('person_author_id')->nullable(true);
             $table->tinyInteger('force_person')->nullable(false)->default(0);
             $table->integer('begin')->nullable(false)->unsigned(); // year

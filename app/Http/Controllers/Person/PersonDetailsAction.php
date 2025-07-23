@@ -18,10 +18,10 @@ class PersonDetailsAction
 
         $events = PersonEvent::wherePersonId($id)
             ->orWhereIn('id', PersonEventConnect::wherePersonId($id)->pluck('event_id')->unique())
-            ->with(['connections', 'type', 'person'])
+            ->with(['connections.life', 'type', 'person'])
             ->get();
 
-        foreach (Life::wherePersonId($id)->whereTypeId(Life::ALLODS)->get() as $allodsLife) {
+        foreach (Life::wherePersonId($id)->whereType(Life::ALLODS)->get() as $allodsLife) {
             $events->push($allodsLife->synthetic(PersonEventSynthetic::ALLODS, $allodsLife->begin, $allodsLife->end));
         }
         $events = $events->sortBy('begin')->values();

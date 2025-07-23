@@ -64,4 +64,9 @@ class PersonEventSynthetic
         }
         throw new \ErrorException('Undefined property: ' . self::class . ' ::$' . $name);
     }
+
+    public function lifeOfPerson(int $personID): Life
+    {
+        return new Life(['role' => Life::SPIRIT]);
+    }
 }
