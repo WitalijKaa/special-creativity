@@ -12,7 +12,7 @@ $fBegin->label = 'start of Event';
 $fEnd = new \App\Dto\Form\FormFieldInputDto();
 $fEnd->id = 'end';
 $fEnd->type = 'number';
-$fEnd->value = old($fBegin->id) ?? ($model->begin + 50);
+$fEnd->value = old($fEnd->id) ?? ($model->begin + 50);
 $fEnd->label = 'finish of Event';
 $fTypes = new \App\Dto\Form\FormFieldInputDto();
 $fTypes->id = 'type';
@@ -36,7 +36,7 @@ for ($ix = 1; $ix <= 13; $ix++) {
     }
 }
 
-?><x-layout.main :title="$model->person->name">
+?><x-layout.main :title="$model->person->name . ' ' . $model->type_name . '-' . $model->current_type_no">
     <x-layout.header-main>{{$model->person->name}} {{$model->person->nick}} {{$model->role_name}} {{$model->begin}}-{{$model->end}}</x-layout.header-main>
 
     <x-layout.container>

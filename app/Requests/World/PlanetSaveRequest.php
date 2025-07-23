@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * @property-read string $name
  * @property-read ?string $person
+ * @property-read ?string $nick
  */
 class PlanetSaveRequest extends FormRequest
 {
@@ -17,6 +18,7 @@ class PlanetSaveRequest extends FormRequest
         return [
             'name' => 'required|string|min:4|max:32',
             'person' => 'sometimes',
+            'nick' => 'sometimes',
         ];
     }
 }

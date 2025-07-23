@@ -46,7 +46,6 @@ class PersonLifeAction
         }
         $model->person_id = $id;
         $model->begin_force_person = $person->force_person;
-        $model->parents_type_id = $request->parents;
         $model->save();
 
         ForceEvent::liveLife($person, $model);

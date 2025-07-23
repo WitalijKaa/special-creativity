@@ -16,7 +16,6 @@ use Illuminate\Support\Collection;
  * @property int $role
  * @property int $person_id
  * @property int $begin_force_person
- * @property int $parents_type_id
  * @property int|null $person_father_id
  * @property int|null $person_mother_id
  * @property int $type_id
@@ -31,7 +30,6 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePersonId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereBeginForcePerson($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereParentsTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePersonFatherId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePersonMotherId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereTypeId($value)
@@ -46,6 +44,7 @@ use Illuminate\Support\Collection;
  * @property-read bool $is_allods
  * @property-read bool $is_dream
  * @property-read bool $is_virtual
+ * @property-read integer $current_type_no
  * @property-read bool $may_be_girl_easy
  *
  * @property-read \App\Models\Person\Person $person
@@ -70,7 +69,8 @@ class Life extends \Eloquent
 
     public const int PLANET_MAN_LIVES_TO_BE_GIRL_EASY = 4;
 
-    protected $table = DB . '_life';
+    public const string TABLE_NAME = DB . '_life';
+    protected $table = self::TABLE_NAME;
 
     public function getRoleNameAttribute() // role_name
     {
@@ -88,6 +88,14 @@ class Life extends \Eloquent
     public function getIsAllodsAttribute() { return self::ALLODS == $this->type_id; }
     public function getIsDreamAttribute() { return self::DREAM == $this->type_id; }
     public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type_id; }
+
+    public function getCurrentTypeNoAttribute() // current_type_no
+    {
+        return Life::wherePersonId($this->person_id)
+            ->whereTypeId($this->type_id)
+            ->where('id', '<=', $this->id)
+            ->count();
+    }
 
     public function getMayBeGirlEasyAttribute() // may_be_girl_easy
     {
@@ -135,7 +143,6 @@ class Life extends \Eloquent
             'end' => $this->end,
             'type' => $this->type_id,
             'role' => $this->role,
-            'parents' => $this->parents_type_id,
             'father' => null,
             'mother' => null,
         ];

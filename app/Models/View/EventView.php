@@ -10,13 +10,46 @@ class EventView extends AbstractView
 {
     public function backColor(PersonEvent|PersonEventSynthetic $model): string
     {
-        return match ($model->type_id) {
-            EventType::DEEP_LOVE, EventType::ONCE_LOVE, EventType::MASS_LOVE => CC_DANGER,
-            EventType::SLAVE_JOB, EventType::SLAVE_WOMAN_LIFE => CC_DARK,
-            EventType::HOLY_LIFE => CC_PRIMARY,
-            PersonEventSynthetic::ALLODS => CC_INFO,
-            default => CC_STUB,
-        };
+        if ($model instanceof PersonEventSynthetic) {
+            return match ($model->type_id) {
+                PersonEventSynthetic::ALLODS => CC_INFO,
+                default => CC_STUB,
+            };
+        }
+
+        if ($model->type->is_honor) {
+            return CC_PRIMARY;
+        }
+        if (in_array($model->type_id, [EventType::DEEP_LOVE, EventType::ONCE_LOVE, EventType::EMPTY_LOVE, EventType::DIRTY_LOVE])) {
+            return CC_DANGER;
+        }
+        if ($model->type->is_relation) {
+            return CC_WARNING;
+        }
+        if ($model->type->is_work) {
+            return CC_SUCCESS;
+        }
+        if ($model->type->is_slave) {
+            return CC_SECONDARY;
+        }
+        return CC_STUB;
+    }
+
+    public function backColorType(EventType $model): string
+    {
+        if ($model->is_honor) {
+            return CC_PRIMARY;
+        }
+        if ($model->is_relation) {
+            return CC_DANGER;
+        }
+        if ($model->is_work) {
+            return CC_SUCCESS;
+        }
+        if ($model->is_slave) {
+            return CC_SECONDARY;
+        }
+        return CC_DARK;
     }
 
     public function labelRange(PersonEvent|PersonEventSynthetic $model): string

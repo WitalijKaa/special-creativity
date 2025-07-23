@@ -6,12 +6,26 @@ use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventConnect;
 use App\Models\World\Life;
 use App\Requests\Person\PersonAddEventRequest;
+use Illuminate\Database\Eloquent\Builder;
 
 class PersonEventAction
 {
     public function __invoke(PersonAddEventRequest $request, int $id)
     {
-        $life = Life::whereId($id)->first();
+        $back = fn (string $field, string $msg) => redirect(route('web.person.details-life', ['life_id' => $id, 'person_id' => Life::whereId($id)->first()?->person_id]))
+            ->withErrors([$field => [$msg]])
+            ->withInput($request->toArray());
+
+        $life = Life::whereId($id)
+            ->where('begin', '<=', $request->end)
+            ->where('end', '>=', $request->begin)
+            ->first();
+
+        // validations
+
+        if (!$life) {
+            return $back('begin', 'Wrong event time');
+        }
 
         $model = new PersonEvent();
         $model->life_id = $id;

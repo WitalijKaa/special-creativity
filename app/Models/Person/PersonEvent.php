@@ -45,7 +45,7 @@ class PersonEvent extends \Eloquent
 
             'begin' => $this->begin,
             'end' => $this->end,
-            'type' => $this->type_id,
+            'type' => $this->type->name,
             'comment' => $this->comment,
         ];
 

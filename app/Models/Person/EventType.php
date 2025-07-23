@@ -2,19 +2,23 @@
 
 namespace App\Models\Person;
 
+use App\Models\View\EventView;
+
 /**
  * @property int $id
  * @property string $name
- * @property boolean $system
+ * @property boolean $is_honor
  * @property boolean $is_relation
  * @property boolean $is_work
+ * @property boolean $is_slave
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsHonor($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsRelation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsWork($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsSlave($value)
  *
  * @mixin \Eloquent
  */
@@ -22,31 +26,41 @@ class EventType extends \Eloquent
 {
     public const int DEEP_LOVE = 1;
     public const int ONCE_LOVE = 2;
-    public const int MASS_LOVE = 4;
-    public const int GREAT_FIGHT = 5;
-    public const int SLAVE_JOB = 6;
-    public const int HOLY_LIFE = 7;
-    public const int SLAVE_WOMAN_LIFE = 8;
-    public const int MOVE = 9;
+    public const int EMPTY_LOVE = 3;
+    public const int DIRTY_LOVE = 4;
+    public const int HOLY_LIFE = 5;
 
-    protected $table = DB . '_type_event';
+    public const string TABLE_NAME = DB . '_type_event';
+    protected $table = self::TABLE_NAME;
+
+    public function archive(): array
+    {
+        $return = ['name' => $this->name];
+        if ($this->is_honor) { $return['is_honor'] = 1; }
+        if ($this->is_relation) { $return['is_relation'] = 1; }
+        if ($this->is_work) { $return['is_work'] = 1; }
+        if ($this->is_slave) { $return['is_slave'] = 1; }
+        return $return;
+    }
 
     public $timestamps = false;
     protected $guarded = ['id'];
     protected function casts(): array
     {
         return [
-            'system' => 'boolean',
+            'is_honor' => 'boolean',
             'is_relation' => 'boolean',
             'is_work' => 'boolean',
+            'is_slave' => 'boolean',
         ];
     }
 
     public static function selectOptions(): array
     {
+        $vEvent = new EventView();
         return static::orderBy('id')
             ->get()
-            ->map(fn (self $model) => ['opt' => $model->id, 'lbl' => $model->name])
+            ->map(fn (self $model) => ['opt' => $model->id, 'lbl' => $model->name, 'style' => $vEvent->backColorType($model)])
             ->toArray();
     }
 }

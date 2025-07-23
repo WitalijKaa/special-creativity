@@ -35,11 +35,6 @@ $fRole->id = 'role';
 $fRole->label = 'Who was the Persona?';
 $fRole->value = old($fRole->id) ?? ($fType->value == \App\Models\World\Life::PLANET ? \App\Models\World\Life::MAN : \App\Models\World\Life::SPIRIT);
 $fRole->options = \App\Models\World\Life::selectRoleOptions();
-$fParents = new \App\Dto\Form\FormFieldInputDto();
-$fParents->id = 'parents';
-$fParents->label = 'What kind of Parents?';
-$fParents->value = old($fParents->id) ?? ($fType->value == \App\Models\World\Life::PLANET ? \App\Models\Person\ParentsType::WILD : \App\Models\Person\ParentsType::MIXED);
-$fParents->options = \App\Models\Person\ParentsType::selectOptions();
 $fFather = new \App\Dto\Form\FormFieldInputDto();
 $fFather->id = 'father';
 $fFather->label = 'the Name of the Father';
@@ -106,7 +101,7 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
                   btn="add Life"
-                  :fields="[$fBegin, $fEnd, $fType, $fRole, $fParents, $fFather, $fMother]"></x-form.basic>
+                  :fields="[$fBegin, $fEnd, $fType, $fRole, $fFather, $fMother]"></x-form.basic>
 
     <x-layout.divider></x-layout.divider>
 

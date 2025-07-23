@@ -13,15 +13,14 @@ class LifeMigration implements MigratorInterface
     {
         Schema::create(static::tableName(), function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('person_id')->nullable(false);
             $table->integer('begin')->nullable(false)->unsigned(); // year
             $table->integer('end')->nullable(false)->unsigned(); // year
+            $table->tinyInteger('type_id')->nullable(false)->unsigned(); // kill _id
             $table->tinyInteger('role')->nullable(false)->unsigned();
-            $table->unsignedBigInteger('person_id')->nullable(false);
             $table->tinyInteger('begin_force_person')->nullable(false)->default(0);
-            $table->tinyInteger('parents_type_id')->nullable(false)->unsigned();
             $table->unsignedBigInteger('person_father_id')->nullable(true);
             $table->unsignedBigInteger('person_mother_id')->nullable(true);
-            $table->unsignedBigInteger('type_id')->nullable(false);
             $table->unsignedBigInteger('planet_id')->nullable(true);
 
             $table->foreign('person_id', DB . '_l_person')->references('id')->on(PersonMigration::tableName())->onDelete('cascade')->onUpdate('cascade');

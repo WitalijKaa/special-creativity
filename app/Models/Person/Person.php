@@ -40,7 +40,6 @@ use Illuminate\Support\Facades\DB;
  * @property-read Life|null $last_life
  * @property-read \Illuminate\Database\Eloquent\Collection|Life[] $lives
  * @property-read \Illuminate\Database\Eloquent\Collection|PersonEvent[] $events
- * @property-read \App\Models\Person\PersonType $type
  * @property-read \App\Models\Person\Person|null $author
  * @property-read \Illuminate\Support\Collection|\App\Models\Person\Person[] $vizavi
  * @property-read \App\Models\Person\Person $only_vizavi
@@ -53,7 +52,11 @@ class Person extends \Eloquent
     public const int ORIGINAL = 1;
     public const int FORCE = 100;
 
-    protected $table = DB . '_person';
+    public const int IMPERIUM = 1;
+    public const int WILD = 2;
+
+    public const string TABLE_NAME = DB . '_person';
+    protected $table = self::TABLE_NAME;
 
     public function getIsOriginalAttribute() // is_original
     {
@@ -150,7 +153,6 @@ class Person extends \Eloquent
     /** @return \Illuminate\Database\Eloquent\Relations\HasMany|\App\Models\Person\PersonEvent */
     public function events(): HasMany { return $this->hasMany(PersonEvent::class, 'person_id', 'id')->orderBy('id'); }
     public function creations(): HasMany { return $this->hasMany(Person::class, 'person_author_id', 'id')->orderBy('id'); }
-    public function type(): HasOne { return $this->hasOne(PersonType::class, 'id', 'type_id'); }
     public function author(): BelongsTo { return $this->belongsTo(Person::class, 'person_author_id', 'id', 'creations'); }
     protected function casts(): array
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Planet\PlanetCreator;
 
+use App\Models\Person\EventType;
 use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
 use App\Models\World\Life;
@@ -13,10 +14,11 @@ class PlanetExportAction
     public function __invoke(Request $request)
     {
         $planet = Planet::first();
+        $eventTypes = EventType::where('id', '>', EventType::HOLY_LIFE)->orderBy('id')->get();
         $persons = Person::orderBy('id')->get();
         $lives = Life::all();
         $events = PersonEvent::with(['connections.person', 'person', 'life'])->get();
 
-        return view('planet.export', compact('planet', 'persons', 'lives', 'events'));
+        return view('planet.export', compact('planet', 'eventTypes', 'persons', 'lives', 'events'));
     }
 }

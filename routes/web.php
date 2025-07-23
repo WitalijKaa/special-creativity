@@ -11,6 +11,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('params', App\Http\Controllers\Planet\PlanetCreator\PlanetParamsAction::class)->name('params');
         Route::get('export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');
         Route::post('params/save', App\Http\Controllers\Planet\PlanetCreator\PlanetSaveAction::class)->name('save');
+        Route::post('params/add-event', App\Http\Controllers\Planet\PlanetCreator\EventTypeAddAction::class)->name('event-type');
     });
 
     Route::group(['as' => 'person.', 'prefix' => 'life'], function() {
