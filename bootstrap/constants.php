@@ -1,5 +1,8 @@
 <?php
 
+const WORK_DAYS = 250;
+const WORK_HOURS = 8;
+
 const CC_PRIMARY = 'primary';
 const CC_SECONDARY = 'secondary';
 const CC_SUCCESS = 'success';

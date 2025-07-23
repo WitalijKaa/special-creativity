@@ -18,6 +18,22 @@ if (!$planet->id) {
     $fNick->label = 'nick name';
 }
 
+$fWorkName = new \App\Dto\Form\FormFieldInputDto();
+$fWorkName->id = 'name';
+$fWorkName->label = 'Name';
+$fWorkBegin = new \App\Dto\Form\FormFieldInputDto();
+$fWorkBegin->id = 'begin';
+$fWorkBegin->type = 'number';
+$fWorkBegin->label = 'Started at';
+$fWorkEnd = new \App\Dto\Form\FormFieldInputDto();
+$fWorkEnd->id = 'end';
+$fWorkEnd->type = 'number';
+$fWorkEnd->label = 'Finished at';
+$fWorkCapacity = new \App\Dto\Form\FormFieldInputDto();
+$fWorkCapacity->id = 'capacity';
+$fWorkCapacity->type = 'number';
+$fWorkCapacity->label = 'maximum Work units';
+
 $fEventName = new \App\Dto\Form\FormFieldInputDto();
 $fEventName->id = 'name';
 $fEventName->label = 'Name';
@@ -62,6 +78,16 @@ $fEventSlave->type = 'checkbox';
             @endforeach
         </x-form.container>
 
+        <x-layout.header-second>Work</x-layout.header-second>
+        <x-form.container>
+            @foreach(\App\Models\World\Work::selectOptions() as $workOpt)
+                <span class="badge text-bg-secondary">{{ $workOpt['lbl'] }}</span>
+            @endforeach
+        </x-form.container>
+        <x-form.basic :route="route('web.basic.work')"
+                      btn="add new Work"
+                      :fields="[$fWorkName, $fWorkBegin, $fWorkEnd, $fWorkCapacity]"></x-form.basic>
+
         <x-layout.header-second>Events</x-layout.header-second>
         <x-form.container>
             <span class="badge text-bg-secondary">Exists:</span>
@@ -69,7 +95,7 @@ $fEventSlave->type = 'checkbox';
                 <span class="badge text-bg-{{$eventOpt['style']}}">{{ $eventOpt['lbl'] }}</span>
             @endforeach
         </x-form.container>
-        <x-form.basic :route="route('web.planet.event-type')"
+        <x-form.basic :route="route('web.basic.event-type')"
                       btn="add new Event Type"
                       :fields="[$fEventName, $fEventHonor, $fEventRelation, $fEventWork, $fEventSlave]"></x-form.basic>
 

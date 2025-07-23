@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Person;
 
+use App\Models\Person\EventType;
 use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventConnect;
 use App\Models\World\Life;
 use App\Requests\Person\PersonAddEventRequest;
-use Illuminate\Database\Eloquent\Builder;
 
 class PersonEventAction
 {
@@ -21,10 +21,18 @@ class PersonEventAction
             ->where('end', '>=', $request->begin)
             ->first();
 
+        $eventType = EventType::whereId($request->type)->first();
+
         // validations
 
         if (!$life) {
             return $back('begin', 'Wrong event time');
+        }
+        if (!$eventType) {
+            return $back('type', 'Wrong event type');
+        }
+        if ($eventType->is_work && !$request->work) {
+            return $back('work', 'No work provided');
         }
 
         $model = new PersonEvent();
@@ -33,6 +41,8 @@ class PersonEventAction
         $model->type_id = $request->type;
         $model->begin = $request->begin;
         $model->end = $request->end;
+        if ($request->work) { $model->work_id = $request->work; }
+        if ($request->strong) { $model->work_id = $request->strong; }
         if ($request->comment) { $model->comment = $request->comment; }
         $model->save();
 

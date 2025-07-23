@@ -19,10 +19,10 @@ class EventTypeAddRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:4|max:64',
-            'is_honor' => 'sometimes|boolean',
-            'is_relation' => 'sometimes|boolean',
-            'is_work' => 'sometimes|boolean',
-            'is_slave' => 'sometimes|boolean',
+            'is_honor' => 'sometimes',
+            'is_relation' => 'sometimes',
+            'is_work' => 'sometimes',
+            'is_slave' => 'sometimes',
         ];
     }
 }

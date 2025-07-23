@@ -6,6 +6,7 @@ use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventConnect;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\World\Life;
+use App\Models\World\Work;
 use Illuminate\Database\Eloquent\Builder;
 
 class LifeDetailsAction
@@ -38,6 +39,15 @@ class LifeDetailsAction
             $events->push($model->synthetic(PersonEventSynthetic::DEATH, $model->end));
         }
 
-        return view('person.life-details', compact('model', 'connections', 'events'));
+        $work = Work::where(function (Builder $orBuilder) use ($model) {
+            return $orBuilder->where(function (Builder $builder) use ($model) {
+                return $builder->where('begin', '<=', $model->begin)->where('end', '>=', $model->begin);
+
+            })->orWhere(function (Builder $builder) use ($model) {
+                return $builder->where('begin', '<=', $model->end)->where('end', '>=', $model->end);
+            });
+        })->get();
+
+        return view('person.life-details', compact('model', 'connections', 'events', 'work'));
     }
 }

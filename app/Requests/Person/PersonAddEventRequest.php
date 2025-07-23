@@ -8,6 +8,8 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property-read integer $begin
  * @property-read integer $end
  * @property-read integer $type
+ * @property-read ?integer $work
+ * @property-read ?integer $strong
  * @property-read ?string $comment
  */
 class PersonAddEventRequest extends FormRequest
@@ -20,6 +22,8 @@ class PersonAddEventRequest extends FormRequest
             'begin' => 'required|integer',
             'end' => 'required|integer',
             'type' => 'required|integer',
+            'strong' => 'sometimes',
+            'work' => 'sometimes',
             'comment' => 'sometimes',
         ];
     }

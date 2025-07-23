@@ -6,6 +6,7 @@ use App\Models\World\Life;
 use Illuminate\Support\Collection;
 
 /**
+ * @property-read null $work_id
  * @property-read \App\Models\Person\EventType $type
  * @property-read \App\Models\Person\Person $person
  * @property-read \App\Models\World\Life $life
@@ -61,6 +62,9 @@ class PersonEventSynthetic
         }
         if ('connections' == $name) {
             return new Collection();
+        }
+        if ('work_id' == $name) {
+            return null;
         }
         throw new \ErrorException('Undefined property: ' . self::class . ' ::$' . $name);
     }

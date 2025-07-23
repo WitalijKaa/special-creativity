@@ -22,6 +22,11 @@ class AbstractView
         return $this->gender($model->role);
     }
 
+    public function space2(): string
+    {
+        return self::SPACE . self::SPACE;
+    }
+
     public function space4(): string
     {
         return self::SPACE . self::SPACE . self::SPACE . self::SPACE;

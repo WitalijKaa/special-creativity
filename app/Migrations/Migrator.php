@@ -15,6 +15,7 @@ class Migrator implements MigratorInterface
         ForceEventTypeMigration::class,
         ForceEventMigration::class,
         EventTypeMigration::class,
+        WorkMigration::class,
         EventMigration::class,
         EventConnectMigration::class,
     ];

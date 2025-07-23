@@ -9,6 +9,7 @@ class EventTypeAddAction
 {
     public function __invoke(EventTypeAddRequest $request)
     {
+        //dd($request);
         $model = new EventType();
         $model->name = $request->name;
         $model->is_honor = !!$request->is_honor;

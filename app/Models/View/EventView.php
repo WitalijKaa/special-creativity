@@ -6,6 +6,7 @@ use App\Models\Person\EventType;
 use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\World\Life;
+use App\Models\World\LifeWork;
 
 class EventView extends AbstractView
 {
@@ -55,7 +56,7 @@ class EventView extends AbstractView
 
     public function labelRange(PersonEvent|PersonEventSynthetic $model): string
     {
-        return ($model->begin == $model->end ? $model->begin : ($model->begin . '-' . $model->end)) . 'Y';
+        return '[' . ($model->begin == $model->end ? $model->begin . 'Y' : ($model->begin . '-' . $model->end . 'Y' . '<small><small>' . ($model->end - $model->begin) . '</small></small>')) . ']';
     }
 
     public function loveConnectionGenre(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
@@ -75,8 +76,6 @@ class EventView extends AbstractView
         return $genre;
     }
 
-
-
     public function labelStartAge(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
     {
         if ($model instanceof PersonEventSynthetic) {
@@ -84,5 +83,22 @@ class EventView extends AbstractView
         }
         return '<u>_' . ($model->begin - $viewLife->begin)  . '_</u>' .
             ($model->begin == $model->end ? '' : '<u>-_' . ($model->end - $viewLife->begin)  . '_</u>');
+    }
+
+    public function labelWork(PersonEvent|PersonEventSynthetic $model): string
+    {
+        if (!$model->work_id) {
+            return '';
+        }
+        return '<small>' . $model->work->name  . '</small>' .
+            (!$model->strong ? '' : ' <em>' . $model->strong .'%</em>');
+    }
+
+    public function labelWorkDays(PersonEvent|PersonEventSynthetic $model, ?LifeWork $lifeWork): string
+    {
+        if (!$lifeWork || !$model->work_id) {
+            return $this->space2();
+        }
+        return $this->space2() . '💪🏻 ' . $lifeWork->days($model->work);
     }
 }

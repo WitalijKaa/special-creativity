@@ -2,7 +2,6 @@
 
 namespace App\Models\Person;
 
-
 use App\Models\World\Life;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -94,15 +93,8 @@ class Person extends \Eloquent
             $this->_vizavi = new \Illuminate\Support\Collection();
             $self = $this;
 
-            $allConnects = PersonEventConnect::where(PersonEventConnect::TABLE_NAME . '.person_id', $this->id)
-                ->join(PersonEvent::TABLE_NAME, fn (JoinClause $onClosure) => $onClosure
-                    ->on(PersonEventConnect::TABLE_NAME . '.event_id', '=', PersonEvent::TABLE_NAME . '.id')
-                    ->on(PersonEvent::TABLE_NAME . '.type_id', '=', DB::raw(EventType::DEEP_LOVE))
-                )
-                ->pluck('event_id');
-
             PersonEvent::where(fn (Builder $builder) => $builder->where('person_id', $this->id)->where('type_id', EventType::DEEP_LOVE))
-                ->orWhereIn('id', $allConnects)
+                ->orWhereIn('id', PersonEventConnect::eventIdsOfDeepLoveOfPersonVsConnect($this->id))
                 ->with(['connections', 'person'])
                 ->get()
                 ->each(function (PersonEvent $event) use ($self) {

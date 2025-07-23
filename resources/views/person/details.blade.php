@@ -48,15 +48,19 @@ $vPerson = new \App\Models\View\PersonView();
 <x-layout.main :title="$model->name . ' ' . $model->nick">
     <x-layout.header-main>{{$model->name}} {{$model->nick}}</x-layout.header-main>
 
+    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->is_allods)
+        <x-layout.header-second>a new Persona may be created</x-layout.header-second>
+
+        <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
+                      btn="create Persona"
+                      :fields="[$fName, $fNick, $fBegin]"></x-form.basic>
+
+        <x-layout.divider></x-layout.divider>
+    @endif
+
     <x-form.basic :route="route('web.planet.params')"
                   btn="show Year"
                   :fields="[$fYear]"></x-form.basic>
-
-    <div class="mb-5 mt-5"></div>
-
-    <x-layout.container>
-        @include('widgets.person.events', ['events' => $events, 'person' => $model])
-    </x-layout.container>
 
     <div class="mb-5 mt-5"></div>
 
@@ -102,20 +106,18 @@ $vPerson = new \App\Models\View\PersonView();
         </div>
     </x-layout.container>
 
-    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->is_allods)
-        <x-layout.header-second>a new Persona may be created</x-layout.header-second>
+    <div class="mb-5 mt-5"></div>
 
-        <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
-                      btn="create Persona"
-                      :fields="[$fName, $fNick, $fBegin]"></x-form.basic>
+    <x-layout.container>
+        @include('widgets.person.events', ['events' => $events, 'person' => $model])
+    </x-layout.container>
 
-        <div class="mb-5 mt-5"></div>
-    @endif
-    @php($fBegin->label = 'the year of Beginning of Life')
+
 
 
     <x-layout.header-second>Scripting Life at year {{$model->lives->last()?->end ?? $model->begin}}</x-layout.header-second>
 
+    @php($fBegin->label = 'the year of Beginning of Life')
     <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
                   btn="add Life"
                   :fields="[$fBegin, $fEnd, $fType, $fRole, $fFather, $fMother]"></x-form.basic>

@@ -2,12 +2,16 @@
 
 namespace App\Models\World;
 
-
+use App\Models\Person\EventType;
 use App\Models\Person\Person;
+use App\Models\Person\PersonEvent;
+use App\Models\Person\PersonEventConnect;
 use App\Models\Person\PersonEventSynthetic;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -45,7 +49,9 @@ use Illuminate\Support\Collection;
  * @property-read integer $current_type_no
  * @property-read bool $may_be_girl_easy
  *
+ * @property-read \App\Models\World\LifeWork $lifeWork
  * @property-read \App\Models\Person\Person $person
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Person\PersonEvent[] $workEvents
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\World\ForceEvent[] $forceEvents
  *
  * @mixin \Eloquent
@@ -87,6 +93,8 @@ class Life extends \Eloquent
     public function getIsDreamAttribute() { return self::DREAM == $this->type; }
     public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type; }
 
+    public function getLifeWorkAttribute() { return LifeWork::calculateLife($this->begin, $this->end, $this->workEvents); }
+
     public function getCurrentTypeNoAttribute() // current_type_no
     {
         return Life::wherePersonId($this->person_id)
@@ -118,6 +126,18 @@ class Life extends \Eloquent
             }
         }
         return false;
+    }
+
+    public function getWorkEventsAttribute()
+    {
+        return PersonEvent::whereLifeId($this->id)
+            ->orWhereIn(PersonEvent::TABLE_NAME . '.id', PersonEventConnect::eventIdsOfLifeVsConnect($this->id))
+            ->join(EventType::TABLE_NAME, fn (JoinClause $onClosure) => $onClosure
+                ->on(PersonEvent::TABLE_NAME . '.type_id', '=', EventType::TABLE_NAME . '.id')
+                ->on(EventType::TABLE_NAME . '.is_work', '=', DB::raw(true))
+            )
+            ->with(['work'])
+            ->get();
     }
 
     public function synthetic(int $type_id, int $begin, ?int $end = null): PersonEventSynthetic
