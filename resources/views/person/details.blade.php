@@ -1,13 +1,15 @@
 <?php
 
 /** @var \App\Models\Person\Person $model */
+$viewLives = $year > 0 ? $model->lives->filter(fn (\App\Models\World\Life $life) => $life->begin <= $year)->values() : $model->lives;
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
+/** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[]|null $eventsFuture */
 
 $fYear = new \App\Dto\Form\FormFieldInputDto();
 $fYear->id = 'year';
 $fYear->label = 'Year of current moment';
 $fYear->type = 'number';
-$fYear->value = $year ?? 0;
+$fYear->value = $year > 0 ? $year : null;
 
 $fName = new \App\Dto\Form\FormFieldInputDto();
 $fName->id = 'name';
@@ -58,7 +60,7 @@ $vPerson = new \App\Models\View\PersonView();
         <x-layout.divider></x-layout.divider>
     @endif
 
-    <x-form.basic :route="route('web.planet.params')"
+    <x-form.basic :route="route('web.person.details', ['id' => $model->id])"
                   btn="show Year"
                   :fields="[$fYear]"></x-form.basic>
 
@@ -66,7 +68,7 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-layout.container>
         <div class="list-group">
-            @foreach($model->lives as $life)
+            @foreach($viewLives as $life)
                 <a href="{{route('web.person.details-life', ['person_id' => $life->person_id, 'life_id' => $life->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($life)}}">
 
                     <div class="d-flex w-100 justify-content-between mb-1">
@@ -110,17 +112,23 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-layout.container>
         @include('widgets.person.events', ['events' => $events, 'person' => $model])
+        @if($eventsFuture)
+            <div class="mb-5 mt-5"></div>
+            @include('widgets.person.events', ['events' => $eventsFuture, 'person' => $model])
+        @endif
     </x-layout.container>
 
 
+    @if($year < 1)
 
+        <x-layout.header-second>Scripting Life at year {{$model->lives->last()?->end ?? $model->begin}}</x-layout.header-second>
 
-    <x-layout.header-second>Scripting Life at year {{$model->lives->last()?->end ?? $model->begin}}</x-layout.header-second>
+        @php($fBegin->label = 'the year of Beginning of Life')
+        <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
+                      btn="add Life"
+                      :fields="[$fBegin, $fEnd, $fType, $fRole, $fFather, $fMother]"></x-form.basic>
 
-    @php($fBegin->label = 'the year of Beginning of Life')
-    <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
-                  btn="add Life"
-                  :fields="[$fBegin, $fEnd, $fType, $fRole, $fFather, $fMother]"></x-form.basic>
+    @endif
 
     <x-layout.divider></x-layout.divider>
 

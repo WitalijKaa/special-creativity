@@ -1,12 +1,13 @@
 <?php
 
 /** @var \App\Models\Person\Person[] $models */
+/** @var int $year */
 
 $fYear = new \App\Dto\Form\FormFieldInputDto();
 $fYear->id = 'year';
 $fYear->label = 'Year of current moment';
 $fYear->type = 'number';
-$fYear->value = $year ?? 0;
+$fYear->value = $year > 0 ? $year : null;
 
 $vPerson = new \App\Models\View\PersonView();
 
@@ -14,7 +15,7 @@ $vPerson = new \App\Models\View\PersonView();
 <x-layout.main>
     <x-layout.header-main>Personas</x-layout.header-main>
 
-    <x-form.basic :route="route('web.planet.params')"
+    <x-form.basic :route="route('web.person.list')"
                   btn="show Year"
                   :fields="[$fYear]"></x-form.basic>
 
@@ -23,22 +24,24 @@ $vPerson = new \App\Models\View\PersonView();
     <x-layout.container>
         <div class="list-group">
             @foreach($models as $person)
-                <a href="{{route('web.person.details', ['id' => $person->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($person->last_life)}}">
+                @php($viewLife = $year > 0 ? $person->planetLife($year) : null)
+
+                <a href="{{route('web.person.details', ['id' => $person->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($viewLife ?: $person->last_life)}}">
                     <div class="d-flex w-100 justify-content-between mb-1">
 
                         <div class="d-flex w-50 justify-content-between">
-                            <h4>{{$person->name}}</h4>
+                            <h4>{!! $person->name . ($viewLife ? ($vPerson->labelAge($viewLife, $year) . $vPerson->lifeGenre($viewLife)) : '') !!}</h4>
                             <h4><small><small><strong><em>{{$person->nick}}</em></strong></small></small> {!!$vPerson->labelAuthor($person)!!}</h4>
                         </div>
 
                         <div class="d-flex w-50 justify-content-between">
-                            <h4>{!!$vPerson->labelLives($person)!!} {!!$vPerson->labelCreations($person)!!}</h4>
+                            <h4>{!!$vPerson->labelLives($person, $year)!!} {!!$vPerson->labelCreations($person, $year)!!}</h4>
                             <small>
-                                {!!$vPerson->labelLivesTotalSimple($person)!!}
-                                @if($person->force_person == \App\Models\Person\Person::FORCE)
+                                {!!$vPerson->labelLivesTotalSimple($person, $year)!!}
+                                @if(($viewLife ? $viewLife->begin_force_person : $person->force_person) == \App\Models\Person\Person::FORCE)
                                     <span class="badge text-bg-success">Can create Life</span>
                                 @endif
-                                @if($person->may_be_girl_easy)
+                                @if($person->mayBeGirlEasy($year))
                                     <span class="badge text-bg-warning">May be a Girl</span>
                                 @endif
                             </small>
@@ -54,7 +57,7 @@ $vPerson = new \App\Models\View\PersonView();
 
                         <div class="d-flex w-50 justify-content-between">
                             <h5>&nbsp;</h5>
-                            <small><small>{!!$vPerson->labelLastYearOfExistence($person)!!}</small></small>
+                            <small><small>{!! !$year ? $vPerson->labelLastYearOfExistence($person) : '' !!}</small></small>
                         </div>
                     </div>
                 </a>

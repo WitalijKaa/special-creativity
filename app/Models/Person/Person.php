@@ -32,7 +32,6 @@ use Illuminate\Support\Facades\DB;
  * @property-read boolean $is_original
  * @property-read int $count_man_lives
  * @property-read int $count_woman_lives
- * @property-read bool $may_be_girl_easy
  * @property-read int $last_year
  *
  * @property-read Life|null $last_life
@@ -66,6 +65,11 @@ class Person extends \Eloquent
         return $this->lives->last();
     }
 
+    public function planetLife(int $year): null|Life
+    {
+        return $this->lives->filter(fn (Life $model) => $model->is_planet && $model->begin <= $year && $model->end >= $year)->first();
+    }
+
     public function getLastYearAttribute() // last_year
     {
         return $this->lives->last()?->end ?? $this->begin;
@@ -76,9 +80,21 @@ class Person extends \Eloquent
         return $this->lives->filter(fn (Life $model) => $model->is_planet && $model->is_man)->count();
     }
 
+    public function countManLives(?int $year): int
+    {
+        if ($year < 1) { return $this->count_man_lives; }
+        return $this->lives->filter(fn (Life $model) => $model->end <= $year && $model->is_planet && $model->is_man)->count();
+    }
+
     public function getCountWomanLivesAttribute() // count_woman_lives
     {
-        return $this->lives->filter(fn (Life $model) => $model->is_planet && $model->role == Life::WOMAN)->count();
+        return $this->lives->filter(fn (Life $model) => $model->is_planet && $model->is_woman)->count();
+    }
+
+    public function countWomanLives(?int $year): int
+    {
+        if ($year < 1) { return $this->count_woman_lives; }
+        return $this->lives->filter(fn (Life $model) => $model->end <= $year && $model->is_planet && $model->is_woman)->count();
     }
 
     public function livesBeforeReversed(int $lifeID): Collection
@@ -126,15 +142,17 @@ class Person extends \Eloquent
         return null;
     }
 
-    public function getMayBeGirlEasyAttribute() // may_be_girl_easy
+    public function mayBeGirlEasy(?int $year = null)
     {
-        if ($this->is_original && (!$this->lives->count() || !$this->count_woman_lives)) {
+        if ($this->is_original && (!$this->lives->count() || !$this->countWomanLives($year))) {
             return true;
         }
 
-        return !$this->last_life?->is_planet &&
-            $this->last_life?->role != Life::WOMAN &&
-            $this->last_life?->may_be_girl_easy;
+        $lastLife = $year ? $this->planetLife($year) : $this->last_life;
+
+        return !$lastLife?->is_planet &&
+            $lastLife?->role != Life::WOMAN &&
+            $lastLife?->may_be_girl_easy;
     }
 
     public $timestamps = false;

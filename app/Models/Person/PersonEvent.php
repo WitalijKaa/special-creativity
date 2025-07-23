@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $person_id
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent where($column, $operator = null, $value = null, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereEnd($value)

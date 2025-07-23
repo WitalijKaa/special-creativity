@@ -16,12 +16,12 @@ class PersonView extends AbstractView
         return '<small>[' . $model->author->name . '-' . (1 + $model->author->creations->search(fn (Person $created) => $created->id == $model->id)) . '] <small><small> ' . $model->begin . 'Y</small></small></small>' . parent::space4();
     }
 
-    public function labelCreations(Person $model): string
+    public function labelCreations(Person $model, ?int $year): string
     {
-        if (!$model->creations->count()) {
+        if (!$model->creations->where('begin', '<=', $year)->count()) {
             return '';
         }
-        return static::SPACE . ' <small>👼🏻</small>' . $model->creations->count();
+        return static::SPACE . ' <small>👼🏻</small>' . $model->creations->where('begin', '<=', $year)->count();
     }
 
     public function labelVizavi(Person $model): string
@@ -32,21 +32,24 @@ class PersonView extends AbstractView
         return '<small><small><small><small>❤️</small></small> ' . $model->only_vizavi?->name . '</small></small>' . parent::space4();
     }
 
-    public function labelLives(Person $model): string
+    public function labelLives(Person $model, ?int $year): string
     {
-        if (!$model->count_man_lives && !$model->count_woman_lives) {
+        if (!$model->countManLives($year) && !$model->countWomanLives($year)) {
+            if ($year) {
+                return 'First living';
+            }
             return 'Has zero Lives on a Planet';
         }
-        return ($model->count_man_lives ? $this->gender(Life::MAN) . $model->count_man_lives : '') .
-               ($model->count_woman_lives ? $this->gender(Life::WOMAN) . $model->count_woman_lives : '');
+        return ($model->countManLives($year) ? $this->gender(Life::MAN) . $model->countManLives($year) : '') .
+               ($model->countWomanLives($year) ? $this->gender(Life::WOMAN) . $model->countWomanLives($year) : '');
     }
 
-    public function labelLivesTotalSimple(Person $model): string
+    public function labelLivesTotalSimple(Person $model, ?int $year): string
     {
-        if (!$model->count_man_lives && !$model->count_woman_lives) {
+        if (!$model->countManLives($year) && !$model->countWomanLives($year)) {
             return '';
         }
-        return ($model->count_man_lives + $model->count_woman_lives) . ' lives';
+        return ($model->countManLives($year) + $model->countWomanLives($year)) . ' lives';
     }
 
     public function labelForce(Person|Life $model): string
@@ -92,5 +95,13 @@ class PersonView extends AbstractView
             return ' <small>⌚️</small> ' . $model->begin . 'Y';
         }
         return static::SPACE . ' <small>⌚️</small> ' . $model->last_life->end . 'Y';
+    }
+
+    public function labelAge(?Life $planetLife, ?int $year): string
+    {
+        if (!$year || !$planetLife?->is_planet) {
+            return '';
+        }
+        return ' <u>_' . ($year - $planetLife->begin) . '_</u>';
     }
 }

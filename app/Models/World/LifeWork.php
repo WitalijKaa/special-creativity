@@ -29,7 +29,13 @@ class LifeWork
             }
         }
 
-        foreach ($lifeWork->worksPerYear as $yearOfWork) {
+        $lifeWork->worksCalculate();
+        return $lifeWork;
+    }
+
+    private function worksCalculate(): void
+    {
+        foreach ($this->worksPerYear as $yearOfWork) {
             /** @var WorkOfYearCollection $yearOfWork */
 
             $worksStrong = $yearOfWork->filter(fn (WorkOfYearDto $dto) => $dto->event->strong);
@@ -45,7 +51,7 @@ class LifeWork
 
                 $strongWork->days = (int)(WORK_DAYS / 100 * $percentForWork);
                 $strongWork->hours = $strongWork->days * WORK_HOURS;
-                $lifeWork->trackWork($strongWork);
+                $this->trackWork($strongWork);
 
                 $percentOfYear -= $percentForWork;
             }
@@ -57,14 +63,12 @@ class LifeWork
             foreach ($worksElse as $elseWork) {
                 $elseWork->days = (int)(WORK_DAYS / 100 * $percentForWork);
                 $elseWork->hours = $elseWork->days * WORK_HOURS;
-                $lifeWork->trackWork($elseWork);
+                $this->trackWork($elseWork);
             }
         }
-
-        return $lifeWork;
     }
 
-    public function trackWork(WorkOfYearDto $workOfYear): void
+    private function trackWork(WorkOfYearDto $workOfYear): void
     {
         if (empty($this->works)) {
             $this->works = new Collection();
