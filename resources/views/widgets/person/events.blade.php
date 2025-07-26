@@ -10,7 +10,6 @@ $vEvent = new \App\Models\View\EventView();
 $lifeWork ??= null;
 
 // DEV {{$event instanceof \App\Models\Person\PersonEvent ? $event->id : ''}} .
-//dd($events, $person->lives->last());
 
 ?><ul class="list-group">
     @foreach($events as $event)

@@ -31,7 +31,7 @@ class PersonDetailsAction
             $eventsFuture = null;
         }
 
-        return view('person.details', compact('model', 'events', 'eventsFuture', 'year'));
+        return view('person.person-details', compact('model', 'events', 'eventsFuture', 'year'));
     }
 
     private function eventsQueryToCollection(Builder|PersonEvent $query, int $personID, ?int $fromYear = null, ?int $untilYear = null): ?PersonEventCollection

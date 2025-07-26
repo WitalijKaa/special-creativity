@@ -2,10 +2,12 @@
 
 namespace App\Models\Person;
 
+use App\Models\Collection\PersonCollection;
 use App\Models\World\Life;
 use App\Models\World\Work;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -34,6 +36,8 @@ use Illuminate\Support\Facades\Schema;
  *
  * @property-read \App\Models\Person\EventType $type
  * @property-read \App\Models\Person\Person $person
+ * @property-read \App\Models\Collection\PersonCollection|\App\Models\Person\Person[] $all_persons
+ * @property-read \Illuminate\Support\Collection|\App\Models\World\Life[] $all_lives
  * @property-read \App\Models\World\Life $life
  * @property-read \App\Models\World\Work $work
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Person\PersonEventConnect[] $connections
@@ -56,6 +60,22 @@ class PersonEvent extends \Eloquent
             }
         }
         return $life;
+    }
+
+    public function getAllPersonsAttribute() // all_persons
+    {
+        $return = new PersonCollection();
+        $return->push($this->person);
+        $this->connections->each(fn (PersonEventConnect $model) => $return->push($model->person));
+        return $return;
+    }
+
+    public function getAllLivesAttribute() // all_lives
+    {
+        $return = new Collection();
+        $return->push($this->life);
+        $this->connections->each(fn (PersonEventConnect $model) => $return->push($model->life));
+        return $return;
     }
 
     public function archive(): array

@@ -18,22 +18,6 @@ if (!$planet->id) {
     $fNick->label = 'nick name';
 }
 
-$fWorkName = new \App\Dto\Form\FormFieldInputDto();
-$fWorkName->id = 'name';
-$fWorkName->label = 'Name';
-$fWorkBegin = new \App\Dto\Form\FormFieldInputDto();
-$fWorkBegin->id = 'begin';
-$fWorkBegin->type = 'number';
-$fWorkBegin->label = 'Started at';
-$fWorkEnd = new \App\Dto\Form\FormFieldInputDto();
-$fWorkEnd->id = 'end';
-$fWorkEnd->type = 'number';
-$fWorkEnd->label = 'Finished at';
-$fWorkCapacity = new \App\Dto\Form\FormFieldInputDto();
-$fWorkCapacity->id = 'capacity';
-$fWorkCapacity->type = 'number';
-$fWorkCapacity->label = 'maximum Work units';
-
 $fEventName = new \App\Dto\Form\FormFieldInputDto();
 $fEventName->id = 'name';
 $fEventName->label = 'Name';
@@ -78,15 +62,7 @@ $fEventSlave->type = 'checkbox';
             @endforeach
         </x-form.container>
 
-        <x-layout.header-second>Work</x-layout.header-second>
-        <x-form.container>
-            @foreach(\App\Models\World\Work::selectOptions() as $workOpt)
-                <span class="badge text-bg-secondary">{{ $workOpt['lbl'] }}</span>
-            @endforeach
-        </x-form.container>
-        <x-form.basic :route="route('web.basic.work')"
-                      btn="add new Work"
-                      :fields="[$fWorkName, $fWorkBegin, $fWorkEnd, $fWorkCapacity]"></x-form.basic>
+        @include('widgets.planet.works-simple')
 
         <x-layout.header-second>Events</x-layout.header-second>
         <x-form.container>
@@ -104,6 +80,7 @@ $fEventSlave->type = 'checkbox';
         <x-form.container>
             <a href="{{route('web.planet.export')}}" type="button" class="btn btn-danger btn-lg">Export</a>
             <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
+            <a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
         </x-form.container>
 
     @endif

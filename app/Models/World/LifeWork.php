@@ -93,4 +93,16 @@ class LifeWork
     {
         return (int)$this->works->filter(fn (WorkOfLifeDto $dto) => $dto->work->id == $ofWork->id)->first()?->hours;
     }
+
+    public function daysOfWorkOfYear(int $year, int $workID): int
+    {
+        $return = 0;
+        foreach (($this->worksPerYear[$year] ?? []) as $workDto) {
+            /** @var WorkOfYearDto $workDto */
+            if ($workDto->work->id == $workID) {
+                $return += $workDto->days;
+            }
+        }
+        return $return;
+    }
 }

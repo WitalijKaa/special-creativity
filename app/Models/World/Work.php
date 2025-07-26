@@ -2,10 +2,12 @@
 
 namespace App\Models\World;
 
-use App\Models\Person\Person;
-use App\Models\Person\PersonEventSynthetic;
+use App\Models\Collection\PersonCollection;
+use App\Models\Person\PersonEvent;
+use App\Models\Work\PersonOfWorkDto;
+use App\Models\Work\WorkCalculationsDto;
+use App\Models\Work\YearOfWorkDto;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
 /**
@@ -22,12 +24,47 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work whereEnd($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work whereCapacity($value)
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection|PersonEvent[] $events
+ *
  * @mixin \Eloquent
  */
 class Work extends \Eloquent
 {
     public const string TABLE_NAME = DB . '_work';
     protected $table = self::TABLE_NAME;
+
+    public WorkCalculationsDto $calculations;
+
+    public function calculate()
+    {
+        $this->calculations = new WorkCalculationsDto();
+        $this->calculations->workers = new PersonCollection();
+
+        for ($year = $this->begin; $year <= $this->end; $year++) {
+            $workers = new PersonCollection();
+            $yearEvents = $this->events->filter(fn (PersonEvent $event) => $event->begin <= $year && $event->end >= $year)
+                ->each(fn (PersonEvent $event) => $workers->pushUniqueWorkers($year, $event));
+
+            if ($yearEvents->count()) {
+                $yearDto = new YearOfWorkDto($workers);
+                foreach ($yearDto->workers as $worker) {
+                    $yearDto->days += $worker->days;
+                }
+                if (!$yearDto->days) {
+                    continue;
+                }
+                $yearDto->workers->each(fn (PersonOfWorkDto $workerDto) => $this->calculations->workers->pushUniqueWorker($workerDto));
+                $this->calculations->days += $yearDto->days;
+                $this->calculations->worksPerYear[$year] = $yearDto;
+
+                if (empty($this->calculations->begin)) {
+                    $this->calculations->begin = $year;
+                }
+                $this->calculations->end = $year;
+            }
+        }
+        $this->calculations->workYears = number_format($this->calculations->days / WORK_DAYS, 2);
+    }
 
     public function archive(): array
     {
@@ -42,6 +79,7 @@ class Work extends \Eloquent
 
     public $timestamps = false;
     protected $guarded = ['id'];
+    public function events(): HasMany { return $this->hasMany(PersonEvent::class, 'work_id', 'id'); }
     protected function casts(): array
     {
         return [

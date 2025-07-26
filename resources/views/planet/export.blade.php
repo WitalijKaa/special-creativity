@@ -20,13 +20,13 @@ $json = [
     <x-layout.header-main>Planet export</x-layout.header-main>
 
     <x-layout.container>
-        <pre>{!!json_encode($json)!!}</pre>
+        <pre>{!!json_encode($json, JSON_UNESCAPED_UNICODE)!!}</pre>
     </x-layout.container>
 
     <x-layout.divider></x-layout.divider>
 
     <x-layout.container>
-        <pre>{!!json_encode($json, JSON_PRETTY_PRINT)!!}</pre>
+        <pre>{!!json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)!!}</pre>
     </x-layout.container>
 
     <x-layout.divider></x-layout.divider>

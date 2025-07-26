@@ -99,7 +99,13 @@ class Life extends \Eloquent
     public function getIsDreamAttribute() { return self::DREAM == $this->type; }
     public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type; }
 
-    public function getLifeWorkAttribute() { return LifeWork::calculateLife($this->begin, $this->end, $this->work_events); }
+    private LifeWork $_lifeWork;
+    public function getLifeWorkAttribute() {
+        if (empty($this->_lifeWork)) {
+            $this->_lifeWork = LifeWork::calculateLife($this->begin, $this->end, $this->work_events);
+        }
+        return $this->_lifeWork;
+    }
 
     public function getCurrentTypeNoAttribute() // current_type_no
     {

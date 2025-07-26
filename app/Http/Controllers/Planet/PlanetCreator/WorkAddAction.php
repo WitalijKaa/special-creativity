@@ -16,6 +16,6 @@ class WorkAddAction
         $model->capacity = $request->capacity ?: null;
         $model->save();
 
-        return redirect(route('web.planet.params'));
+        return redirect()->back();
     }
 }
