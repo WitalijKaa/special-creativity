@@ -1,7 +1,6 @@
 <?php
 
 /** @var \App\Models\World\Life $model */
-$lifeWork = $model->lifeWork;
 /** @var \Illuminate\Support\Collection|\App\Models\World\Life[] $connections */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \Illuminate\Support\Collection|\App\Models\World\Work[] $work */
@@ -46,7 +45,7 @@ for ($ix = 1; $ix <= 13; $ix++) {
     <x-layout.header-main>{{$model->person->name}} {{$model->person->nick}} {{$model->role_name}} {{$model->begin}}-{{$model->end}}</x-layout.header-main>
 
     <x-layout.container>
-        @include('widgets.person.events', ['events' => $events, 'person' => $model->person, 'lifeWork' => $lifeWork])
+        @include('widgets.person.events', ['events' => $events, 'person' => $model->person, 'lifeWork' => $model->lifeWork])
     </x-layout.container>
 
     <x-layout.header-second>work with Events of this Life</x-layout.header-second>

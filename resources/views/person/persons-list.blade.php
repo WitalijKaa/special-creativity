@@ -1,7 +1,7 @@
 <?php
 
-/** @var \App\Models\Person\Person[] $models */
 /** @var int $year */
+/** @var \App\Models\Person\Person[] $models */
 
 $fYear = new \App\Dto\Form\FormFieldInputDto();
 $fYear->id = 'year';
@@ -11,15 +11,25 @@ $fYear->value = $year > 0 ? $year : null;
 
 $vPerson = new \App\Models\View\PersonView();
 
+$titlePage = $models->count() . ' Personas';
+$titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
+
 ?>
-<x-layout.main>
-    <x-layout.header-main>Personas</x-layout.header-main>
+<x-layout.main :title="$titlePage">
+    <x-layout.header-main>{{ $titlePage }}</x-layout.header-main>
 
     <x-form.basic :route="route('web.person.list')"
                   btn="show Year"
+                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.list')] : null"
                   :fields="[$fYear]"></x-form.basic>
 
     <div class="mb-5 mt-5"></div>
+
+    <x-form.container>
+        @include('components.pages.persons-list-pages')
+    </x-form.container>
+
+    <x-layout.divider></x-layout.divider>
 
     <x-layout.container>
         <div class="list-group">
@@ -52,7 +62,7 @@ $vPerson = new \App\Models\View\PersonView();
 
                         <div class="d-flex w-50 justify-content-between">
                             <span>{!!$vPerson->labelForce($person)!!}</span>
-                            <h4>{!!$vPerson->labelVizavi($person)!!}</h4>
+                            <h4>{!!$vPerson->labelSlaveLife($person)!!} {!!$vPerson->labelHolyLife($person)!!} {!!$vPerson->labelVizavi($person)!!}</h4>
                         </div>
 
                         <div class="d-flex w-50 justify-content-between">
@@ -68,9 +78,7 @@ $vPerson = new \App\Models\View\PersonView();
     <x-layout.divider></x-layout.divider>
 
     <x-form.container>
-        <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
-        <a href="{{route('web.person.list')}}" type="button" class="btn btn-outline-primary btn-lg">Basic</a>
-        <a href="{{route('web.person.list', ['sort' => 'desc_last_year'])}}" type="button" class="btn btn-outline-primary btn-lg">Last Year</a>
+        @include('components.pages.persons-list-pages')
     </x-form.container>
 
 </x-layout.main>

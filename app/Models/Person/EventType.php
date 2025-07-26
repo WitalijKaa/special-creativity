@@ -2,6 +2,7 @@
 
 namespace App\Models\Person;
 
+use App\Models\Collection\PersonEventCollection;
 use App\Models\View\EventView;
 
 /**
@@ -19,6 +20,10 @@ use App\Models\View\EventView;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsRelation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsWork($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsSlave($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsHonor($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsRelation($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsWork($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|EventType whereIsSlave($value)
  *
  * @mixin \Eloquent
  */
@@ -58,8 +63,7 @@ class EventType extends \Eloquent
     public static function selectOptions(): array
     {
         $vEvent = new EventView();
-        return static::orderBy('id')
-            ->get()
+        return PersonEventCollection::typesSorted()
             ->map(fn (self $model) => ['opt' => $model->id, 'lbl' => $model->name, 'style' => $vEvent->backColorType($model)])
             ->toArray();
     }

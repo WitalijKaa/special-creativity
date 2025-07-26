@@ -18,18 +18,40 @@ class PersonView extends AbstractView
 
     public function labelCreations(Person $model, ?int $year): string
     {
-        if (!$model->creations->where('begin', '<=', $year)->count()) {
-            return '';
-        }
-        return static::SPACE . ' <small>👼🏻</small>' . $model->creations->where('begin', '<=', $year)->count();
+        $count = $year > 0 ? $model->creations->where('begin', '<=', $year)->count() : $model->creations->count();
+        return !$count ? '' : static::SPACE . ' <small>🌌</small>' . $count;
     }
 
     public function labelVizavi(Person $model): string
     {
-        if (!$model->only_vizavi) {
-            return parent::space4();
-        }
-        return '<small><small><small><small>❤️</small></small> ' . $model->only_vizavi?->name . '</small></small>' . parent::space4();
+        return $model->only_vizavi ? '<small><small><small><small>❤️</small></small> ' . $model->only_vizavi?->name . '</small></small>' . parent::space4() : parent::space4();
+    }
+
+    public function labelHolyLife(Person $model): string
+    {
+        $count = $model->count_holy_lives;
+        return !$count ? '' : '<small><small>👼🏻</small> ' . $count . '</small> ';
+    }
+
+    public function labelSlaveLife(Person $model): string
+    {
+        $count = $model->count_slave_lives;
+        return !$count ? '' : '<small><small>⛏</small> ' . $count . '</small> ';
+    }
+
+    public function labelLifeIsHoly(Life $model): string
+    {
+        return !$model->is_holy ? '' : '<small>👼🏻</small> ';
+    }
+
+    public function labelLifeIsDeepLove(Life $model): string
+    {
+        return !$model->is_deep_love ? '' : '<small>❤️</small> ';
+    }
+
+    public function labelLifeIsSlave(Life $model): string
+    {
+        return !$model->is_slave ? '' : '<small>⛏</small> ';
     }
 
     public function labelLives(Person $model, ?int $year): string

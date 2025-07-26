@@ -2,6 +2,8 @@
 
 namespace App\Models\World;
 
+use App\Models\Collection\PersonEventBuilder;
+use App\Models\Collection\PersonEventCollection;
 use App\Models\Person\EventType;
 use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
@@ -48,10 +50,14 @@ use Illuminate\Support\Facades\DB;
  * @property-read bool $is_virtual
  * @property-read integer $current_type_no
  * @property-read bool $may_be_girl_easy
+ * @property-read bool $is_holy
+ * @property-read bool $is_deep_love
+ * @property-read bool $is_slave
  *
  * @property-read \App\Models\World\LifeWork $lifeWork
  * @property-read \App\Models\Person\Person $person
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Person\PersonEvent[] $workEvents
+ * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $events
+ * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $work_events
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\World\ForceEvent[] $forceEvents
  *
  * @mixin \Eloquent
@@ -93,7 +99,7 @@ class Life extends \Eloquent
     public function getIsDreamAttribute() { return self::DREAM == $this->type; }
     public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type; }
 
-    public function getLifeWorkAttribute() { return LifeWork::calculateLife($this->begin, $this->end, $this->workEvents); }
+    public function getLifeWorkAttribute() { return LifeWork::calculateLife($this->begin, $this->end, $this->work_events); }
 
     public function getCurrentTypeNoAttribute() // current_type_no
     {
@@ -128,16 +134,33 @@ class Life extends \Eloquent
         return false;
     }
 
-    public function getWorkEventsAttribute()
+    private PersonEventCollection $_events;
+    public function getEventsAttribute() // events
     {
-        return PersonEvent::whereLifeId($this->id)
-            ->orWhereIn(PersonEvent::TABLE_NAME . '.id', PersonEventConnect::eventIdsOfLifeVsConnect($this->id))
-            ->join(EventType::TABLE_NAME, fn (JoinClause $onClosure) => $onClosure
-                ->on(PersonEvent::TABLE_NAME . '.type_id', '=', EventType::TABLE_NAME . '.id')
-                ->on(EventType::TABLE_NAME . '.is_work', '=', DB::raw(true))
-            )
-            ->with(['work'])
-            ->get();
+        if (empty($this->_events)) {
+            $this->_events = PersonEventCollection::byLifeID($this->id, ['type', 'work']);
+        }
+        return PersonEventCollection::toCollection($this->_events);
+    }
+
+    public function getWorkEventsAttribute() // work_events
+    {
+        return $this->events->filterWork();
+    }
+
+    public function getIsHolyAttribute() // is_holy
+    {
+        return PersonEventBuilder::byLifeID($this->id)->whereTypeId(EventType::HOLY_LIFE)->exists();
+    }
+
+    public function getIsDeepLoveAttribute() // is_deep_love
+    {
+        return PersonEventBuilder::byLifeID($this->id)->whereTypeId(EventType::DEEP_LOVE)->exists();
+    }
+
+    public function getIsSlaveAttribute() // is_slave
+    {
+        return PersonEventBuilder::slaveByLifeId($this->id)->exists();
     }
 
     public function synthetic(int $type_id, int $begin, ?int $end = null): PersonEventSynthetic

@@ -48,8 +48,13 @@
                         </div>
                     @endif
                 @endforeach
-                <div class="d-grid offset-md-8 col-md-4">
-                    <button type="submit" class="btn btn-outline-success">{{$btn}}</button>
+                <div class="d-grid offset-xl-8 col-xl-4">
+                    <div class="d-flex @if(!empty($btnWarn)) justify-content-between @else justify-content-end @endif">
+                        @if(!empty($btnWarn))
+                            <a href="{{$btnWarn['href']}}" class="btn btn-outline-warning">{{$btnWarn['lbl']}}</a>
+                        @endif
+                        <button type="submit" class="btn btn-outline-success">{{$btn}}</button>
+                    </div>
                 </div>
             </form>
         </div>

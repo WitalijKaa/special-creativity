@@ -18,6 +18,6 @@ class PersonListAction
         $models = !$year ? Person::all() : Person::where('begin', '<', $year)->get();
         $models = $desc ? $models->sortByDesc($sort) : $models->sortBy($sort);
 
-        return view('person.list', compact('models', 'year'));
+        return view('person.persons-list', compact('models', 'year'));
     }
 }

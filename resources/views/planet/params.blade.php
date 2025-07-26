@@ -64,7 +64,7 @@ $fEventSlave->type = 'checkbox';
 
         <x-layout.header-second>Life types</x-layout.header-second>
         <x-form.container>
-            <span class="badge text-bg-secondary">Exists:</span>
+            <span class="badge text-bg-light">Exists:</span>
             @foreach(\App\Models\World\Life::NAME as $lifeTypeName)
                 <span class="badge text-bg-success">{{ $lifeTypeName }}</span>
             @endforeach
@@ -72,7 +72,7 @@ $fEventSlave->type = 'checkbox';
 
         <x-layout.header-second>Life roles</x-layout.header-second>
         <x-form.container>
-            <span class="badge text-bg-secondary">Exists:</span>
+            <span class="badge text-bg-light">Exists:</span>
             @foreach(\App\Models\World\Life::ROLE as $roleName)
                 <span class="badge text-bg-primary">{{ $roleName }}</span>
             @endforeach
@@ -90,7 +90,7 @@ $fEventSlave->type = 'checkbox';
 
         <x-layout.header-second>Events</x-layout.header-second>
         <x-form.container>
-            <span class="badge text-bg-secondary">Exists:</span>
+            <span class="badge text-bg-light">Exists:</span>
             @foreach(\App\Models\Person\EventType::selectOptions() as $eventOpt)
                 <span class="badge text-bg-{{$eventOpt['style']}}">{{ $eventOpt['lbl'] }}</span>
             @endforeach

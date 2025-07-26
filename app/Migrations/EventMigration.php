@@ -26,6 +26,7 @@ class EventMigration implements MigratorInterface
             $table->foreign('life_id', DB . '_e_life')->references('id')->on(LifeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('person_id', DB . '_e_person')->references('id')->on(PersonMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('work_id', DB . '_ec_work')->references('id')->on(WorkMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
+            $table->index('begin', DB . '_ec_begin');
         });
     }
 }

@@ -41,7 +41,7 @@ class EventTypeMigration implements MigratorInterface
 
         $model = new EventType();
         $model->id = EventType::DIRTY_LOVE;
-        $model->name = 'Dirty fight';
+        $model->name = 'Dirty Love';
         $model->is_relation = true;
         $model->save();
 

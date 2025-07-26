@@ -2,6 +2,7 @@
 
 namespace App\Models\Person;
 
+use App\Models\Collection\PersonEventBuilder;
 use App\Models\World\Life;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -33,6 +34,8 @@ use Illuminate\Support\Facades\DB;
  * @property-read int $count_man_lives
  * @property-read int $count_woman_lives
  * @property-read int $last_year
+ * @property-read int $count_holy_lives
+ * @property-read int $count_slave_lives
  *
  * @property-read Life|null $last_life
  * @property-read \Illuminate\Database\Eloquent\Collection|Life[] $lives
@@ -109,22 +112,21 @@ class Person extends \Eloquent
             $this->_vizavi = new \Illuminate\Support\Collection();
             $self = $this;
 
-            PersonEvent::where(fn (Builder $builder) => $builder->where('person_id', $this->id)->where('type_id', EventType::DEEP_LOVE))
-                ->orWhereIn('id', PersonEventConnect::eventIdsOfDeepLoveOfPersonVsConnect($this->id))
+            PersonEventBuilder::deepLoveBy($this->id)
                 ->with(['connections', 'person'])
                 ->get()
-                ->each(function (PersonEvent $event) use ($self) {
-                    $ids = [];
+                ->each(function (PersonEvent $eventDeepLove) use ($self) {
+                    $prevFoundedVizaviIDs = [];
                     foreach ($self->_vizavi as $vPerson) {
-                        $ids[] = $vPerson->id;
+                        $prevFoundedVizaviIDs[] = $vPerson->id;
                     }
 
-                    if ($self->id != $event->person->id && !in_array($event->person->id, $ids)) {
-                        $self->_vizavi->push($event->person);
+                    if ($self->id != $eventDeepLove->person->id && !in_array($eventDeepLove->person->id, $prevFoundedVizaviIDs)) {
+                        $self->_vizavi->push($eventDeepLove->person);
                     }
-                    foreach ($event->connections as $connectEvent) {
+                    foreach ($eventDeepLove->connections as $connectEvent) {
                         $connectPerson = $connectEvent->person;
-                        if ($self->id != $connectPerson->id && !in_array($connectPerson->id, $ids)) {
+                        if ($self->id != $connectPerson->id && !in_array($connectPerson->id, $prevFoundedVizaviIDs)) {
                             $self->_vizavi->push($connectPerson);
                         }
                     }
@@ -140,6 +142,16 @@ class Person extends \Eloquent
             return $this->vizavi->first();
         }
         return null;
+    }
+
+    public function getCountHolyLivesAttribute() // count_holy_lives
+    {
+        return PersonEventBuilder::holyLivesBy($this->id)->count();
+    }
+
+    public function getCountSlaveLivesAttribute() // count_slave_lives
+    {
+        return PersonEventBuilder::slaveLivesBy($this->id)->count();
     }
 
     public function mayBeGirlEasy(?int $year = null)

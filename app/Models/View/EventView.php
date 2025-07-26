@@ -66,7 +66,7 @@ class EventView extends AbstractView
         }
         $genre = '';
         if ($model->life_id != $viewLife->id) {
-            $genre .= $this->gender($viewLife->role);
+            $genre .= $this->gender($model->life->role);
         }
         foreach ($model->connections as $connect) {
             if ($connect->life_id != $viewLife->id) {

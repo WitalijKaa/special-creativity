@@ -1,5 +1,6 @@
 <?php
 
+/** @var int $year */
 /** @var \App\Models\Person\Person $model */
 $viewLives = $year > 0 ? $model->lives->filter(fn (\App\Models\World\Life $life) => $life->begin <= $year)->values() : $model->lives;
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
@@ -46,9 +47,12 @@ $fMother->label = 'the Name of the Mother';
 
 $vPerson = new \App\Models\View\PersonView();
 
+$titlePage = $model->name . ' ' . $model->nick;
+$titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
+
 ?>
-<x-layout.main :title="$model->name . ' ' . $model->nick">
-    <x-layout.header-main>{{$model->name}} {{$model->nick}}</x-layout.header-main>
+<x-layout.main :title="$titlePage">
+    <x-layout.header-main>{{$titlePage}}</x-layout.header-main>
 
     @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->is_allods)
         <x-layout.header-second>a new Persona may be created</x-layout.header-second>
@@ -62,6 +66,7 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-form.basic :route="route('web.person.details', ['id' => $model->id])"
                   btn="show Year"
+                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.details', ['id' => $model->id])] : null"
                   :fields="[$fYear]"></x-form.basic>
 
     <div class="mb-5 mt-5"></div>
@@ -74,8 +79,13 @@ $vPerson = new \App\Models\View\PersonView();
                     <div class="d-flex w-100 justify-content-between mb-1">
 
                         <div class="d-flex w-50 justify-content-between">
-                            <h4>{{$life->type_name . '-' . $life->current_type_no}}</h4>
-                            <h4>Years {{$life->begin}}-{{$life->end}} {!!$vPerson->space4()!!}</h4>
+                            <h4>
+                                {{$life->type_name . '-' . $life->current_type_no}}
+                                {!!$vPerson->labelLifeIsDeepLove($life)!!}
+                                {!!$vPerson->labelLifeIsHoly($life)!!}
+                                {!!$vPerson->labelLifeIsSlave($life)!!}
+                            </h4>
+                            <h4>Years {{$life->begin}}-{{$life->end}}</h4>
                         </div>
 
                         <div class="d-flex w-50 justify-content-between">

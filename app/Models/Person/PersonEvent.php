@@ -6,6 +6,7 @@ use App\Models\World\Life;
 use App\Models\World\Work;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * @property int $id
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereLifeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent wherePersonId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereTypeId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereTypeId($value)
  *
  * @property-read \App\Models\Person\EventType $type
  * @property-read \App\Models\Person\Person $person
@@ -92,6 +94,10 @@ class PersonEvent extends \Eloquent
             'end' => 'integer',
             'strong' => 'integer',
         ];
+    }
+    public static function dbColumns(string $tableAlias = self::TABLE_NAME): array
+    {
+        return array_map(fn (string $column) => $tableAlias . '.' . $column, Schema::getColumnListing(static::TABLE_NAME));
     }
 
     public function type(): HasOne { return $this->hasOne(EventType::class, 'id', 'type_id'); }
