@@ -23,6 +23,7 @@ $fYear->value = $year > 0 ? $year : null;
     <x-layout.container>
         <div class="list-group">
             @foreach($models as $work)
+                @continue(!$work->events->count())
                 @php($isCorrected = $work->calculations->begin == $work->begin && $work->calculations->end == $work->end)
 
                 <a href="{{route('web.planet.works-details', ['id' => $work->id])}}" class="list-group-item list-group-item-action list-group-item-primary">
@@ -31,8 +32,7 @@ $fYear->value = $year > 0 ? $year : null;
                         <div class="d-flex w-50 justify-content-between">
                             <h4>{{ $work->name }}</h4>
                             <h4>
-                                {{ $work->calculations->workers->count() }}
-                                @if($work->events->count() > 1)<sup>{{ $work->events->count() }}</sup>@endif
+                                {{ $work->calculations->hardWorkers->count() }}
                                 🧑🏻
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                             </h4>

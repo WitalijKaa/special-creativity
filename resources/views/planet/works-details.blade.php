@@ -25,7 +25,7 @@ $fWorkConsumers->label = 'how many consumed Work';
     </x-layout.header-main>
 
     <x-layout.container>
-        @include('widgets.person.events', ['events' => $model->events])
+        @include('widgets.person.events', ['events' => \App\Models\Collection\PersonEventCollection::toCollection($model->events)->sortVsBegin()])
     </x-layout.container>
 
     @if($model->consumers)

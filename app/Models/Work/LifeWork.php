@@ -8,15 +8,17 @@ use Illuminate\Support\Collection;
 
 class LifeWork
 {
+    private const float HARD_LIMIT_PERCENT = 8.0;
+
     public int $begin;
     public int $end;
     public int $days = 0;
     public float $workYears = 0;
 
-    /** @var array|\App\Models\Work\WorkOfLifeDto[][]|Collection */
+    /** @var array|\App\Models\Work\WorkOfLifeDto[]|Collection */
     public Collection $works;
 
-    /** @var array|\App\Models\Work\WorkOfLifeDto[][]|Collection */
+    /** @var array|\App\Models\Work\WorkOfLifeDto[]|Collection */
     public Collection $events;
 
     /** @var array|\App\Models\Work\YearOfWorkEventOfPersonDto[][] */
@@ -26,6 +28,7 @@ class LifeWork
     {
         $dto = new WorkCalculationsDto();
         $dto->workers = new PersonCollection();
+        $dto->hardWorkers = new PersonCollection();
 
         for ($year = $model->begin; $year <= $model->end; $year++) {
             $workers = new PersonCollection();
@@ -49,6 +52,14 @@ class LifeWork
             }
         }
         $dto->workYears = number_format($dto->days / WORK_DAYS, 2);
+
+        $hardLimit = (int)($dto->days / 100 * self::HARD_LIMIT_PERCENT);
+        foreach ($dto->workers as $worker) {
+            if ($worker->days >= $hardLimit) {
+                $dto->hardWorkers->pushUniqueWorker($worker);
+            }
+        }
+
         return $dto;
     }
 

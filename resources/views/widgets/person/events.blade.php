@@ -47,7 +47,7 @@ $lifeWork ??= null;
             </div>
 
             <div class="d-flex w-50 justify-content-between">
-                <span>
+                <span style="white-space: nowrap; padding-right: 5px;">
                     @if(empty($person))
                         {!!$vEvent->labelWorkLivesAmount($event)!!}
                     @else

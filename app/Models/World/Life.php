@@ -52,6 +52,8 @@ use Illuminate\Support\Collection;
  * @property-read bool $is_slave
  *
  * @property-read \App\Models\Work\LifeWork $lifeWork
+ * @property-read \App\Models\World\Life|null $prev_vs_type
+ * @property-read \App\Models\World\Life|null $next_vs_type
  * @property-read \App\Models\Person\Person $person
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $events
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $work_events
@@ -110,6 +112,24 @@ class Life extends \Eloquent
             ->whereType($this->type)
             ->where('id', '<=', $this->id)
             ->count();
+    }
+
+    public function getPrevVsTypeAttribute() // prev_vs_type
+    {
+        return Life::wherePersonId($this->person_id)
+            ->whereType($this->type)
+            ->where('id', '<', $this->id)
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    public function getNextVsTypeAttribute() // next_vs_type
+    {
+        return Life::wherePersonId($this->person_id)
+            ->whereType($this->type)
+            ->where('id', '>', $this->id)
+            ->orderBy('id')
+            ->first();
     }
 
     public function getMayBeGirlEasyAttribute() // may_be_girl_easy

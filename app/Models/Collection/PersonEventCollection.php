@@ -51,6 +51,11 @@ class PersonEventCollection extends AbstractCollection
         })->values();
     }
 
+    public function sortVsBegin(): static
+    {
+        return $this->sort(fn (PersonEvent|PersonEventSynthetic $modelA, PersonEvent|PersonEventSynthetic $modelB) => $modelA->begin - $modelB->begin);
+    }
+
     public static function typesSorted(): \Illuminate\Database\Eloquent\Collection
     {
         return EventType::orderBy('id')

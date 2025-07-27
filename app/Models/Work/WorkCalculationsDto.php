@@ -16,4 +16,7 @@ class WorkCalculationsDto
 
     /** @var PersonCollection|\App\Models\Work\PersonOfWorkDto[] */
     public PersonCollection $workers;
+
+    /** @var PersonCollection|\App\Models\Person\Person[] */
+    public PersonCollection $hardWorkers;
 }

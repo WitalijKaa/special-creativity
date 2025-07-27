@@ -56,7 +56,7 @@ class EventView extends AbstractView
 
     public function labelRange(PersonEvent|PersonEventSynthetic $model): string
     {
-        return '[' . ($model->begin == $model->end ? $model->begin . 'Y' : ($model->begin . '-' . $model->end . 'Y' . '<small><small>' . ($model->end - $model->begin) . '</small></small>')) . ']';
+        return '[' . ($model->begin == $model->end ? $model->begin . 'Y' : ($model->begin . '-' . $model->end . 'Y' . '<small><small>' . ($model->end - $model->begin + 1) . '</small></small>')) . ']';
     }
 
     public function loveConnectionGenre(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
@@ -64,29 +64,26 @@ class EventView extends AbstractView
         if ($model instanceof PersonEventSynthetic || !$model->type->is_relation) {
             return '';
         }
-        $genre = '';
-        if ($model->life_id != $viewLife->id) {
-            $genre .= $this->gender($model->life->role);
-        }
-        $genreManAdd = '';
-        $genreWomanAdd = '';
+        $gender = '';
+        $genderManAdd = '';
+        $genderWomanAdd = '';
         $man = 0;
         $woman = 0;
-        foreach ($model->connections as $connect) {
-            if ($connect->life_id != $viewLife->id) {
-                if (Life::MAN == $connect->life->role) {
+        foreach ($model->all_lives as $eventLife) {
+            if ($eventLife->id != $viewLife->id) {
+                if (Life::MAN == $eventLife->role) {
                     $man++;
-                    $genreManAdd .= $this->gender($connect->life->role);
+                    $genderManAdd .= $this->gender($eventLife->role);
                 }
-                if (Life::WOMAN == $connect->life->role) {
+                else if (Life::WOMAN == $eventLife->role) {
                     $woman++;
-                    $genreWomanAdd .= $this->gender($connect->life->role);
+                    $genderWomanAdd .= $this->gender($eventLife->role);
                 }
             }
         }
-        $genre .= $man > 2 ? $this->gender(Life::MAN) . '<sup>' . $man . '</sup>' : $genreManAdd;
-        $genre .= $woman > 2 ? $this->gender(Life::WOMAN) . '<sup>' . $woman . '</sup>' : $genreWomanAdd;
-        return $genre;
+        $gender .= ($man > 2 ? $this->gender(Life::MAN) . '<sup>' . $man . '</sup>' : $genderManAdd);
+        $gender .= ($woman > 2 ? $this->gender(Life::WOMAN) . '<sup>' . $woman . '</sup>' : $genderWomanAdd);
+        return $gender;
     }
 
     public function labelAge(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string

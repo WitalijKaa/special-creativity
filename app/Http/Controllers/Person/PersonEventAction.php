@@ -43,9 +43,9 @@ class PersonEventAction
         $model->type_id = $request->type;
         $model->begin = $request->begin;
         $model->end = $request->end;
-        $model->work_id = $request->work;
-        $model->strong = $request->strong;
-        $model->comment = $request->comment;
+        $model->work_id = $request->work ?: null;
+        $model->strong = $request->strong ?: null;
+        $model->comment = $request->comment ?: null;
         $model->save();
 
         $done = [];

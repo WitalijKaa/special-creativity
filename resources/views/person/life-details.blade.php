@@ -46,7 +46,13 @@ for ($ix = 1; $ix <= 13; $ix++) {
 }
 
 ?><x-layout.main :title="$model->person->name . ' ' . $model->type_name . '-' . $model->current_type_no">
-    <x-layout.header-main>{{$model->person->name}} {{$model->person->nick}} {{$model->role_name}} {{$model->begin}}-{{$model->end}}</x-layout.header-main>
+    <x-layout.header-main>
+        {{ $model->person->name }} {{ $model->person->nick }} {{ $model->role_name }}
+        <br>
+        [{{ $model->begin }}-{{ $model->end }}]Y<small><small>{{ $model->end - $model->begin }}</small></small>
+        <br>
+        {{ $model->type_name }}-{{ $model->current_type_no }}
+    </x-layout.header-main>
 
     <x-layout.container>
         @include('widgets.person.events', ['events' => $events, 'person' => $model->person, 'lifeWork' => $model->lifeWork])

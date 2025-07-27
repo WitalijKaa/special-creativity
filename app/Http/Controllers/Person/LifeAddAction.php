@@ -8,7 +8,7 @@ use App\Models\World\Life;
 use App\Models\World\Planet;
 use App\Requests\Person\PersonAddLifeRequest;
 
-class PersonLifeAction
+class LifeAddAction
 {
     public function __invoke(PersonAddLifeRequest $request, int $id)
     {
