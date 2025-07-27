@@ -35,15 +35,17 @@ class PersonEventAction
             return $back('work', 'No work provided');
         }
 
+        // save
+
         $model = new PersonEvent();
         $model->life_id = $id;
         $model->person_id = $life->person_id;
         $model->type_id = $request->type;
         $model->begin = $request->begin;
         $model->end = $request->end;
-        if ($request->work) { $model->work_id = $request->work; }
-        if ($request->strong) { $model->work_id = $request->strong; }
-        if ($request->comment) { $model->comment = $request->comment; }
+        $model->work_id = $request->work;
+        $model->strong = $request->strong;
+        $model->comment = $request->comment;
         $model->save();
 
         $done = [];

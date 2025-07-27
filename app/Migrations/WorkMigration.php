@@ -17,6 +17,7 @@ class WorkMigration implements MigratorInterface
             $table->integer('begin')->nullable(false)->unsigned(); // year
             $table->integer('end')->nullable(false)->unsigned(); // year
             $table->integer('capacity')->nullable(true)->unsigned();
+            $table->smallInteger('consumers')->nullable(true)->unsigned();
         });
     }
 }

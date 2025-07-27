@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Planet\PlanetCreator;
+namespace App\Http\Controllers\Planet\Work;
 
-use App\Models\World\Work;
+use App\Models\Work\Work;
 use App\Requests\World\WorkAddRequest;
 
 class WorkAddAction

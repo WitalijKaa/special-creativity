@@ -5,8 +5,8 @@ namespace App\Models\View;
 use App\Models\Person\EventType;
 use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventSynthetic;
+use App\Models\Work\LifeWork;
 use App\Models\World\Life;
-use App\Models\World\LifeWork;
 
 class EventView extends AbstractView
 {
@@ -68,21 +68,43 @@ class EventView extends AbstractView
         if ($model->life_id != $viewLife->id) {
             $genre .= $this->gender($model->life->role);
         }
+        $genreManAdd = '';
+        $genreWomanAdd = '';
+        $man = 0;
+        $woman = 0;
         foreach ($model->connections as $connect) {
             if ($connect->life_id != $viewLife->id) {
-                $genre .= $this->gender($connect->life->role);
+                if (Life::MAN == $connect->life->role) {
+                    $man++;
+                    $genreManAdd .= $this->gender($connect->life->role);
+                }
+                if (Life::WOMAN == $connect->life->role) {
+                    $woman++;
+                    $genreWomanAdd .= $this->gender($connect->life->role);
+                }
             }
         }
+        $genre .= $man > 2 ? $this->gender(Life::MAN) . '<sup>' . $man . '</sup>' : $genreManAdd;
+        $genre .= $woman > 2 ? $this->gender(Life::WOMAN) . '<sup>' . $woman . '</sup>' : $genreWomanAdd;
         return $genre;
     }
 
-    public function labelStartAge(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
+    public function labelAge(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
     {
         if ($model instanceof PersonEventSynthetic) {
             return '';
         }
         return '<u>_' . ($model->begin - $viewLife->begin)  . '_</u>' .
             ($model->begin == $model->end ? '' : '<u>-_' . ($model->end - $viewLife->begin)  . '_</u>');
+    }
+
+    public function labelAgeShort(PersonEvent|PersonEventSynthetic $model, Life $viewLife): string
+    {
+        if ($model instanceof PersonEventSynthetic) {
+            return '';
+        }
+        return '<u>' . ($model->begin - $viewLife->begin)  . '</u>' .
+            ($model->begin == $model->end ? '' : '<u>-' . ($model->end - $viewLife->begin)  . '</u>');
     }
 
     public function labelWork(PersonEvent|PersonEventSynthetic $model): string
@@ -94,11 +116,36 @@ class EventView extends AbstractView
             (!$model->strong ? '' : ' <em>' . $model->strong .'%</em>');
     }
 
-    public function labelWorkDays(PersonEvent|PersonEventSynthetic $model, ?LifeWork $lifeWork): string
+    public function labelWorkAmount(PersonEvent|PersonEventSynthetic $model, ?LifeWork $lifeWork): string
     {
         if (!$lifeWork || !$model->work_id) {
             return $this->space2();
         }
-        return $this->space2() . '💪🏻 ' . $lifeWork->days($model->work);
+        $years = $lifeWork->years($model->work);
+        return $this->space2() . '💪🏻 ' . $years . ' (' . (int)$lifeWork->percent($years) . '%)';
+    }
+
+    public function labelWorkLivesAmount(PersonEvent|PersonEventSynthetic $model): string
+    {
+        if ($model instanceof PersonEventSynthetic || !$model->work_id) {
+            return $this->space2();
+        }
+        $amount = 0.0;
+        foreach ($model->all_lives as $life) {
+            $amount += $life->lifeWork->yearsOfEvent($model);
+        }
+        return $this->space2() . '💪🏻 ' . $amount;
+    }
+
+    public function labelWorkLivesPercent(PersonEvent|PersonEventSynthetic $model): string
+    {
+        if ($model instanceof PersonEventSynthetic || !$model->work_id) {
+            return $this->space2();
+        }
+        $amount = 0.0;
+        foreach ($model->all_lives as $life) {
+            $amount += $life->lifeWork->yearsOfEvent($model);
+        }
+        return ' ' . $model->work->percent($amount) . '%';
     }
 }

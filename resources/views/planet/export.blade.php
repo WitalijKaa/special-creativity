@@ -1,7 +1,7 @@
 <?php
 
 /** @var \App\Models\World\Planet $planet */
-/** @var \Illuminate\Support\Collection|\App\Models\World\Work[] $work */
+/** @var \Illuminate\Support\Collection|\App\Models\Work\Work[] $work */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\EventType[] $eventTypes */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\Person[] $persons */
 /** @var \Illuminate\Support\Collection|\App\Models\World\Life[] $lives */
@@ -9,14 +9,14 @@
 
 $json = [
     'planet' => $planet->archive(),
-    'work' => $work->map(fn (\App\Models\World\Work $model) => $model->archive()),
+    'work' => $work->map(fn (\App\Models\Work\Work $model) => $model->archive()),
     'eventTypes' => $eventTypes->map(fn (\App\Models\Person\EventType $model) => $model->archive()),
     'persons' => $persons->map(fn (\App\Models\Person\Person $model) => $model->archive()),
     'lives' => $lives->map(fn (\App\Models\World\Life $model) => $model->archive()),
     'events' => $events->map(fn (\App\Models\Person\PersonEvent $model) => $model->archive()),
 ];
 
-?><x-layout.main>
+?><x-layout.main title="Export">
     <x-layout.header-main>Planet export</x-layout.header-main>
 
     <x-layout.container>

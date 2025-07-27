@@ -26,7 +26,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
     <div class="mb-5 mt-5"></div>
 
     <x-form.container>
-        @include('components.pages.persons-list-pages')
+        @include('components.pages.persons-list-nav')
     </x-form.container>
 
     <x-layout.divider></x-layout.divider>
@@ -78,7 +78,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
     <x-layout.divider></x-layout.divider>
 
     <x-form.container>
-        @include('components.pages.persons-list-pages')
+        @include('components.pages.persons-list-nav')
     </x-form.container>
 
 </x-layout.main>

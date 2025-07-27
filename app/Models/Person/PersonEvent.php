@@ -3,8 +3,8 @@
 namespace App\Models\Person;
 
 use App\Models\Collection\PersonCollection;
+use App\Models\Work\Work;
 use App\Models\World\Life;
-use App\Models\World\Work;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Schema;
  * @property-read \App\Models\Collection\PersonCollection|\App\Models\Person\Person[] $all_persons
  * @property-read \Illuminate\Support\Collection|\App\Models\World\Life[] $all_lives
  * @property-read \App\Models\World\Life $life
- * @property-read \App\Models\World\Work $work
+ * @property-read \App\Models\Work\Work $work
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Person\PersonEventConnect[] $connections
  *
  * @mixin \Eloquent

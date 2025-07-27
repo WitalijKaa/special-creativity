@@ -12,7 +12,9 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');
         Route::post('params/save', App\Http\Controllers\Planet\PlanetCreator\PlanetSaveAction::class)->name('save');
 
-        Route::get('work', App\Http\Controllers\Planet\WorksListAction::class)->name('works-list');
+        Route::get('event/{id}', \App\Http\Controllers\Person\PersonEventFormAction::class)->where('id', '[0-9]+')->name('event-edit-form');
+        Route::get('work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');
+        Route::any('work', \App\Http\Controllers\Planet\Work\WorksListAction::class)->name('works-list');
     });
 
     Route::group(['as' => 'person.', 'prefix' => 'life'], function() {
@@ -25,8 +27,11 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'basic.', 'prefix' => 'basic'], function() {
-        Route::post('event', App\Http\Controllers\Planet\PlanetCreator\EventTypeAddAction::class)->name('event-type');
-        Route::post('work', App\Http\Controllers\Planet\PlanetCreator\WorkAddAction::class)->name('work');
+        Route::post('event', \App\Http\Controllers\Planet\EventTypeAddAction::class)->name('event-type');
+        Route::post('work', \App\Http\Controllers\Planet\Work\WorkAddAction::class)->name('work');
+        Route::post('work-edit/{id}', \App\Http\Controllers\Planet\Work\WorkEditAction::class)->where('id', '[0-9]+')->name('work-edit');
+        Route::get('work-correct/{id}', \App\Http\Controllers\Planet\Work\WorkCorrectAction::class)->where('id', '[0-9]+')->name('work-correct');
+        Route::post('event-edit/{id}', \App\Http\Controllers\Person\PersonEventEditAction::class)->where('id', '[0-9]+')->name('event-edit');
     });
 });
 

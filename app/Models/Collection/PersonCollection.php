@@ -33,8 +33,10 @@ class PersonCollection extends AbstractCollection
     {
         foreach ($workEvent->all_lives as $life) {
             $this->pushUniqueWorker(
-                new PersonOfWorkDto($life->person,
-                $life->lifeWork->daysOfWorkOfYear($year, $workEvent->work->id))
+                new PersonOfWorkDto(
+                    $life->person,
+                    $life->lifeWork->daysOfWorkEventOfYear($year, $workEvent->id)
+                )
             );
         }
         return $this;

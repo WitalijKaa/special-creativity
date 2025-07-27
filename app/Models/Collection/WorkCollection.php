@@ -2,7 +2,7 @@
 
 namespace App\Models\Collection;
 
-use App\Models\World\Work;
+use App\Models\Work\Work;
 
 class WorkCollection extends AbstractCollection
 {

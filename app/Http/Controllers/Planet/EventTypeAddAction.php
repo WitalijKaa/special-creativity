@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Planet\PlanetCreator;
+namespace App\Http\Controllers\Planet;
 
 use App\Models\Person\EventType;
 use App\Requests\World\EventTypeAddRequest;
@@ -9,7 +9,6 @@ class EventTypeAddAction
 {
     public function __invoke(EventTypeAddRequest $request)
     {
-        //dd($request);
         $model = new EventType();
         $model->name = $request->name;
         $model->is_honor = !!$request->is_honor;

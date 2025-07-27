@@ -6,12 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property-read string $name
- * @property-read int $begin
- * @property-read int $end
  * @property-read ?int $capacity
  * @property-read ?int $consumers
  */
-class WorkAddRequest extends FormRequest
+class WorkEditRequest extends FormRequest
 {
     protected $redirectRoute = 'web.planet.params';
 
@@ -19,8 +17,6 @@ class WorkAddRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:4|max:64',
-            'begin' => 'required|int',
-            'end' => 'required|int',
             'capacity' => 'sometimes',
             'consumers' => 'sometimes',
         ];

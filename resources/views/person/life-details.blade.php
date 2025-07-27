@@ -3,7 +3,7 @@
 /** @var \App\Models\World\Life $model */
 /** @var \Illuminate\Support\Collection|\App\Models\World\Life[] $connections */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
-/** @var \Illuminate\Support\Collection|\App\Models\World\Work[] $work */
+/** @var \Illuminate\Support\Collection|\App\Models\Work\Work[] $work */
 
 $fBegin = new \App\Dto\Form\FormFieldInputDto();
 $fBegin->id = 'begin';
@@ -22,13 +22,17 @@ $fTypes->options = \App\Models\Person\EventType::selectOptions();
 $fWork = new \App\Dto\Form\FormFieldInputDto();
 $fWork->id = 'work';
 $fWork->label = 'Worked at';
-$fWork->options = \App\Models\World\Work::selectSpecificOptions($work);
+$fWork->options = \App\Models\Work\Work::selectSpecificOptions($work);
+$fStrong = new \App\Dto\Form\FormFieldInputDto();
+$fStrong->id = 'strong';
+$fStrong->type = 'number';
+$fStrong->label = 'how strong % worked?';
 $fComment = new \App\Dto\Form\FormFieldInputDto();
 $fComment->id = 'comment';
 $fComment->type = 'textarea';
 $fComment->label = 'more Description of Event';
 
-$formFields = [$fBegin, $fEnd, $fTypes, $fWork, $fComment];
+$formFields = [$fBegin, $fEnd, $fTypes, $fWork, $fStrong, $fComment];
 for ($ix = 1; $ix <= 13; $ix++) {
     $fConnect = new \App\Dto\Form\FormFieldInputDto();
     $fConnect->id = 'connect_' . $ix;
@@ -48,7 +52,13 @@ for ($ix = 1; $ix <= 13; $ix++) {
         @include('widgets.person.events', ['events' => $events, 'person' => $model->person, 'lifeWork' => $model->lifeWork])
     </x-layout.container>
 
-    <x-layout.header-second>work with Events of this Life</x-layout.header-second>
+    <x-layout.header-second>Work 💪🏻 is {{ $model->lifeWork->workYears }}</x-layout.header-second>
+
+    <x-form.container>
+        @include('components.pages.life-nav', ['model' => $model])
+    </x-form.container>
+
+    <x-layout.header-second>edit Events of this Life</x-layout.header-second>
 
     <x-form.basic :route="route('web.person.add-event', ['id' => $model->id])"
                   btn="add Event"
@@ -57,9 +67,7 @@ for ($ix = 1; $ix <= 13; $ix++) {
     <x-layout.divider></x-layout.divider>
 
     <x-form.container>
-        <a href="{{route('web.person.details', ['id' => $model->person->id])}}" type="button" class="btn btn-success btn-lg">{{$model->person->name}}</a>
-        <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-        <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
+        @include('components.pages.life-nav', ['model' => $model])
     </x-form.container>
 
 </x-layout.main>

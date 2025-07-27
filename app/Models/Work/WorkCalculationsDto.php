@@ -13,5 +13,7 @@ class WorkCalculationsDto
 
     /** @var array|\App\Models\Work\YearOfWorkDto[] */
     public array $worksPerYear = [];
+
+    /** @var PersonCollection|\App\Models\Work\PersonOfWorkDto[] */
     public PersonCollection $workers;
 }

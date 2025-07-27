@@ -1,12 +1,8 @@
 <?php
 
-namespace App\Models\World;
+namespace App\Models\Work;
 
-use App\Models\Collection\PersonCollection;
 use App\Models\Person\PersonEvent;
-use App\Models\Work\PersonOfWorkDto;
-use App\Models\Work\WorkCalculationsDto;
-use App\Models\Work\YearOfWorkDto;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -16,6 +12,7 @@ use Illuminate\Support\Collection;
  * @property int $begin
  * @property int $end
  * @property ?int $capacity
+ * @property ?int $consumers
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work where($column, $operator = null, $value = null, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work whereId($value)
@@ -23,6 +20,10 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work whereEnd($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Work whereCapacity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Work whereConsumers($value)
+ *
+ * @property-read ?float $consuming_of_person
+ * @property-read ?float $consuming_days_per_year
  *
  * @property-read \Illuminate\Database\Eloquent\Collection|PersonEvent[] $events
  *
@@ -37,33 +38,22 @@ class Work extends \Eloquent
 
     public function calculate()
     {
-        $this->calculations = new WorkCalculationsDto();
-        $this->calculations->workers = new PersonCollection();
+        $this->calculations = LifeWork::calculateWork($this);
+    }
 
-        for ($year = $this->begin; $year <= $this->end; $year++) {
-            $workers = new PersonCollection();
-            $yearEvents = $this->events->filter(fn (PersonEvent $event) => $event->begin <= $year && $event->end >= $year)
-                ->each(fn (PersonEvent $event) => $workers->pushUniqueWorkers($year, $event));
+    public function percent(float $years): float
+    {
+        return number_format($years / $this->calculations->workYears * 100.0, 2);
+    }
 
-            if ($yearEvents->count()) {
-                $yearDto = new YearOfWorkDto($workers);
-                foreach ($yearDto->workers as $worker) {
-                    $yearDto->days += $worker->days;
-                }
-                if (!$yearDto->days) {
-                    continue;
-                }
-                $yearDto->workers->each(fn (PersonOfWorkDto $workerDto) => $this->calculations->workers->pushUniqueWorker($workerDto));
-                $this->calculations->days += $yearDto->days;
-                $this->calculations->worksPerYear[$year] = $yearDto;
+    public function getConsumingOfPersonAttribute() // consuming_of_person
+    {
+        return !$this->consumers ? 0.0 : number_format($this->calculations->workYears / $this->consumers, 2);
+    }
 
-                if (empty($this->calculations->begin)) {
-                    $this->calculations->begin = $year;
-                }
-                $this->calculations->end = $year;
-            }
-        }
-        $this->calculations->workYears = number_format($this->calculations->days / WORK_DAYS, 2);
+    public function getConsumingDaysPerYearAttribute() // consuming_days_per_year
+    {
+        return !$this->consumers ? 0.0 : number_format($this->calculations->days / count($this->calculations->worksPerYear) / $this->consumers, 2);
     }
 
     public function archive(): array

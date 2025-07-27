@@ -6,14 +6,11 @@ use App\Models\Collection\PersonEventBuilder;
 use App\Models\Collection\PersonEventCollection;
 use App\Models\Person\EventType;
 use App\Models\Person\Person;
-use App\Models\Person\PersonEvent;
-use App\Models\Person\PersonEventConnect;
 use App\Models\Person\PersonEventSynthetic;
+use App\Models\Work\LifeWork;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -54,7 +51,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read bool $is_deep_love
  * @property-read bool $is_slave
  *
- * @property-read \App\Models\World\LifeWork $lifeWork
+ * @property-read \App\Models\Work\LifeWork $lifeWork
  * @property-read \App\Models\Person\Person $person
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $events
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $work_events
