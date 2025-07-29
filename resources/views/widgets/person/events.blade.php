@@ -1,5 +1,6 @@
 <?php
 
+$year ??= null;
 /** @var \App\Models\Person\Person $person */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \App\Models\Person\PersonEvent $event */
@@ -16,11 +17,13 @@ $lifeWork ??= null;
     @foreach($events as $event)
         @php($personOfEvent = !empty($person) ? $person : $event->life->person)
         @php($viewLife = $event->lifeOfPerson($personOfEvent->id))
+        @php($backStyle = $vEvent->backColor($event))
+        @php($backStyle = $year > 0 && ($year < $event->begin || $year > $event->end) ? CC_DARK : $backStyle)
 
         @if($event->work_id)
-            <a href="{{ route('web.planet.event-edit-form', ['id' => $event->id]) }}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-{{$vEvent->backColor($event)}}">
+            <a href="{{ route('web.planet.event-edit-form', ['id' => $event->id]) }}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-{{$backStyle}}">
         @else
-            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-{{$vEvent->backColor($event)}}">
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-{{$backStyle}}">
         @endif
 
 

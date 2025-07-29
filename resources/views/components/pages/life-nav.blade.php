@@ -13,5 +13,8 @@ $next = $model->next_vs_type;
     <a href="{{route('web.person.details-life', ['person_id' => $next->person_id, 'life_id' => $next->id])}}" type="button" class="btn btn-warning btn-lg">{{ $next->type_name }}-{{ $next->current_type_no }} {{ $next->role_name }}</a>
 @endif
 <br><br>
-<a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
 <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
+<a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
+@if($model->person->only_vizavi)
+    <a href="{{route('web.person.add', ['author_id' => $model->person->only_vizavi->id])}}" type="button" class="btn btn-danger btn-lg">{{ $model->person->only_vizavi->name }}</a>
+@endif

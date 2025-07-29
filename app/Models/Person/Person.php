@@ -149,9 +149,19 @@ class Person extends \Eloquent
         return PersonEventBuilder::holyLivesBy($this->id)->count();
     }
 
+    public function countHolyLivesBeforeYear(int $year)
+    {
+        return PersonEventBuilder::holyLivesBy($this->id)->where('end', '<', $year)->count();
+    }
+
     public function getCountSlaveLivesAttribute() // count_slave_lives
     {
         return PersonEventBuilder::slaveLivesBy($this->id)->count();
+    }
+
+    public function countSlaveLivesBeforeYear(int $year)
+    {
+        return PersonEventBuilder::slaveLivesBy($this->id)->where('end', '<', $year)->count();
     }
 
     public function mayBeGirlEasy(?int $year = null)

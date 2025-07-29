@@ -14,6 +14,7 @@ class WorkAddAction
         $model->begin = $request->begin;
         $model->end = $request->end;
         $model->capacity = $request->capacity ?: null;
+        $model->consumers = $request->consumers ?: null;
         $model->save();
 
         return redirect()->back();

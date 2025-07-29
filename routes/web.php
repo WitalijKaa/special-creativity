@@ -13,7 +13,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::post('params/save', App\Http\Controllers\Planet\PlanetCreator\PlanetSaveAction::class)->name('save');
 
         Route::get('event/{id}', \App\Http\Controllers\Person\PersonEventFormAction::class)->where('id', '[0-9]+')->name('event-edit-form');
-        Route::get('work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');
+        Route::any('work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');
         Route::any('work', \App\Http\Controllers\Planet\Work\WorksListAction::class)->name('works-list');
     });
 

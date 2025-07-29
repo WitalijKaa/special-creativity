@@ -2,6 +2,12 @@
 
 /** @var \App\Models\Work\Work $model */
 
+$fYear = new \App\Dto\Form\FormFieldInputDto();
+$fYear->id = 'year';
+$fYear->label = 'Year of current moment';
+$fYear->type = 'number';
+$fYear->value = $year > 0 ? $year : null;
+
 $fWorkName = new \App\Dto\Form\FormFieldInputDto();
 $fWorkName->id = 'name';
 $fWorkName->value = old($fWorkName->id) ?? $model->name;
@@ -25,12 +31,29 @@ $fWorkConsumers->label = 'how many consumed Work';
     </x-layout.header-main>
 
     <x-layout.container>
-        @include('widgets.person.events', ['events' => \App\Models\Collection\PersonEventCollection::toCollection($model->events)->sortVsBegin()])
+        @include('widgets.person.events', ['year' => $year, 'events' => \App\Models\Collection\PersonEventCollection::toCollection($model->events)->sortVsBegin()])
     </x-layout.container>
 
     @if($model->consumers)
         <x-layout.header-second>CONSUMING: each 💪🏻 {{ $model->consuming_of_person }} days-vs-Year {{ (int)$model->consuming_days_per_year }} 🛍️</x-layout.header-second>
     @endif
+
+    <x-layout.header-second>workers</x-layout.header-second>
+
+    <x-form.basic :route="route('web.planet.works-details', ['id' => $model->id])"
+                  btn="show Year"
+                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.planet.works-details', ['id' => $model->id])] : null"
+                  :fields="[$fYear]"></x-form.basic>
+
+    <div class="mb-5 mt-5"></div>
+
+    <x-layout.container>
+        <div class="list-group">
+            @foreach($model->calculations->workers as $personDto)
+                @include('widgets.person.list-item', ['person' => $personDto->person, 'year' => $year, 'showInfo' => $model->percentByDays($personDto->days) . '%'])
+            @endforeach
+        </div>
+    </x-layout.container>
 
     <x-layout.header-second>edit Work</x-layout.header-second>
 

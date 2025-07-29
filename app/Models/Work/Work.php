@@ -46,6 +46,11 @@ class Work extends \Eloquent
         return number_format($years / $this->calculations->workYears * 100.0, 2);
     }
 
+    public function percentByDays(float $days): float
+    {
+        return number_format($days / $this->calculations->days * 100.0, 2);
+    }
+
     public function getConsumingOfPersonAttribute() // consuming_of_person
     {
         return !$this->consumers ? 0.0 : number_format($this->calculations->workYears / $this->consumers, 2);
@@ -64,6 +69,7 @@ class Work extends \Eloquent
             'end' => $this->end,
         ];
         if ($this->capacity) { $return['capacity'] = $this->capacity; }
+        if ($this->consumers) { $return['consumers'] = $this->consumers; }
         return $return;
     }
 
@@ -76,6 +82,7 @@ class Work extends \Eloquent
             'begin' => 'integer',
             'end' => 'integer',
             'capacity' => 'integer',
+            'consumers' => 'integer',
         ];
     }
 

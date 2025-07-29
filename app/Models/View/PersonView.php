@@ -11,9 +11,9 @@ class PersonView extends AbstractView
     public function labelAuthor(Person $model): string
     {
         if (!$model->author) {
-            return parent::space4();
+            return '';
         }
-        return '<small>[' . $model->author->name . '-' . (1 + $model->author->creations->search(fn (Person $created) => $created->id == $model->id)) . '] <small><small> ' . $model->begin . 'Y</small></small></small>' . parent::space4();
+        return '[' . $model->author->name . '-' . (1 + $model->author->creations->search(fn (Person $created) => $created->id == $model->id)) . '] <small><small> ' . $model->begin . 'Y</small></small>';
     }
 
     public function labelCreations(Person $model, ?int $year): string
@@ -24,19 +24,19 @@ class PersonView extends AbstractView
 
     public function labelVizavi(Person $model): string
     {
-        return $model->only_vizavi ? '<small><small><small><small>❤️</small></small> ' . $model->only_vizavi?->name . '</small></small>' . parent::space4() : parent::space4();
+        return $model->only_vizavi ? '<small>❤️</small> ' . $model->only_vizavi?->name : '';
     }
 
-    public function labelHolyLife(Person $model): string
+    public function labelHolyLife(Person $model, ?int $year): string
     {
-        $count = $model->count_holy_lives;
-        return !$count ? '' : '<small><small>👼🏻</small> ' . $count . '</small> ';
+        $count = $year > 0 ? $model->countHolyLivesBeforeYear($year) : $model->count_holy_lives;
+        return !$count ? '' : '<small>👼🏻 ' . $count . '</small> ';
     }
 
-    public function labelSlaveLife(Person $model): string
+    public function labelSlaveLife(Person $model, ?int $year): string
     {
-        $count = $model->count_slave_lives;
-        return !$count ? '' : '<small><small>⛏</small> ' . $count . '</small> ';
+        $count = $year > 0 ? $model->countSlaveLivesBeforeYear($year) : $model->count_slave_lives;
+        return !$count ? '' : '<small>⛏ ' . $count . '</small> ';
     }
 
     public function labelLifeIsHoly(Life $model): string
@@ -58,7 +58,7 @@ class PersonView extends AbstractView
     {
         if (!$model->countManLives($year) && !$model->countWomanLives($year)) {
             if ($year) {
-                return 'First living';
+                return '';
             }
             return 'Has zero Lives on a Planet';
         }

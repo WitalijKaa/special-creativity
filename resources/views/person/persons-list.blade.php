@@ -14,16 +14,13 @@ $vPerson = new \App\Models\View\PersonView();
 $titlePage = $models->count() . ' Personas';
 $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 
-?>
-<x-layout.main :title="$titlePage">
+?><x-layout.main :title="$titlePage">
     <x-layout.header-main>{{ $titlePage }}</x-layout.header-main>
 
     <x-form.basic :route="route('web.person.list')"
                   btn="show Year"
                   :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.list')] : null"
                   :fields="[$fYear]"></x-form.basic>
-
-    <div class="mb-5 mt-5"></div>
 
     <x-form.container>
         @include('components.pages.persons-list-nav')
@@ -34,43 +31,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
     <x-layout.container>
         <div class="list-group">
             @foreach($models as $person)
-                @php($viewLife = $year > 0 ? $person->planetLife($year) : null)
-
-                <a href="{{route('web.person.details', ['id' => $person->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($viewLife ?: $person->last_life)}}">
-                    <div class="d-flex w-100 justify-content-between mb-1">
-
-                        <div class="d-flex w-50 justify-content-between">
-                            <h4>{!! $person->name . ($viewLife ? ($vPerson->labelAge($viewLife, $year) . $vPerson->lifeGenre($viewLife)) : '') !!}</h4>
-                            <h4><small><small><strong><em>{{$person->nick}}</em></strong></small></small> {!!$vPerson->labelAuthor($person)!!}</h4>
-                        </div>
-
-                        <div class="d-flex w-50 justify-content-between">
-                            <h4>{!!$vPerson->labelLives($person, $year)!!} {!!$vPerson->labelCreations($person, $year)!!}</h4>
-                            <small>
-                                {!!$vPerson->labelLivesTotalSimple($person, $year)!!}
-                                @if(($viewLife ? $viewLife->begin_force_person : $person->force_person) == \App\Models\Person\Person::FORCE)
-                                    <span class="badge text-bg-success">Can create Life</span>
-                                @endif
-                                @if($person->mayBeGirlEasy($year))
-                                    <span class="badge text-bg-warning">May be a Girl</span>
-                                @endif
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="d-flex w-100 justify-content-between">
-
-                        <div class="d-flex w-50 justify-content-between">
-                            <span>{!!$vPerson->labelForce($person)!!}</span>
-                            <h4>{!!$vPerson->labelSlaveLife($person)!!} {!!$vPerson->labelHolyLife($person)!!} {!!$vPerson->labelVizavi($person)!!}</h4>
-                        </div>
-
-                        <div class="d-flex w-50 justify-content-between">
-                            <h5>&nbsp;</h5>
-                            <small><small>{!! !$year ? $vPerson->labelLastYearOfExistence($person) : '' !!}</small></small>
-                        </div>
-                    </div>
-                </a>
+                @include('widgets.person.list-item', ['person' => $person, 'year' => $year])
             @endforeach
         </div>
     </x-layout.container>
