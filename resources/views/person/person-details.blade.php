@@ -69,64 +69,21 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
                   :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.details', ['id' => $model->id])] : null"
                   :fields="[$fYear]"></x-form.basic>
 
-    @if($model->only_vizavi)
-        <x-form.container>
-            <a href="{{route('web.person.add', ['author_id' => $model->only_vizavi->id])}}" type="button" class="btn btn-danger btn-lg">{{ $model->only_vizavi->name }}</a>
-        </x-form.container>
-    @else
-        <div class="mb-5 mt-5"></div>
-    @endif
+    <x-form.container>
+        @include('components.pages.person-details-nav', ['$model' => $model])
+    </x-form.container>
 
     <x-layout.container>
         <div class="list-group">
             @foreach($viewLives as $life)
-                <a href="{{route('web.person.details-life', ['person_id' => $life->person_id, 'life_id' => $life->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($life)}}">
-
-                    <div class="d-flex w-100 justify-content-between mb-1">
-
-                        <div class="d-flex w-50 justify-content-between">
-                            <h3>
-                                {{$life->type_name . '-' . $life->current_type_no}}
-                                {!!$vPerson->labelLifeIsDeepLove($life)!!}
-                                {!!$vPerson->labelLifeIsHoly($life)!!}
-                                {!!$vPerson->labelLifeIsSlave($life)!!}
-                            </h3>
-                            <h3>Years {{$life->begin}}-{{$life->end}}</h3>
-                        </div>
-
-                        <div class="d-flex w-50 justify-content-between">
-                            <div></div>
-                            <p>
-                                @if($life->begin_force_person == \App\Models\Person\Person::FORCE)
-                                    <span class="badge text-bg-success">Can create Life</span>
-                                @endif
-                                @if($life->may_be_girl_easy)
-                                    <span class="badge text-bg-warning">May be a Girl</span>
-                                @endif
-                                <span class="badge text-bg-secondary">{{$life->end - $life->begin}} years</span>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="d-flex w-100 justify-content-between">
-
-                        <h5><strong>{{$life->role_name}} {!! $vPerson->lifeGenre($life) !!}</strong></h5>
-
-                        <p>{!! $vPerson->labelForce($life) !!}</p>
-
-                    </div>
-                </a>
+                @include('widgets.life.list-item', ['model' => $life])
             @endforeach
         </div>
     </x-layout.container>
 
-    @if($model->only_vizavi)
-        <x-form.container>
-            <a href="{{route('web.person.add', ['author_id' => $model->only_vizavi->id])}}" type="button" class="btn btn-danger btn-lg">{{ $model->only_vizavi->name }}</a>
-        </x-form.container>
-    @else
-        <div class="mb-5 mt-5"></div>
-    @endif
+    <x-form.container>
+        @include('components.pages.person-details-nav', ['$model' => $model])
+    </x-form.container>
 
     <x-layout.container>
         @include('widgets.person.events', ['events' => $events, 'person' => $model])
@@ -151,9 +108,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
     <x-layout.divider></x-layout.divider>
 
     <x-form.container>
-        <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
-        <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-        <a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
+        @include('components.pages.person-details-nav', ['$model' => $model])
     </x-form.container>
 
 </x-layout.main>

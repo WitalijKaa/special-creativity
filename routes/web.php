@@ -33,6 +33,10 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('work-correct/{id}', \App\Http\Controllers\Planet\Work\WorkCorrectAction::class)->where('id', '[0-9]+')->name('work-correct');
         Route::post('event-edit/{id}', \App\Http\Controllers\Person\PersonEventEditAction::class)->where('id', '[0-9]+')->name('event-edit');
     });
+
+    Route::group(['as' => 'prediction.', 'prefix' => 'prediction'], function() {
+        Route::any('future-simple', \App\Http\Controllers\Prediction\FuturePredictionAction::class)->name('future');
+    });
 });
 
 Route::get('/dd', [\App\Http\Controllers\DevController::class, 'ddDev']);

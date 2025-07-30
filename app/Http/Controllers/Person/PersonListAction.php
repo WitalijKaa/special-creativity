@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Person;
 
 use App\Models\Person\Person;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 
 class PersonListAction
 {

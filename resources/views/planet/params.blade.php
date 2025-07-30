@@ -79,8 +79,7 @@ $fEventSlave->type = 'checkbox';
 
         <x-form.container>
             <a href="{{route('web.planet.export')}}" type="button" class="btn btn-danger btn-lg">Export</a>
-            <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-            <a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
+            @include('components.pages.major-nav')
         </x-form.container>
 
     @endif
