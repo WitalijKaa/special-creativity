@@ -27,6 +27,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'basic.', 'prefix' => 'basic'], function() {
+        Route::any('events', \App\Http\Controllers\Person\EventListAction::class)->name('events');
         Route::post('event', \App\Http\Controllers\Planet\EventTypeAddAction::class)->name('event-type');
         Route::post('work', \App\Http\Controllers\Planet\Work\WorkAddAction::class)->name('work');
         Route::post('work-edit/{id}', \App\Http\Controllers\Planet\Work\WorkEditAction::class)->where('id', '[0-9]+')->name('work-edit');

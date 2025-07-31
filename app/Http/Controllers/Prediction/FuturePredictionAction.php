@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class FuturePredictionAction
 {
     private const FINAL_YEAR = 10000;
-    private const FINAL_PERSONS = 4000000;
+    private const FINAL_PERSONS = 200000000;
 
     public function __invoke(FormRequest $request)
     {

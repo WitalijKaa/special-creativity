@@ -108,4 +108,14 @@ class PersonEventBuilder extends AbstractBuilder
                                                                          ->where('type_id', EventType::DEEP_LOVE))
             ->orWhereIn('id', static::eventIdsOfDeepLoveVsConnectBy($personID));
     }
+
+    /** @return \Illuminate\Database\Eloquent\Builder|PersonEvent */
+    public static function byYearsRange(int $fromYear, int $untilYear): Builder
+    {
+        return AbstractBuilder::whereBeginEndInRange(
+            PersonEvent::query(),
+            $fromYear,
+            $untilYear
+        );
+    }
 }

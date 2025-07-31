@@ -3,6 +3,7 @@
 namespace App\Models\Person;
 
 use App\Models\World\Life;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -17,11 +18,13 @@ class PersonEventSynthetic
     public const int BIRTH = -1;
     public const int DEATH = -2;
     public const int ALLODS = -3;
+    public const int NEW_PERSON = -4;
 
     private const array NAME = [
         self::BIRTH => 'birth on a Planet',
         self::DEATH => 'went to Allods',
         self::ALLODS => 'back to Allods',
+        self::NEW_PERSON => 'Stvorio',
     ];
 
     public int $begin;
@@ -71,6 +74,10 @@ class PersonEventSynthetic
 
     public function lifeOfPerson(int $personID): Life
     {
+        if (self::BIRTH == $this->type_id) {
+            return $this->life;
+        }
+
         return new Life(['role' => Life::SPIRIT]);
     }
 }

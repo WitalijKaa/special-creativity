@@ -9,12 +9,29 @@ class LifeCollection extends AbstractCollection
     public static function allodsByPersonID(int $personID, ?int $fromYear = null, ?int $untilYear = null): static
     {
         $query = Life::wherePersonId($personID)->whereType(Life::ALLODS);
-        if ($fromYear > 0) {
-            $query->where('begin', '>=', $fromYear);
-        }
-        if ($untilYear > 0) {
-            $query->where('begin', '<=', $untilYear);
-        }
+        AbstractBuilder::whereBeginMaybeInRange($query, $fromYear, $untilYear);
+
+        return static::toCollection($query->get());
+    }
+
+    public static function allodsByRange(int $fromYear, int $untilYear): static
+    {
+        $query = AbstractBuilder::whereBeginEndInRange(
+            Life::whereType(Life::ALLODS),
+            $fromYear,
+            $untilYear
+        );
+
+        return static::toCollection($query->get());
+    }
+
+    public static function planetByRange(int $fromYear, int $untilYear): static
+    {
+        $query = AbstractBuilder::whereBeginEndInRange(
+            Life::whereType(Life::PLANET),
+            $fromYear,
+            $untilYear
+        );
 
         return static::toCollection($query->get());
     }

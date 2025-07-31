@@ -10,14 +10,14 @@ $viewLife = $year > 0 ?
 
 $vPerson = new \App\Models\View\PersonView();
 
-?><a href="{{route('web.person.details', ['id' => $person->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($viewLife ?: $person->last_life)}}">
+?><a href="{{route('web.person.details', ['id' => $person->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($viewLife ?: ($year > 0 && $person->lifeByYear($year) ? $person->lifeByYear($year) : $person->last_life))}}">
     <div class="d-flex w-100 justify-content-between mb-1">
 
         <div class="d-flex w-50 justify-content-between">
             <h3>
                 {{ $person->name }}
                 <small><small>
-                        {!! ($viewLife ? ($vPerson->labelAge($viewLife, $year) . $vPerson->lifeGenre($viewLife)) : '') !!}
+                        {!! ($viewLife ? ($vPerson->labelAge($viewLife, $year) . $vPerson->lifeGender($viewLife)) : '') !!}
                 </small></small>
             </h3>
             <h5><strong><em>{{$person->nick}}</em></strong> {!! $vPerson->space2() !!}</h5>

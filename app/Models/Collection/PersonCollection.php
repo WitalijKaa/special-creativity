@@ -54,4 +54,22 @@ class PersonCollection extends AbstractCollection
         $this->push($model);
         return $this;
     }
+
+    public static function byBeginRange(int $fromYear, int $untilYear): static
+    {
+        $query = Person::where('begin', '>=', $fromYear)
+            ->where('begin', '<=', $untilYear)
+            ->with('author.creations');
+
+        return static::toCollection($query->get());
+    }
+
+    public static function byAuthorID(int $authorID, ?int $fromYear = null, ?int $untilYear = null): static
+    {
+        $query = Person::wherePersonAuthorId($authorID)
+            ->with('author.creations');
+        AbstractBuilder::whereBeginMaybeInRange($query, $fromYear, $untilYear);
+
+        return static::toCollection($query->get());
+    }
 }

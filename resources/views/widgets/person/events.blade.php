@@ -9,6 +9,8 @@ $year ??= null;
 
 $vEvent = new \App\Models\View\EventView();
 $lifeWork ??= null;
+$showWorks = $showWorks ?? empty($person);
+$showGender = !empty($showGender) || !empty($person);
 
 // DEV {{$event instanceof \App\Models\Person\PersonEvent ? $event->id : ''}} .
 
@@ -18,7 +20,7 @@ $lifeWork ??= null;
         @php($personOfEvent = !empty($person) ? $person : $event->life->person)
         @php($viewLife = $event->lifeOfPerson($personOfEvent->id))
         @php($backStyle = $vEvent->backColor($event))
-        @php($backStyle = $year > 0 && ($year < $event->begin || $year > $event->end) ? CC_DARK : $backStyle)
+        @php($backStyle = $showWorks && $year > 0 && ($year < $event->begin || $year > $event->end) ? CC_DARK : $backStyle)
 
         @if($event->work_id)
             <a href="{{ route('web.planet.event-edit-form', ['id' => $event->id]) }}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-{{$backStyle}}">
@@ -31,8 +33,8 @@ $lifeWork ??= null;
                 <span>
                     {{-- {{$event instanceof \App\Models\Person\PersonEvent ? $event->id : ''}} --}}
                     {{$event->type->name}}
-                    @if(!empty($person))
-                        {!!$vEvent->lifeGenre($viewLife)!!}
+                    @if($showGender)
+                        {!!$vEvent->lifeGender($viewLife)!!}
                         {!!$vEvent->loveConnectionGenre($event, $viewLife)!!}
                     @endif
                     <small>{{$event->comment}}</small>
@@ -43,7 +45,7 @@ $lifeWork ??= null;
                 </span>
                 <em>
                     {!!$vEvent->labelRange($event)!!}
-                    @if(empty($person))
+                    @if($showWorks)
                         {!!$vEvent->labelWorkLivesPercent($event)!!}
                     @endif
                 </em>
@@ -51,7 +53,7 @@ $lifeWork ??= null;
 
             <div class="d-flex w-50 justify-content-between">
                 <span style="white-space: nowrap; padding-right: 5px;">
-                    @if(empty($person))
+                    @if($showWorks)
                         {!!$vEvent->labelWorkLivesAmount($event)!!}
                     @else
                         {!!$vEvent->labelWorkAmount($event, $lifeWork)!!}

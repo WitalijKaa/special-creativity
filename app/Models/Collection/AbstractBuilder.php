@@ -21,4 +21,15 @@ class AbstractBuilder
             });
         });
     }
+
+    public static function whereBeginMaybeInRange(BuilderModel|BuilderQuery $query, ?int $fromYear = null, ?int $untilYear = null): BuilderModel|BuilderQuery
+    {
+        if ($fromYear > 0) {
+            $query->where('begin', '>=', $fromYear);
+        }
+        if ($untilYear > 0) {
+            $query->where('begin', '<=', $untilYear);
+        }
+        return $query;
+    }
 }

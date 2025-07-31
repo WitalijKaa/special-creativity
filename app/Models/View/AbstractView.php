@@ -17,7 +17,7 @@ class AbstractView
         };
     }
 
-    public function lifeGenre(Life $model): string
+    public function lifeGender(Life $model): string
     {
         return $this->gender($model->role);
     }

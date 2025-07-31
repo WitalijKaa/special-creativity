@@ -13,7 +13,7 @@ class PersonView extends AbstractView
         if (!$model->author) {
             return '';
         }
-        return '[' . $model->author->name . '-' . (1 + $model->author->creations->search(fn (Person $created) => $created->id == $model->id)) . '] <small><small> ' . $model->begin . 'Y</small></small>';
+        return '[' . $model->author->name . '-' . $model->created_vs_number . '] <small><small> ' . $model->begin . 'Y</small></small>';
     }
 
     public function labelCreations(Person $model, ?int $year): string

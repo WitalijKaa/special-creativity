@@ -23,8 +23,18 @@ class PersonDetailsAction
         }
 
         if ($year > 0) {
-            $events = $this->eventsQueryToCollection(PersonEventBuilder::byYearsAndPersonID($id, $year - self::LIMIT_YEARS, $year), $id, untilYear: $year);
-            $eventsFuture = $this->eventsQueryToCollection(PersonEventBuilder::byYearsAndPersonID($id, $year + 1, $year + self::LIMIT_YEARS), $id, fromYear: $year + 1, untilYear: $year + self::LIMIT_YEARS);
+            $events = $this->eventsQueryToCollection(
+                PersonEventBuilder::byYearsAndPersonID($id, fromYear: $year - self::LIMIT_YEARS, untilYear: $year),
+                $id,
+                fromYear: $year - self::LIMIT_YEARS,
+                untilYear: $year
+            );
+            $eventsFuture = $this->eventsQueryToCollection(
+                PersonEventBuilder::byYearsAndPersonID($id, fromYear: $year + 1, untilYear: $year + self::LIMIT_YEARS),
+                $id,
+                fromYear: $year + 1,
+                untilYear: $year + self::LIMIT_YEARS
+            );
         }
         else {
             $events = $this->eventsQueryToCollection(PersonEventBuilder::honorRelationsSlaveBy($id)->limit(self::LIMIT_EVENTS), $id);
@@ -37,7 +47,8 @@ class PersonDetailsAction
     private function eventsQueryToCollection(Builder|PersonEvent $query, int $personID, ?int $fromYear = null, ?int $untilYear = null): ?PersonEventCollection
     {
         return PersonEventCollection::toCollection($query->with(['connections.life', 'type', 'person'])->get())
-            ->addSyntheticBackToAllodsEvents($personID, $fromYear, $untilYear)
+            ->addSyntheticBackToAllodsByPersonEvents($personID, $fromYear, $untilYear)
+            ->addSyntheticCreationsByPersonEvents($personID, $fromYear, $untilYear)
             ->sortNice();
     }
 }

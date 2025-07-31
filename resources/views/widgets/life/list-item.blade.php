@@ -32,7 +32,7 @@
 
     <div class="d-flex w-100 justify-content-between">
 
-        <h5><strong>{{$model->role_name}} {!! $vPerson->lifeGenre($model) !!}</strong></h5>
+        <h5><strong>{{$model->role_name}} {!! $vPerson->lifeGender($model) !!}</strong></h5>
 
         <p>{!! $vPerson->labelForce($model) !!}</p>
 

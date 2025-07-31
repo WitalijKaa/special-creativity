@@ -194,6 +194,9 @@ class Life extends \Eloquent
         $model->person_id = $this->person_id;
         $model->begin = $begin;
         $model->end = $end ?? $begin;
+        if (PersonEventSynthetic::BIRTH == $type_id) {
+            $model->comment = 'no.' . $this->current_type_no;
+        }
         return $model;
     }
 

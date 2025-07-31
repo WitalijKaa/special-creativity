@@ -14,7 +14,9 @@ class EventView extends AbstractView
     {
         if ($model instanceof PersonEventSynthetic) {
             return match ($model->type_id) {
+                PersonEventSynthetic::BIRTH => CC_DARK,
                 PersonEventSynthetic::ALLODS => CC_INFO,
+                PersonEventSynthetic::NEW_PERSON => CC_WARNING,
                 default => CC_STUB,
             };
         }

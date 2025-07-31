@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read int $last_year
  * @property-read int $count_holy_lives
  * @property-read int $count_slave_lives
+ * @property-read int $created_vs_number
  *
  * @property-read Life|null $last_life
  * @property-read \Illuminate\Database\Eloquent\Collection|Life[] $lives
@@ -68,9 +69,28 @@ class Person extends \Eloquent
         return $this->lives->last();
     }
 
+    public function getCreatedVsNumberAttribute() // created_vs_number
+    {
+        if (!$this->author) {
+            return 0;
+        }
+        return 1 + $this->author->creations->search(fn (Person $created) => $created->id == $this->id);
+    }
+
     public function planetLife(int $year): null|Life
     {
         return $this->lives->filter(fn (Life $model) => $model->is_planet && $model->begin <= $year && $model->end >= $year)->first();
+    }
+
+    public function allodsLife(int $year): null|Life
+    {
+        return $this->lives->filter(fn (Life $model) => $model->is_allods && $model->begin <= $year && $model->end >= $year)->first();
+    }
+
+    public function lifeByYear(int $year): null|Life
+    {
+        return $this->planetLife($year) ?:
+            $this->lives->filter(fn (Life $model) => $model->begin <= $year && $model->end >= $year)->first();
     }
 
     public function getLastYearAttribute() // last_year
@@ -175,6 +195,17 @@ class Person extends \Eloquent
         return !$lastLife?->is_planet &&
             $lastLife?->role != Life::WOMAN &&
             $lastLife?->may_be_girl_easy;
+    }
+
+    public function synthetic(int $type_id): PersonEventSynthetic
+    {
+        $model = new PersonEventSynthetic();
+        $model->type_id = $type_id;
+        $model->life_id = $this->author->allodsLife($this->begin)->id;
+        $model->person_id = $this->id;
+        $model->comment = $this->author->name . '-' . $this->created_vs_number . ' is ' . $this->name;
+        $model->end = $model->begin = $this->begin;
+        return $model;
     }
 
     public $timestamps = false;

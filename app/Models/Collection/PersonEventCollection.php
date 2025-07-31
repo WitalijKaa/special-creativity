@@ -3,6 +3,7 @@
 namespace App\Models\Collection;
 
 use App\Models\Person\EventType;
+use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\World\Life;
@@ -18,15 +19,68 @@ class PersonEventCollection extends AbstractCollection
         return static::toCollection($query->get());
     }
 
+    public static function byYearsRange(int $fromYear, int $untilYear): static
+    {
+        return static::toCollection(PersonEventBuilder::byYearsRange($fromYear, $untilYear)
+            ->get())
+            ->addSyntheticBackToAllodsEvents($fromYear, $untilYear)
+            ->addSyntheticCreationsEvents($fromYear, $untilYear)
+            ->addSyntheticBackToPlanetEvents($fromYear, $untilYear)
+            ->sortNice();
+    }
+
     public function filterWork(): static
     {
         return $this->filter(fn (PersonEvent $model) => $model->type->is_work);
     }
 
-    public function addSyntheticBackToAllodsEvents(int $personID, ?int $fromYear = null, ?int $untilYear = null): static
+    public function addSyntheticBackToPlanetEvents(int $fromYear, int $untilYear): static
+    {
+        foreach (LifeCollection::planetByRange($fromYear, $untilYear) as $planetLife) {
+            /** @var \App\Models\World\Life $planetLife */
+            $this->push($planetLife->synthetic(PersonEventSynthetic::BIRTH, $planetLife->begin, $planetLife->end));
+        }
+        return $this;
+    }
+
+    public function addSyntheticBackToAllodsEvents(int $fromYear, int $untilYear): static
+    {
+        foreach (LifeCollection::allodsByRange($fromYear, $untilYear) as $allodsLife) {
+            /** @var \App\Models\World\Life $allodsLife */
+            $this->push($allodsLife->synthetic(PersonEventSynthetic::ALLODS, $allodsLife->begin, $allodsLife->end));
+        }
+        return $this;
+    }
+
+    public function addSyntheticBackToAllodsByPersonEvents(int $personID, ?int $fromYear = null, ?int $untilYear = null): static
     {
         foreach (LifeCollection::allodsByPersonID($personID, $fromYear, $untilYear) as $allodsLife) {
+            /** @var \App\Models\World\Life $allodsLife */
             $this->push($allodsLife->synthetic(PersonEventSynthetic::ALLODS, $allodsLife->begin, $allodsLife->end));
+        }
+        return $this;
+    }
+
+    public function addSyntheticCreationsEvents(int $fromYear, int $untilYear): static
+    {
+        foreach (PersonCollection::byBeginRange($fromYear, $untilYear) as $person) {
+            if ($person->id == Person::ORIGINAL) {
+                continue;
+            }
+            /** @var \App\Models\Person\Person $person */
+            $this->push($person->synthetic(PersonEventSynthetic::NEW_PERSON));
+        }
+        return $this;
+    }
+
+    public function addSyntheticCreationsByPersonEvents(int $personID, ?int $fromYear = null, ?int $untilYear = null): static
+    {
+        foreach (PersonCollection::byAuthorID($personID, $fromYear, $untilYear) as $person) {
+            if ($person->id == Person::ORIGINAL) {
+                continue;
+            }
+            /** @var \App\Models\Person\Person $person */
+            $this->push($person->synthetic(PersonEventSynthetic::NEW_PERSON));
         }
         return $this;
     }
