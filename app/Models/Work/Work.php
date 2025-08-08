@@ -43,22 +43,22 @@ class Work extends \Eloquent
 
     public function percent(float $years): float
     {
-        return number_format($years / $this->calculations->workYears * 100.0, 2);
+        return round($years / $this->calculations->workYears * 100.0, 2);
     }
 
     public function percentByDays(float $days): float
     {
-        return number_format($days / $this->calculations->days * 100.0, 2);
+        return round($days / $this->calculations->days * 100.0, 2);
     }
 
     public function getConsumingOfPersonAttribute() // consuming_of_person
     {
-        return !$this->consumers ? 0.0 : number_format($this->calculations->workYears / $this->consumers, 2);
+        return !$this->consumers ? 0.0 : round($this->calculations->workYears / $this->consumers, 2);
     }
 
     public function getConsumingDaysPerYearAttribute() // consuming_days_per_year
     {
-        return !$this->consumers ? 0.0 : number_format($this->calculations->days / count($this->calculations->worksPerYear) / $this->consumers, 2);
+        return !$this->consumers ? 0.0 : round($this->calculations->days / count($this->calculations->worksPerYear) / $this->consumers, 2);
     }
 
     public function archive(): array

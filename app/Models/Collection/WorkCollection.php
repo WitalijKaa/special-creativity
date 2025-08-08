@@ -3,6 +3,7 @@
 namespace App\Models\Collection;
 
 use App\Models\Work\Work;
+use App\Models\World\Configurator;
 
 class WorkCollection extends AbstractCollection
 {
@@ -13,5 +14,11 @@ class WorkCollection extends AbstractCollection
             $fromYear,
             $untilYear)
         ->get());
+    }
+
+    public function filterWorkArmy(): static
+    {
+        $conf = new Configurator();
+        return $this->filter(fn (Work $model) => $conf->isWorkArmy($model));
     }
 }

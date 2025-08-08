@@ -51,7 +51,7 @@ class LifeWork
                 $dto->end = $year;
             }
         }
-        $dto->workYears = number_format($dto->days / WORK_DAYS, 2);
+        $dto->workYears = round($dto->days / WORK_DAYS, 2);
 
         $hardLimit = (int)($dto->days / 100 * self::HARD_LIMIT_PERCENT);
         foreach ($dto->workers as $worker) {
@@ -119,7 +119,7 @@ class LifeWork
             if (empty($this->begin)) { $this->begin = $year; }
             $this->end = $year;
         }
-        $this->workYears = number_format($this->days / WORK_DAYS, 2);
+        $this->workYears = round($this->days / WORK_DAYS, 2);
     }
 
     private function trackWork(YearOfWorkEventOfPersonDto $workOfYear): void
@@ -156,17 +156,17 @@ class LifeWork
 
     public function years(Work $ofWork): float
     {
-        return number_format($this->days($ofWork) / WORK_DAYS, 2);
+        return round($this->days($ofWork) / WORK_DAYS, 2);
     }
 
     public function yearsOfEvent(PersonEvent $ofWorkEvent): float
     {
-        return number_format($this->daysOfEvent($ofWorkEvent) / WORK_DAYS, 2);
+        return round($this->daysOfEvent($ofWorkEvent) / WORK_DAYS, 2);
     }
 
     public function percent(float $years): float
     {
-        return number_format($years / $this->workYears * 100.0, 2);
+        return round($years / $this->workYears * 100.0, 2);
     }
 
     public function hours(Work $ofWork): int

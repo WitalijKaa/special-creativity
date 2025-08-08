@@ -32,7 +32,12 @@ use Illuminate\Support\Facades\Schema;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereLifeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent wherePersonId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereTypeId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereBegin($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereEnd($value)
  * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereTypeId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereLifeId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent wherePersonId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereWorkId($value)
  *
  * @property-read \App\Models\Person\EventType $type
  * @property-read \App\Models\Person\Person $person

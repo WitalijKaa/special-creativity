@@ -35,6 +35,10 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::post('event-edit/{id}', \App\Http\Controllers\Person\PersonEventEditAction::class)->where('id', '[0-9]+')->name('event-edit');
     });
 
+    Route::group(['as' => 'routine.', 'prefix' => 'routine'], function() {
+        Route::get('life-work-army/{id}', \App\Http\Controllers\Person\Routine\WorkSlaveAction::class)->where('id', '[0-9]+')->name('life-work-army');
+    });
+
     Route::group(['as' => 'prediction.', 'prefix' => 'prediction'], function() {
         Route::any('future-simple', \App\Http\Controllers\Prediction\FuturePredictionAction::class)->name('future');
     });

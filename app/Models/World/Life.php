@@ -36,6 +36,8 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Life wherePlanetId($value)
  * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereType($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereBegin($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereEnd($value)
  *
  * @property-read string $role_name
  * @property-read string $type_name

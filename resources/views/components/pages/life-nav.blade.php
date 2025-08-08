@@ -19,3 +19,5 @@ $next = $model->next_vs_type;
 @if($model->person->only_vizavi)
     <a href="{{route('web.person.details', ['id' => $model->person->only_vizavi->id])}}" type="button" class="btn btn-danger btn-lg">{{ $model->person->only_vizavi->name }}</a>
 @endif
+<br><br>
+<a href="{{route('web.routine.life-work-army', ['id' => $model->id])}}" type="button" class="btn btn-dark btn-lg">make WorkArmyLife</a>
