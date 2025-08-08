@@ -50,7 +50,7 @@ class WorkSlaveAction
         }
         $conf = new Configurator();
         $this->makeEventByType($conf->manSlaveType(), $life, [$vizaviLife]);
-        if ($life->prev_vs_type->is_slave) {
+        if ($life->prev_vs_type?->is_slave) {
             $this->makeEventByType(EventType::HOLY_LIFE, $life, [$vizaviLife]);
         }
 

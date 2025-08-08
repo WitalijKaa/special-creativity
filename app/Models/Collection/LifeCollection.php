@@ -46,4 +46,14 @@ class LifeCollection extends AbstractCollection
             $life->end)
         ->get());
     }
+
+    public function sortByBegin(): static
+    {
+        return $this->sortBy('begin');
+    }
+
+    public function sortByEnd(): static
+    {
+        return $this->sortBy('end');
+    }
 }

@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person wherePersonAuthorId($value)
+ * @method \Illuminate\Database\Eloquent\Builder<static>|Person whereBegin($value)
  *
  * @property-read boolean $is_original
  * @property-read int $count_man_lives

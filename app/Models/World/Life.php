@@ -112,7 +112,7 @@ class Life extends \Eloquent
     {
         return Life::wherePersonId($this->person_id)
             ->whereType($this->type)
-            ->where('id', '<=', $this->id)
+            ->where('id', '<=', $this->id ?? 0)
             ->count();
     }
 
@@ -136,14 +136,14 @@ class Life extends \Eloquent
 
     public function getMayBeGirlEasyAttribute() // may_be_girl_easy
     {
-        $lives = $this->person->livesBeforeReversed($this->id);
+        $lives = $this->person->livesBeforeReversed($this->id ?? 0);
 
         if ($this->person->is_original && !$lives->filter(fn (Life $model) => $model->is_planet && $model->is_woman)->count()) {
             return true;
         }
 
         $manLivesNonStop = 0;
-        foreach ($this->person->livesBeforeReversed($this->id) as $life) {
+        foreach ($this->person->livesBeforeReversed($this->id ?? 0) as $life) {
             /** @var \App\Models\World\Life $life */
             if (!$life->is_planet) {
                 continue;

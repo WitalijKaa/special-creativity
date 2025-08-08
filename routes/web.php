@@ -37,6 +37,9 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
 
     Route::group(['as' => 'routine.', 'prefix' => 'routine'], function() {
         Route::get('life-work-army/{id}', \App\Http\Controllers\Person\Routine\WorkSlaveAction::class)->where('id', '[0-9]+')->name('life-work-army');
+        Route::get('create-persons', \App\Http\Controllers\Person\Routine\CreatePersonsAction::class)->name('create-persons');
+        Route::get('allods-live-cycle', \App\Http\Controllers\Person\Routine\CycleLifeAtAllodsAction::class)->name('allods-live-cycle');
+        Route::get('planet-live-cycle', \App\Http\Controllers\Person\Routine\CycleLifeAtPlanetAction::class)->name('planet-live-cycle');
     });
 
     Route::group(['as' => 'prediction.', 'prefix' => 'prediction'], function() {

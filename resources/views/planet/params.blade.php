@@ -80,6 +80,10 @@ $fEventSlave->type = 'checkbox';
         <x-form.container>
             <a href="{{route('web.planet.export')}}" type="button" class="btn btn-danger btn-lg">Export</a>
             @include('components.pages.major-nav')
+            <br><br>
+            <a href="{{route('web.routine.create-persons')}}" type="button" class="btn btn-dark btn-lg">create S-LIFE</a>
+            <a href="{{route('web.routine.allods-live-cycle')}}" type="button" class="btn btn-dark btn-lg">Cycle Allods</a>
+            <a href="{{route('web.routine.planet-live-cycle')}}" type="button" class="btn btn-dark btn-lg">Cycle Planet</a>
         </x-form.container>
 
     @endif
