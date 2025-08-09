@@ -16,8 +16,8 @@ $next = $model->next_vs_type;
 <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
 <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
 <a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
-@if($model->person->only_vizavi)
-    <a href="{{route('web.person.details', ['id' => $model->person->only_vizavi->id])}}" type="button" class="btn btn-danger btn-lg">{{ $model->person->only_vizavi->name }}</a>
-@endif
+@foreach($model->person->vizavi as $vizavi)
+    <a href="{{route('web.person.details', ['id' => $vizavi->id])}}" type="button" class="btn btn-danger btn-lg">{{ $vizavi->name }}</a>
+@endforeach
 <br><br>
 <a href="{{route('web.routine.life-work-army', ['id' => $model->id])}}" type="button" class="btn btn-dark btn-lg">make WorkArmyLife</a>

@@ -9,8 +9,6 @@ $fYear->label = 'Year of current moment';
 $fYear->type = 'number';
 $fYear->value = $year > 0 ? $year : null;
 
-$vPerson = new \App\Models\View\PersonView();
-
 $titlePage = $models->count() . ' Personas';
 $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 

@@ -28,7 +28,7 @@ class WorkSlaveAction
             ->whereBegin($life->begin)
             ->whereEnd($life->end)
             ->first();
-        if (!$vizaviLife) {
+        if (!$vizaviLife || $vizaviLife->is_woman) {
             return $back('general', 'Cant find vizavi life');
         }
 

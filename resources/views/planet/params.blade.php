@@ -81,6 +81,9 @@ $fEventSlave->type = 'checkbox';
             <a href="{{route('web.planet.export')}}" type="button" class="btn btn-danger btn-lg">Export</a>
             @include('components.pages.major-nav')
             <br><br>
+            <a href="{{route('web.visual.lives-timeline')}}" type="button" class="btn btn-info btn-lg">Lives-T</a>
+            <a href="{{route('web.visual.years-population')}}" type="button" class="btn btn-info btn-lg">Years-Persons</a>
+            <br><br>
             <a href="{{route('web.routine.create-persons')}}" type="button" class="btn btn-dark btn-lg">create S-LIFE</a>
             <a href="{{route('web.routine.allods-live-cycle')}}" type="button" class="btn btn-dark btn-lg">Cycle Allods</a>
             <a href="{{route('web.routine.planet-live-cycle')}}" type="button" class="btn btn-dark btn-lg">Cycle Planet</a>

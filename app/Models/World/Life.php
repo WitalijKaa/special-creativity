@@ -4,8 +4,10 @@ namespace App\Models\World;
 
 use App\Models\Collection\PersonEventBuilder;
 use App\Models\Collection\PersonEventCollection;
+use App\Models\Collection\WorkCollection;
 use App\Models\Person\EventType;
 use App\Models\Person\Person;
+use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\Work\LifeWork;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -52,6 +54,7 @@ use Illuminate\Support\Collection;
  * @property-read bool $is_holy
  * @property-read bool $is_deep_love
  * @property-read bool $is_slave
+ * @property-read bool $is_worker
  *
  * @property-read \App\Models\Work\LifeWork $lifeWork
  * @property-read \App\Models\World\Life|null $prev_vs_type
@@ -186,6 +189,24 @@ class Life extends \Eloquent
     public function getIsSlaveAttribute() // is_slave
     {
         return PersonEventBuilder::slaveByLifeId($this->id)->exists();
+    }
+
+    public function getIsWorkerAttribute() // is_worker
+    {
+        if ($this->is_slave) {
+            return false;
+        }
+
+        $works = WorkCollection::byYearsRange($this->begin, $this->end)->filterWorkArmy()->pluck('id')->toArray();
+        $worksLength = 0;
+
+        !!$this->events->each(function (PersonEvent $model) use (&$worksLength, $works) {
+                if ($model->strong > 50 && in_array($model->work_id, $works)) {
+                    $worksLength += $model->length;
+                }
+            });
+
+        return $worksLength > (new Configurator())->yearsToWorkAsStandardSupplyWorker();
     }
 
     public function synthetic(int $type_id, int $begin, ?int $end = null): PersonEventSynthetic

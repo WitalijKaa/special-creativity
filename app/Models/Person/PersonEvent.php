@@ -39,6 +39,8 @@ use Illuminate\Support\Facades\Schema;
  * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent wherePersonId($value)
  * @method \Illuminate\Database\Eloquent\Builder<static>|PersonEvent whereWorkId($value)
  *
+ * @property-read int $length
+ *
  * @property-read \App\Models\Person\EventType $type
  * @property-read \App\Models\Person\Person $person
  * @property-read \App\Models\Collection\PersonCollection|\App\Models\Person\Person[] $all_persons
@@ -81,6 +83,11 @@ class PersonEvent extends \Eloquent
         $return->push($this->life);
         $this->connections->each(fn (PersonEventConnect $model) => $return->push($model->life));
         return $return;
+    }
+
+    public function getLengthAttribute() // length
+    {
+        return $this->end - $this->begin + 1;
     }
 
     public function archive(): array

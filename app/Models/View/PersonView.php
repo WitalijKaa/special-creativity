@@ -2,6 +2,7 @@
 
 namespace App\Models\View;
 
+use App\Models\Collection\LifeCollection;
 use App\Models\Person\Person;
 use App\Models\World\ForceEvent;
 use App\Models\World\Life;
@@ -24,7 +25,18 @@ class PersonView extends AbstractView
 
     public function labelVizavi(Person $model): string
     {
-        return $model->only_vizavi ? '<small>❤️</small> ' . $model->only_vizavi?->name : '';
+        if (!$model->vizavi->count()) {
+            return '';
+        }
+        $return = '';
+        foreach ($model->vizavi as $vizavi) {
+            $return .= ' ' . $vizavi->name;
+        }
+        if ($model->vizavi->count() > 1) {
+            $return = '<small><small>' . $return . '</small></small>';
+        }
+        $return = '<small>❤️</small>' . $return;
+        return $return;
     }
 
     public function labelHolyLife(Person $model, ?int $year): string
@@ -103,6 +115,44 @@ class PersonView extends AbstractView
         };
     }
 
+    public function lifeBackColor(Life $model): string
+    {
+        if (!$model->is_planet) { return MM_BLUE; }
+
+        if (!$model->is_man) {
+            if ($model->is_holy && $model->is_slave) {
+                return MM_ORANGE_L2;
+            }
+
+            if ($model->is_slave) {
+                return MM_LIME_L2;
+            }
+
+            return $model->is_holy ? MM_TEAL_L2 : MM_GREEN_L2;
+        }
+
+        if ($model->is_holy && $model->is_slave) {
+            return MM_ORANGE_D1;
+        }
+
+        if ($model->is_slave) {
+            return MM_LIME;
+        }
+
+        if (!$model->is_holy && $model->is_worker) {
+            return MM_LIGHT_GREEN;
+        }
+
+        return $model->is_holy ? MM_TEAL : MM_GREEN_D1;
+    }
+
+    public function labelLifeShort(Life $life): string
+    {
+        return $life->is_planet ?
+            ($life->current_type_no . ' ' . $life->person->name . ' ' . ($life->end - $life->begin)) :
+            ($life->end - $life->begin);
+    }
+
     public function labelForceEventOfLife(ForceEvent $event, Life $life): string
     {
         if ($event->diff < 0) {
@@ -125,5 +175,29 @@ class PersonView extends AbstractView
             return '';
         }
         return ' <u>_' . ($year - $planetLife->begin) . '_</u>';
+    }
+
+    public function labelPersonOfYear(Life $life, int $year, LifeCollection $allAtYear): string
+    {
+        $count = 1;
+
+        $names = $life->person->name . $this->gender($life->role);
+        foreach ($allAtYear as $otherLife) {
+            if ((($year - $life->begin) != ($year - $otherLife->begin)) ||
+                $life->id == $otherLife->id)
+            {
+                continue;
+            }
+
+            $names .= ' ' . $otherLife->person->name . $this->gender($otherLife->role);
+            $count++;
+        }
+
+        $count = '<div>' .
+            '<span class="badge bg-secondary rounded-pill"><u>_' . ($year - $life->begin) . '_</u></span> ' .
+            '<span class="badge bg-' . ($life->is_allods ? CC_PRIMARY : CC_SUCCESS) . ' rounded-pill">' . $count . '</span>' .
+            '</div>';
+
+        return '<div class="w-75">' . $names . ' <u>_' . ($year - $life->begin) . '_</u></div>' . $count;
     }
 }

@@ -44,7 +44,12 @@ $vPerson = new \App\Models\View\PersonView();
                 {{$showInfo}}
                 <small><small><small>{!!$vPerson->labelAuthor($person)!!}</small></small></small>
             </h3>
-            <h5>{!!$vPerson->labelSlaveLife($person, $year)!!} {!!$vPerson->labelHolyLife($person, $year)!!} {!!$vPerson->labelVizavi($person)!!} {!! $vPerson->space2() !!}</h5>
+            <h5>
+                {!!$vPerson->labelSlaveLife($person, $year)!!}
+                {!!$vPerson->labelHolyLife($person, $year)!!}
+                {!!$vPerson->labelVizavi($person)!!}
+                {!! $vPerson->space2() !!}
+            </h5>
         </div>
 
         <div class="d-flex w-50 justify-content-between">

@@ -14,6 +14,11 @@ class Configurator
         return str_starts_with($model->name, 'T.army');
     }
 
+    public function yearsToWorkAsStandardSupplyWorker(): int
+    {
+        return 28;
+    }
+
     public function workArmySlaveType(): int
     {
         return EventType::whereName('Tribe Work')->first()->id;

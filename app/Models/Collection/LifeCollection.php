@@ -56,4 +56,36 @@ class LifeCollection extends AbstractCollection
     {
         return $this->sortBy('end');
     }
+
+    public function countAtAgeRange(int $year, int $fromAge, int $untilAge): int
+    {
+        $count = 0;
+        foreach ($this as $life) {
+            /** @var $life Life */
+
+            $age = $year - $life->begin;
+            if ($age >= $fromAge && $age <= $untilAge) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    public function countAtAgeRangeGender(int $gender, int $year, int $fromAge, int $untilAge): int
+    {
+        $count = 0;
+        foreach ($this as $life) {
+            /** @var $life Life */
+
+            if ($life->role != $gender) {
+                continue;
+            }
+
+            $age = $year - $life->begin;
+            if ($age >= $fromAge && $age <= $untilAge) {
+                $count++;
+            }
+        }
+        return $count;
+    }
 }

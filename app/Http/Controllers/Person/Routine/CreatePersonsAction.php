@@ -23,7 +23,7 @@ class CreatePersonsAction
 
         $lives = $lives->sortByEnd();
 
-        $zvezdi = 47;
+        $zvezdi = 97;
 
         foreach ($lives as $life) {
             /** @var $life Life */

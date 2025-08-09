@@ -35,6 +35,11 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::post('event-edit/{id}', \App\Http\Controllers\Person\PersonEventEditAction::class)->where('id', '[0-9]+')->name('event-edit');
     });
 
+    Route::group(['as' => 'visual.', 'prefix' => 'routine'], function() {
+        Route::any('lives-timeline', \App\Http\Controllers\Person\Visual\LivesTimelineAction::class)->name('lives-timeline');
+        Route::any('years-population', \App\Http\Controllers\Person\Visual\YearsPopulationAction::class)->name('years-population');
+    });
+
     Route::group(['as' => 'routine.', 'prefix' => 'routine'], function() {
         Route::get('life-work-army/{id}', \App\Http\Controllers\Person\Routine\WorkSlaveAction::class)->where('id', '[0-9]+')->name('life-work-army');
         Route::get('create-persons', \App\Http\Controllers\Person\Routine\CreatePersonsAction::class)->name('create-persons');
