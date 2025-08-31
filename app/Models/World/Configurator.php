@@ -11,38 +11,44 @@ class Configurator
 
     public function isWorkArmy(Work $model): bool
     {
-        return str_starts_with($model->name, 'T.army');
+        return str_starts_with($model->name, config('basic.workArmy.prefix'));
     }
 
     public function yearsToWorkAsStandardSupplyWorker(): int
     {
-        return 28;
+        return config('basic.standardSupplyWorkerYears');
     }
 
     public function workArmySlaveType(): int
     {
-        return EventType::whereName('Tribe Work')->first()->id;
+        return EventType::whereName(config('basic.workArmy.slaveType'))->firstOrFail()->id;
     }
 
     public function workArmyLifeBeginAtAge(): int
     {
-        return 17;
+        return config('basic.workArmy.minAge');
     }
 
     public function workArmyLifeEndAtAge(): int
     {
-        return 53;
+        return config('basic.workArmy.maxAge');
     }
 
     public function workArmyLifeYearsRanges(Life $life): array
     {
-        $childYears = [$life->begin + 7, $life->begin + 10];
-        $adultYears = [$life->begin + 11, $life->end - $life->current_type_no];
+        $childYears = [
+            $life->begin + config('basic.workArmy.childWorkStartAge'),
+            $life->begin + config('basic.workArmy.childWorkEndAge')
+        ];
+        $adultYears = [
+            $life->begin + config('basic.workArmy.adultWorkStartAge'),
+            $life->end - $life->current_type_no
+        ];
         return [$childYears, $adultYears];
     }
 
     public function manSlaveType(): int
     {
-        return EventType::whereName('Man Slave')->first()->id;
+        return EventType::whereName(config('basic.eventTypes.manSlave'))->firstOrFail()->id;
     }
 }
