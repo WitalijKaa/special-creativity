@@ -8,43 +8,30 @@ class LifeCollection extends AbstractCollection
 {
     public static function allodsByPersonID(int $personID, ?int $fromYear = null, ?int $untilYear = null): static
     {
-        $query = Life::wherePersonId($personID)->whereType(Life::ALLODS);
-        AbstractBuilder::whereBeginMaybeInRange($query, $fromYear, $untilYear);
-
-        return static::toCollection($query->get());
+        return static::toCollection(
+            LifeBuilder::allodsByPersonID($personID, $fromYear, $untilYear)->get()
+        );
     }
 
     public static function allodsByRange(int $fromYear, int $untilYear): static
     {
-        $query = AbstractBuilder::whereBeginEndInRange(
-            Life::whereType(Life::ALLODS),
-            $fromYear,
-            $untilYear
+        return static::toCollection(
+            LifeBuilder::allodsByRange($fromYear, $untilYear)->get()
         );
-
-        return static::toCollection($query->get());
     }
 
     public static function planetByRange(int $fromYear, int $untilYear): static
     {
-        $query = AbstractBuilder::whereBeginEndInRange(
-            Life::whereType(Life::PLANET),
-            $fromYear,
-            $untilYear
+        return static::toCollection(
+            LifeBuilder::planetByRange($fromYear, $untilYear)->get()
         );
-
-        return static::toCollection($query->get());
     }
 
     public static function livedAtTheSameTime(Life $life): static
     {
-        $query = Life::where('person_id', '!=', $life->person_id)->whereType($life->type);
-
-        return static::toCollection(AbstractBuilder::whereBeginEndInRange(
-            $query,
-            $life->begin,
-            $life->end)
-        ->get());
+        return static::toCollection(
+            LifeBuilder::livedAtTheSameTime($life)->get()
+        );
     }
 
     public function sortByBegin(): static
