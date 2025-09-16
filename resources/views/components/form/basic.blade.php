@@ -7,7 +7,7 @@
                     @if ($field instanceof \App\Dto\Form\FormFieldInputDto && $field->type == 'textarea')
                         <div class="mb-4">
                             <label for="{{$field->id}}" class="form-label">{{$field->label}}</label>
-                            <textarea rows="8" id="{{$field->id}}" name="{{$field->id}}" id="exampleFormControlTextarea1" class="form-control" aria-describedby="{{$field->id}}Tip">{{ $field->value ?? old($field->id) }}</textarea>
+                            <textarea rows="8" id="{{$field->id}}" name="{{$field->id}}" class="form-control" aria-describedby="{{$field->id}}Tip">{{ $field->value ?? old($field->id) }}</textarea>
                             @if(!empty($errors->get($field->id)[0]))
                                 <div id="{{$field->id}}Tip" class="form-text text-danger">{{$errors->get($field->id)[0]}}</div>
                             @elseif(!empty($field->nonErrorTip))

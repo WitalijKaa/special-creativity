@@ -17,6 +17,7 @@ class LifeAddAction
             ->withInput($request->toArray());
 
         $person = Person::whereId($id)->first();
+        /** @var Life $prevLife */
         $prevLife = $person->lives->last();
 
         // validations
@@ -30,7 +31,7 @@ class LifeAddAction
         if ($prevLife && $request->begin != $prevLife->end) {
             return $back('begin', 'Next live should began after previous ' . $prevLife->end);
         }
-        if ($prevLife && $request->type == $prevLife->id) {
+        if ($prevLife && $request->type == $prevLife->type) {
             return $back('type', 'The same Life Type as the previous ' . Life::NAME[$request->type]);
         }
 

@@ -129,6 +129,7 @@ class PersonEvent extends \Eloquent
     }
     public static function dbColumns(string $tableAlias = self::TABLE_NAME): array
     {
+        // todo wk its heavy, need caching
         return array_map(fn (string $column) => $tableAlias . '.' . $column, Schema::getColumnListing(static::TABLE_NAME));
     }
 
