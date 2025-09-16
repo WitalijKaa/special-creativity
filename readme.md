@@ -7,3 +7,5 @@
 #### CREATE DATABASE creativity_name;
 #### exit
 #### php artisan migrate
+
+#### php artisan ide-helper:generate
