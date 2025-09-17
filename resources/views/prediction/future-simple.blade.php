@@ -3,23 +3,19 @@
 /** @var int $year */
 /** @var array|\App\Models\World\Prediction\PredictionPeriodPersonsDto[] $growPercentPrediction */
 
-$fYear = new \App\Dto\Form\FormFieldInputDto();
-$fYear->id = 'year';
-$fYear->label = 'Year of current moment';
-$fYear->type = 'number';
-$fYear->value = $year > 0 ? $year : null;
-$fPeriod = new \App\Dto\Form\FormFieldInputDto();
-$fPeriod->id = 'period';
-$fPeriod->label = 'Calculations period';
-$fPeriod->type = 'number';
-$fPeriod->value = $period > 0 ? $period : null;
+$factory = new \App\Dto\Form\FormInputFactory();
+
+$predictionFuture = [
+    $factory->number('year', 'Year of current moment', $factory->withValue($year > 0 ? $year : null)),
+    $factory->number('period', 'Calculations period', $factory->withValue($period > 0 ? $period : null)),
+];
 
 ?><x-layout.main title="Future">
     <x-layout.header-main>Future Simple</x-layout.header-main>
 
     <x-form.basic :route="route('web.prediction.future')"
                   btn="make Prediction"
-                  :fields="[$fYear, $fPeriod]"></x-form.basic>
+                  :fields="$predictionFuture"></x-form.basic>
 
     <x-form.container>
         @include('components.pages.major-nav')

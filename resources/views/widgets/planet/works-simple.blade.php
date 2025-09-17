@@ -1,24 +1,14 @@
 <?php
 
-$fWorkName = new \App\Dto\Form\FormFieldInputDto();
-$fWorkName->id = 'name';
-$fWorkName->label = 'Name';
-$fWorkBegin = new \App\Dto\Form\FormFieldInputDto();
-$fWorkBegin->id = 'begin';
-$fWorkBegin->type = 'number';
-$fWorkBegin->label = 'Started at';
-$fWorkEnd = new \App\Dto\Form\FormFieldInputDto();
-$fWorkEnd->id = 'end';
-$fWorkEnd->type = 'number';
-$fWorkEnd->label = 'Finished at';
-$fWorkCapacity = new \App\Dto\Form\FormFieldInputDto();
-$fWorkCapacity->id = 'capacity';
-$fWorkCapacity->type = 'number';
-$fWorkCapacity->label = 'maximum Work units';
-$fWorkConsumers = new \App\Dto\Form\FormFieldInputDto();
-$fWorkConsumers->id = 'consumers';
-$fWorkConsumers->type = 'number';
-$fWorkConsumers->label = 'how many consumed Work';
+$factory = new \App\Dto\Form\FormInputFactory();
+
+$basicWork = [
+    $factory->input('name'),
+    $factory->number('begin', 'Started at'),
+    $factory->number('end', 'Finished at'),
+    $factory->number('capacity', 'maximum Work units'),
+    $factory->number('consumers', 'how many consumed Work'),
+];
 
 ?>
 <x-layout.header-second>Work</x-layout.header-second>
@@ -29,4 +19,4 @@ $fWorkConsumers->label = 'how many consumed Work';
 </x-form.container>
 <x-form.basic :route="route('web.basic.work')"
               btn="add new Work"
-              :fields="[$fWorkName, $fWorkBegin, $fWorkEnd, $fWorkCapacity, $fWorkConsumers]"></x-form.basic>
+              :fields="$basicWork"></x-form.basic>

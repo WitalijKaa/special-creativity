@@ -3,11 +3,9 @@
 /** @var int $year */
 /** @var \App\Models\Person\Person[] $models */
 
-$fYear = new \App\Dto\Form\FormFieldInputDto();
-$fYear->id = 'year';
-$fYear->label = 'Year of current moment';
-$fYear->type = 'number';
-$fYear->value = $year > 0 ? $year : null;
+$factory = new \App\Dto\Form\FormInputFactory();
+
+$fYear = $factory->number('year', 'Year of current moment', $factory->withValue($year > 0 ? $year : null));
 
 $titlePage = $models->count() . ' Personas';
 $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';

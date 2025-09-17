@@ -1,48 +1,30 @@
 <?php
 
+$factory = new \App\Dto\Form\FormInputFactory();
+
 $planet ??= new \App\Models\World\Planet();
 
-$fName = new \App\Dto\Form\FormFieldInputDto();
-$fName->id = 'name';
-$fName->label = 'Planet Name';
-$fName->value = $planet->name;
-
-$fPerson = null;
-$fNick = null;
+$planetSave = [
+    $factory->input('name', 'Planet Name', $factory->withValue($planet->name)),
+];
 if (!$planet->id) {
-    $fPerson = new \App\Dto\Form\FormFieldInputDto();
-    $fPerson->id = 'person';
-    $fPerson->label = 'the Name of the First Person';
-    $fNick = new \App\Dto\Form\FormFieldInputDto();
-    $fNick->id = 'nick';
-    $fNick->label = 'nick name';
+    $planetSave[] = $factory->input('person', 'the Name of the First Person');
+    $planetSave[] = $factory->input('nick', 'nick name');
 }
 
-$fEventName = new \App\Dto\Form\FormFieldInputDto();
-$fEventName->id = 'name';
-$fEventName->label = 'Name';
-$fEventHonor = new \App\Dto\Form\FormFieldInputDto();
-$fEventHonor->id = 'is_honor';
-$fEventHonor->label = 'Honor';
-$fEventHonor->type = 'checkbox';
-$fEventRelation = new \App\Dto\Form\FormFieldInputDto();
-$fEventRelation->id = 'is_relation';
-$fEventRelation->label = 'Relation';
-$fEventRelation->type = 'checkbox';
-$fEventWork = new \App\Dto\Form\FormFieldInputDto();
-$fEventWork->id = 'is_work';
-$fEventWork->label = 'Work';
-$fEventWork->type = 'checkbox';
-$fEventSlave = new \App\Dto\Form\FormFieldInputDto();
-$fEventSlave->id = 'is_slave';
-$fEventSlave->label = 'Slave';
-$fEventSlave->type = 'checkbox';
+$basicEventType = [
+    $factory->input('name'),
+    $factory->checkbox('is_honor', 'Honor'),
+    $factory->checkbox('is_relation', 'Relation'),
+    $factory->checkbox('is_work', 'Work'),
+    $factory->checkbox('is_slave', 'Slave'),
+];
 
 ?><x-layout.main>
     <x-layout.header-main>Planet params</x-layout.header-main>
     <x-form.basic :route="route('web.planet.save')"
                   :btn="!$planet->id ? 'Create the Planet' : 'Rename'"
-                  :fields="[$fName, $fPerson, $fNick]"></x-form.basic>
+                  :fields="$planetSave"></x-form.basic>
 
     @if($planet->id)
 
@@ -73,7 +55,7 @@ $fEventSlave->type = 'checkbox';
         </x-form.container>
         <x-form.basic :route="route('web.basic.event-type')"
                       btn="add new Event Type"
-                      :fields="[$fEventName, $fEventHonor, $fEventRelation, $fEventWork, $fEventSlave]"></x-form.basic>
+                      :fields="$basicEventType"></x-form.basic>
 
         <x-layout.divider></x-layout.divider>
 

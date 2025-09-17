@@ -4,16 +4,12 @@
 /** @var int $end */
 /** @var \App\Models\Person\Person[] $models */
 
-$fBegin = new \App\Dto\Form\FormFieldInputDto();
-$fBegin->id = 'begin';
-$fBegin->type = 'number';
-$fBegin->value = old($fBegin->id) ?? $begin;
-$fBegin->label = 'from Year';
-$fEnd = new \App\Dto\Form\FormFieldInputDto();
-$fEnd->id = 'end';
-$fEnd->type = 'number';
-$fEnd->value = old($fEnd->id) ?? $end;
-$fEnd->label = 'until Year';
+$factory = new \App\Dto\Form\FormInputFactory();
+
+$visualLivesTimeline = [
+    $factory->number('begin', 'from Year', $factory->withValue(old('begin') ?? $begin)),
+    $factory->number('end', 'until Year', $factory->withValue(old('end') ?? $end)),
+];
 
 $vPerson = new \App\Models\View\PersonView();
 
@@ -39,7 +35,7 @@ $titlePage = $models->count() . ' Lives-T';
     <x-form.basic :route="route('web.visual.lives-timeline')"
                   btn="show Range"
                   :btn-warn="['lbl' => 'Back', 'href' => route('web.visual.lives-timeline')]"
-                  :fields="[$fBegin, $fEnd]"></x-form.basic>
+                  :fields="$visualLivesTimeline"></x-form.basic>
 
     <x-layout.divider></x-layout.divider>
 

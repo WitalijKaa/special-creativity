@@ -2,26 +2,15 @@
 
 /** @var \App\Models\Work\Work $model */
 
-$fYear = new \App\Dto\Form\FormFieldInputDto();
-$fYear->id = 'year';
-$fYear->label = 'Year of current moment';
-$fYear->type = 'number';
-$fYear->value = $year > 0 ? $year : null;
+$factory = new \App\Dto\Form\FormInputFactory();
 
-$fWorkName = new \App\Dto\Form\FormFieldInputDto();
-$fWorkName->id = 'name';
-$fWorkName->value = old($fWorkName->id) ?? $model->name;
-$fWorkName->label = 'Name';
-$fWorkCapacity = new \App\Dto\Form\FormFieldInputDto();
-$fWorkCapacity->id = 'capacity';
-$fWorkCapacity->type = 'number';
-$fWorkCapacity->value = old($fWorkCapacity->id) ?? $model->capacity;
-$fWorkCapacity->label = 'maximum Work units';
-$fWorkConsumers = new \App\Dto\Form\FormFieldInputDto();
-$fWorkConsumers->id = 'consumers';
-$fWorkConsumers->type = 'number';
-$fWorkConsumers->value = old($fWorkConsumers->id) ?? $model->consumers;
-$fWorkConsumers->label = 'how many consumed Work';
+$fYear = $factory->number('year', 'Year of current moment', $factory->withValue($year > 0 ? $year : null));
+
+$basicWorkEdit = [
+    $factory->input('name', $factory->withValue(old('name') ?? $model->name)),
+    $factory->number('capacity', 'maximum Work units', $factory->withValue(old('capacity') ?? $model->capacity)),
+    $factory->number('consumers', 'how many consumed Work', $factory->withValue(old('consumers') ?? $model->consumers)),
+];
 
 ?><x-layout.main :title="'Work ' . $model->name">
     <x-layout.header-main>
@@ -59,7 +48,7 @@ $fWorkConsumers->label = 'how many consumed Work';
 
     <x-form.basic :route="route('web.basic.work-edit', ['id' => $model->id])"
                   btn="Change Work"
-                  :fields="[$fWorkName, $fWorkCapacity, $fWorkConsumers]"></x-form.basic>
+                  :fields="$basicWorkEdit"></x-form.basic>
 
     <x-layout.divider></x-layout.divider>
 
