@@ -6,44 +6,27 @@ $viewLives = $year > 0 ? $model->lives->filter(fn (\App\Models\World\Life $life)
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[]|null $eventsFuture */
 
-$fYear = new \App\Dto\Form\FormFieldInputDto();
-$fYear->id = 'year';
-$fYear->label = 'Year of current moment';
-$fYear->type = 'number';
-$fYear->value = $year > 0 ? $year : null;
+$factory = new \App\Dto\Form\FormInputFactory();
 
-$fName = new \App\Dto\Form\FormFieldInputDto();
-$fName->id = 'name';
-$fName->label = 'Full Name';
-$fNick = new \App\Dto\Form\FormFieldInputDto();
-$fNick->id = 'nick';
-$fNick->label = 'Nick-Name';
+$fYear = $factory->number('year', 'Year of current moment', $factory->withValue($year > 0 ? $year : null));
+$fBegin = $factory->number('begin', 'the year of Beginning of Existence', $factory->withValue(old('begin') ?? $model->lives->last()?->end ?? $model->begin));
 
-$fBegin = new \App\Dto\Form\FormFieldInputDto();
-$fBegin->id = 'begin';
-$fBegin->type = 'number';
-$fBegin->value = old($fBegin->id) ?? $model->lives->last()?->end ?? $model->begin;
-$fBegin->label = 'the year of Beginning of Existence';
-$fEnd = new \App\Dto\Form\FormFieldInputDto();
-$fEnd->id = 'end';
-$fEnd->type = 'number';
-$fEnd->label = 'Death, the End';
-$fType = new \App\Dto\Form\FormFieldInputDto();
-$fType->id = 'type';
-$fType->label = 'What is the Life?';
-$fType->value = old($fType->id) ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->is_allods) ? \App\Models\World\Life::PLANET : \App\Models\World\Life::ALLODS);
-$fType->options = \App\Models\World\Life::selectTypeOptions();
-$fRole = new \App\Dto\Form\FormFieldInputDto();
-$fRole->id = 'role';
-$fRole->label = 'Who was the Persona?';
-$fRole->value = old($fRole->id) ?? ($fType->value == \App\Models\World\Life::PLANET ? \App\Models\World\Life::MAN : \App\Models\World\Life::SPIRIT);
-$fRole->options = \App\Models\World\Life::selectRoleOptions();
-$fFather = new \App\Dto\Form\FormFieldInputDto();
-$fFather->id = 'father';
-$fFather->label = 'the Name of the Father';
-$fMother = new \App\Dto\Form\FormFieldInputDto();
-$fMother->id = 'mother';
-$fMother->label = 'the Name of the Mother';
+$personAdd = [
+    $factory->input('name', 'Full Name'),
+    $factory->input('nick', 'Nick-Name'),
+    $fBegin,
+];
+
+
+$nextLifeType = old('type') ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->is_allods) ? \App\Models\World\Life::PLANET : \App\Models\World\Life::ALLODS);
+$personAddLife = [
+    $fBegin,
+    $factory->number('end', 'Death, the End'),
+    $factory->select('type', \App\Models\World\Life::selectTypeOptions(), 'What is the Life?', $factory->withValue($nextLifeType)),
+    $factory->select('role', \App\Models\World\Life::selectRoleOptions(), 'Who was the Persona?', $factory->withValue(old('role') ?? ($nextLifeType == \App\Models\World\Life::PLANET ? \App\Models\World\Life::MAN : \App\Models\World\Life::SPIRIT))),
+    $factory->input('father', 'the Name of the Father'),
+    $factory->input('mother', 'the Name of the Mother'),
+];
 
 $vPerson = new \App\Models\View\PersonView();
 
@@ -59,7 +42,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 
         <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
                       btn="create Persona"
-                      :fields="[$fName, $fNick, $fBegin]"></x-form.basic>
+                      :fields="$personAdd"></x-form.basic>
 
         <x-layout.divider></x-layout.divider>
     @endif
@@ -101,7 +84,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
         @php($fBegin->label = 'the year of Beginning of Life')
         <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
                       btn="add Life"
-                      :fields="[$fBegin, $fEnd, $fType, $fRole, $fFather, $fMother]"></x-form.basic>
+                      :fields="$personAddLife"></x-form.basic>
 
     @endif
 

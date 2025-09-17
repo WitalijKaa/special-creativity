@@ -8,16 +8,12 @@
 /** @var \App\Models\Collection\LifeCollection $allodsLives */
 /** @var \App\Models\Collection\LifeCollection $planetLives */
 
-$fBegin = new \App\Dto\Form\FormFieldInputDto();
-$fBegin->id = 'begin';
-$fBegin->type = 'number';
-$fBegin->value = old($fBegin->id) ?? $begin;
-$fBegin->label = 'from Year';
-$fEnd = new \App\Dto\Form\FormFieldInputDto();
-$fEnd->id = 'end';
-$fEnd->type = 'number';
-$fEnd->value = old($fEnd->id) ?? $end;
-$fEnd->label = 'until Year';
+$factory = new \App\Dto\Form\FormInputFactory();
+
+$visualYearsPopulation = [
+    $factory->number('begin', 'from Year', $factory->withValue(old('begin') ?? $begin)),
+    $factory->number('end', 'until Year', $factory->withValue(old('end') ?? $end))
+];
 
 $vPerson = new \App\Models\View\PersonView();
 $summaryAgesMinimum = 4;
@@ -56,7 +52,7 @@ $calcSummaryAges = function (int $Y, \App\Models\Collection\LifeCollection $plan
     <x-form.basic :route="route('web.visual.years-population')"
                   btn="show Range"
                   :btn-warn="['lbl' => 'Back', 'href' => route('web.visual.years-population')]"
-                  :fields="[$fBegin, $fEnd]"></x-form.basic>
+                  :fields="$visualYearsPopulation"></x-form.basic>
 
     <x-layout.divider></x-layout.divider>
 
@@ -132,3 +128,4 @@ $calcSummaryAges = function (int $Y, \App\Models\Collection\LifeCollection $plan
     </x-form.container>
 
 </x-layout.main>
+

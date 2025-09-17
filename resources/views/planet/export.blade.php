@@ -1,33 +1,26 @@
 <?php
 
-/** @var \App\Models\World\Planet $planet */
-/** @var \Illuminate\Support\Collection|\App\Models\Work\Work[] $work */
-/** @var \Illuminate\Support\Collection|\App\Models\Person\EventType[] $eventTypes */
-/** @var \Illuminate\Support\Collection|\App\Models\Person\Person[] $persons */
-/** @var \Illuminate\Support\Collection|\App\Models\World\Life[] $lives */
-/** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
+/** @var array<string, array> $json */
 
-$json = [
-    'planet' => $planet->archive(),
-    'work' => $work->map(fn (\App\Models\Work\Work $model) => $model->archive()),
-    'eventTypes' => $eventTypes->map(fn (\App\Models\Person\EventType $model) => $model->archive()),
-    'persons' => $persons->map(fn (\App\Models\Person\Person $model) => $model->archive()),
-    'lives' => $lives->map(fn (\App\Models\World\Life $model) => $model->archive()),
-    'events' => $events->map(fn (\App\Models\Person\PersonEvent $model) => $model->archive()),
-];
-
-?><x-layout.main title="Export">
+?>
+<x-layout.main title="Export">
     <x-layout.header-main>Planet export</x-layout.header-main>
 
-    <x-layout.container>
-        <pre>{!!json_encode($json, JSON_UNESCAPED_UNICODE)!!}</pre>
-    </x-layout.container>
+    <x-session.success></x-session.success>
+    <x-form.submit :route="route('web.planet.export')" btn="Export to file"></x-form.submit>
 
     <x-layout.divider></x-layout.divider>
 
-    <x-layout.container>
-        <pre>{!!json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)!!}</pre>
-    </x-layout.container>
+    <x-table.basic name="Export statistics" :columns="['Items name', 'Items count']">
+        @foreach($json as $itemName => $items)
+            @if($items instanceof \Illuminate\Support\Collection)
+                <tr>
+                    <td>{{ ucfirst($itemName) }}</td>
+                    <td>{{ $items->count() }}</td>
+                </tr>
+            @endif
+        @endforeach
+    </x-table.basic>
 
     <x-layout.divider></x-layout.divider>
 

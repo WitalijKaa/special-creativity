@@ -9,17 +9,17 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
 
     Route::group(['as' => 'planet.', 'prefix' => 'planet'], function() {
         Route::get('params', App\Http\Controllers\Planet\PlanetCreator\PlanetParamsAction::class)->name('params');
-        Route::get('export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');
+        Route::match(['get','post'], 'export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');
         Route::post('params/save', App\Http\Controllers\Planet\PlanetCreator\PlanetSaveAction::class)->name('save');
 
         Route::get('event/{id}', \App\Http\Controllers\Person\PersonEventFormAction::class)->where('id', '[0-9]+')->name('event-edit-form');
-        Route::any('work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');
-        Route::any('work', \App\Http\Controllers\Planet\Work\WorksListAction::class)->name('works-list');
+        Route::match(['get','post'], 'work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');
+        Route::match(['get','post'], 'work', \App\Http\Controllers\Planet\Work\WorksListAction::class)->name('works-list');
     });
 
     Route::group(['as' => 'person.', 'prefix' => 'life'], function() {
-        Route::any('personas', \App\Http\Controllers\Person\PersonListAction::class)->name('list');
-        Route::any('life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]+')->name('details');
+        Route::match(['get','post'], 'personas', \App\Http\Controllers\Person\PersonListAction::class)->name('list');
+        Route::match(['get','post'], 'life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]+')->name('details');
         Route::get('{person_id}/{life_id}', \App\Http\Controllers\Person\LifeDetailsAction::class)->where(['person_id', 'life_id'], '[0-9]+')->name('details-life');
         Route::post('add-person/{author_id}', \App\Http\Controllers\Person\PersonAddAction::class)->where('author_id', '[0-9]+')->name('add');
         Route::post('add-life/{id}', \App\Http\Controllers\Person\LifeAddAction::class)->where('id', '[0-9]+')->name('add-life');
@@ -27,7 +27,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'basic.', 'prefix' => 'basic'], function() {
-        Route::any('events', \App\Http\Controllers\Person\EventListAction::class)->name('events');
+        Route::match(['get','post'], 'events', \App\Http\Controllers\Person\EventListAction::class)->name('events');
         Route::post('event', \App\Http\Controllers\Planet\EventTypeAddAction::class)->name('event-type');
         Route::post('work', \App\Http\Controllers\Planet\Work\WorkAddAction::class)->name('work');
         Route::post('work-edit/{id}', \App\Http\Controllers\Planet\Work\WorkEditAction::class)->where('id', '[0-9]+')->name('work-edit');
@@ -36,8 +36,8 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'visual.', 'prefix' => 'routine'], function() {
-        Route::any('lives-timeline', \App\Http\Controllers\Person\Visual\LivesTimelineAction::class)->name('lives-timeline');
-        Route::any('years-population', \App\Http\Controllers\Person\Visual\YearsPopulationAction::class)->name('years-population');
+        Route::match(['get','post'], 'lives-timeline', \App\Http\Controllers\Person\Visual\LivesTimelineAction::class)->name('lives-timeline');
+        Route::match(['get','post'], 'years-population', \App\Http\Controllers\Person\Visual\YearsPopulationAction::class)->name('years-population');
     });
 
     Route::group(['as' => 'routine.', 'prefix' => 'routine'], function() {
@@ -48,7 +48,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'prediction.', 'prefix' => 'prediction'], function() {
-        Route::any('future-simple', \App\Http\Controllers\Prediction\FuturePredictionAction::class)->name('future');
+        Route::match(['get','post'], 'future-simple', \App\Http\Controllers\Prediction\FuturePredictionAction::class)->name('future');
     });
 });
 

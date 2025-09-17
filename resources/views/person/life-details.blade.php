@@ -5,41 +5,18 @@
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \Illuminate\Support\Collection|\App\Models\Work\Work[] $work */
 
-$fBegin = new \App\Dto\Form\FormFieldInputDto();
-$fBegin->id = 'begin';
-$fBegin->type = 'number';
-$fBegin->value = old($fBegin->id) ?? ($model->begin + 10);
-$fBegin->label = 'start of Event';
-$fEnd = new \App\Dto\Form\FormFieldInputDto();
-$fEnd->id = 'end';
-$fEnd->type = 'number';
-$fEnd->value = old($fEnd->id) ?? ($model->begin + 50);
-$fEnd->label = 'finish of Event';
-$fTypes = new \App\Dto\Form\FormFieldInputDto();
-$fTypes->id = 'type';
-$fTypes->label = 'What was It?';
-$fTypes->options = \App\Models\Person\EventType::selectOptions();
-$fWork = new \App\Dto\Form\FormFieldInputDto();
-$fWork->id = 'work';
-$fWork->label = 'Worked at';
-$fWork->options = \App\Models\Work\Work::selectSpecificOptions($work);
-$fStrong = new \App\Dto\Form\FormFieldInputDto();
-$fStrong->id = 'strong';
-$fStrong->type = 'number';
-$fStrong->label = 'how strong % worked?';
-$fComment = new \App\Dto\Form\FormFieldInputDto();
-$fComment->id = 'comment';
-$fComment->type = 'textarea';
-$fComment->label = 'more Description of Event';
+$factory = new \App\Dto\Form\FormInputFactory();
 
-$formFields = [$fBegin, $fEnd, $fTypes, $fWork, $fStrong, $fComment];
+$personAddEvent = [
+    $factory->number('begin', 'start of Event', $factory->withValue(old('begin') ?? ($model->begin + 10))),
+    $factory->number('end', 'finish of Event', $factory->withValue(old('end') ?? ($model->begin + 50))),
+    $factory->select('type', \App\Models\Person\EventType::selectOptions(), 'What was It?'),
+    $factory->select('work', \App\Models\Work\Work::selectSpecificOptions($work), 'Worked at'),
+    $factory->number('strong', 'how strong % worked?'),
+    $factory->textarea('comment', 'more Description of Event'),
+];
 for ($ix = 1; $ix <= 13; $ix++) {
-    $fConnect = new \App\Dto\Form\FormFieldInputDto();
-    $fConnect->id = 'connect_' . $ix;
-    $fConnect->label = 'With who?';
-    $fConnect->options = \App\Models\World\Life::selectConnectionOptions($connections);
-    $formFields[] = $fConnect;
-
+    $personAddEvent[] = $factory->select('connect_' . $ix, \App\Models\World\Life::selectConnectionOptions($connections), 'With who?');
     if ($ix >= $connections->count()) {
         break;
     }
@@ -68,7 +45,7 @@ for ($ix = 1; $ix <= 13; $ix++) {
 
     <x-form.basic :route="route('web.person.add-event', ['id' => $model->id])"
                   btn="add Event"
-                  :fields="$formFields"></x-form.basic>
+                  :fields="$personAddEvent"></x-form.basic>
 
     <x-layout.divider></x-layout.divider>
 
