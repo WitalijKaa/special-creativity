@@ -3,6 +3,7 @@
 namespace App\Models\Person;
 
 use App\Models\Collection\PersonEventBuilder;
+use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\World\Life;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -49,7 +50,7 @@ use Illuminate\Support\Facades\DB;
  *
  * @mixin \Eloquent
  */
-class Person extends \Eloquent
+class Person extends \Eloquent implements JsonArchivableInterface
 {
     public const int ORIGINAL = 1;
     public const int FORCE = 100;

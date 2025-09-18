@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Planet\PlanetCreator;
 
+use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\Person\EventType;
 use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
@@ -15,29 +16,47 @@ class PlanetExportAction
 {
     public function __invoke(Request $request)
     {
-        $planet = Planet::first();
-        $work = Work::orderBy('begin')->get();
-        $eventTypes = EventType::where('id', '>', EventType::HOLY_LIFE)->orderBy('id')->get();
-        $persons = Person::orderBy('id')->get();
-        $lives = Life::all();
-        $events = PersonEvent::with(['connections.person', 'person', 'life'])->get();
-
-        $json = [
-            'planet' => $planet->archive(),
-            'work' => $work->map(fn (\App\Models\Work\Work $model) => $model->archive()),
-            'eventTypes' => $eventTypes->map(fn (\App\Models\Person\EventType $model) => $model->archive()),
-            'persons' => $persons->map(fn (\App\Models\Person\Person $model) => $model->archive()),
-            'lives' => $lives->map(fn (\App\Models\World\Life $model) => $model->archive()),
-            'events' => $events->map(fn (\App\Models\Person\PersonEvent $model) => $model->archive()),
+        $queries = [
+            'work' => Work::orderBy('begin'),
+            'eventTypes' => EventType::where('id', '>', EventType::HOLY_LIFE)->orderBy('id'),
+            'persons' => Person::orderBy('id'),
+            'lives' => Life::all(),
+            'events' => PersonEvent::with(['connections.person', 'person', 'life'])->get(),
         ];
 
-        if ($request->isMethod('post')) {
-            $filename = 'sc_export_' . now()->format('Md_H-i') . '.json';
-            Storage::disk('public')->put($filename, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-            return redirect()->route('web.planet.export')->with('status', "Export SUCCESS! to $filename");
+        if ($request->isMethod('post') && $this->jsonArchive($queries)) {
+            return redirect()->route('web.planet.export')->with('status', "Export SUCCESS! to $dirName");
         }
 
-        return view('planet.export', ['json' => $json]);
+        return view('planet.export', ['json' => $this->jsonSummary($queries)]);
+    }
+
+    private function jsonSummary(array $queries): array
+    {
+        foreach ($queries as $K => $query) {
+            $queries[$K] = $query->count();
+        }
+        return $queries;
+    }
+
+    private function jsonArchive(array $queries): bool
+    {
+        $dirName = 'sc_export_' . now()->format('Md_H-i');
+        if (!Storage::disk('public')->directoryExists($dirName)) {
+            Storage::disk('public')->makeDirectory($dirName);
+
+            foreach ($queries as $K => $query) {
+                $fileName = 'sc_export_' . $K . '.json';
+                $archive = $query->get()->map(fn (JsonArchivableInterface $model) => $model->archive());
+                Storage::disk('public')->put($fileName, json_encode($archive, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            }
+
+            $planet = Planet::first();
+            $fileName = 'sc_export_planet.json';
+            Storage::disk('public')->put($fileName, json_encode($planet->archive(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+            return true;
+        }
+        return false;
     }
 }

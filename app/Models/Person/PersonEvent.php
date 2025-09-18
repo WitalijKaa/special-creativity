@@ -3,6 +3,7 @@
 namespace App\Models\Person;
 
 use App\Models\Collection\PersonCollection;
+use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\Work\Work;
 use App\Models\World\Life;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -51,7 +52,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * @mixin \Eloquent
  */
-class PersonEvent extends \Eloquent
+class PersonEvent extends \Eloquent implements JsonArchivableInterface
 {
     public const string TABLE_NAME = DB . '_event';
     protected $table = self::TABLE_NAME;

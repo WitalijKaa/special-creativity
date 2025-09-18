@@ -3,6 +3,7 @@
 namespace App\Models\Person;
 
 use App\Models\Collection\PersonEventCollection;
+use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\View\EventView;
 
 /**
@@ -27,7 +28,7 @@ use App\Models\View\EventView;
  *
  * @mixin \Eloquent
  */
-class EventType extends \Eloquent
+class EventType extends \Eloquent implements JsonArchivableInterface
 {
     public const int DEEP_LOVE = 1;
     public const int ONCE_LOVE = 2;

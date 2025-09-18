@@ -5,6 +5,7 @@ namespace App\Models\World;
 use App\Models\Collection\PersonEventBuilder;
 use App\Models\Collection\PersonEventCollection;
 use App\Models\Collection\WorkCollection;
+use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\Person\EventType;
 use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
@@ -66,7 +67,7 @@ use Illuminate\Support\Collection;
  *
  * @mixin \Eloquent
  */
-class Life extends \Eloquent
+class Life extends \Eloquent implements JsonArchivableInterface
 {
     public const int MAN = 1;
     public const int WOMAN = 2;

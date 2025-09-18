@@ -12,11 +12,11 @@
     <x-layout.divider></x-layout.divider>
 
     <x-table.basic name="Export statistics" :columns="['Items name', 'Items count']">
-        @foreach($json as $itemName => $items)
+        @foreach($json as $itemName => $count)
             @if($items instanceof \Illuminate\Support\Collection)
                 <tr>
                     <td>{{ ucfirst($itemName) }}</td>
-                    <td>{{ $items->count() }}</td>
+                    <td>{{ $count }}</td>
                 </tr>
             @endif
         @endforeach
