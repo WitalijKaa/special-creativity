@@ -7,18 +7,16 @@
     <x-layout.header-main>Planet export</x-layout.header-main>
 
     <x-session.success></x-session.success>
-    <x-form.submit :route="route('web.planet.export')" btn="Export to file"></x-form.submit>
+    <x-form.submit :route="route('web.planet.export')" btn="Export to files"></x-form.submit>
 
     <x-layout.divider></x-layout.divider>
 
     <x-table.basic name="Export statistics" :columns="['Items name', 'Items count']">
         @foreach($json as $itemName => $count)
-            @if($items instanceof \Illuminate\Support\Collection)
-                <tr>
-                    <td>{{ ucfirst($itemName) }}</td>
-                    <td>{{ $count }}</td>
-                </tr>
-            @endif
+            <tr>
+                <td>{{ ucfirst($itemName) }}</td>
+                <td>{{ $count }}</td>
+            </tr>
         @endforeach
     </x-table.basic>
 

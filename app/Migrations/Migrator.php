@@ -18,6 +18,8 @@ class Migrator implements MigratorInterface
         WorkMigration::class,
         EventMigration::class,
         EventConnectMigration::class,
+        PoetryMigration::class,
+        PoetryWordMigration::class,
     ];
 
     public static function migrate(): void

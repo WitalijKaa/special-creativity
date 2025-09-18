@@ -10,6 +10,7 @@ use App\Models\Person\EventType;
 use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventSynthetic;
+use App\Models\Poetry\Poetry;
 use App\Models\Work\LifeWork;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -64,6 +65,7 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $events
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $work_events
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\World\ForceEvent[] $forceEvents
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $poetry
  *
  * @mixin \Eloquent
  */
@@ -243,6 +245,7 @@ class Life extends \Eloquent implements JsonArchivableInterface
     protected $guarded = ['id'];
     public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
     public function forceEvents(): HasMany { return $this->hasMany(ForceEvent::class, 'life_id', 'id')->orderBy('id'); }
+    public function poetry(): HasMany { return $this->hasMany(Poetry::class, 'life_id', 'id')->orderBy('ix_text'); }
     protected function casts(): array
     {
         return [
