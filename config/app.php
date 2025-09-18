@@ -7,7 +7,7 @@ return [
     'debug' => (bool)env('APP_DEBUG'),
     'url' => env('APP_URL'),
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Belgrade',
     'locale' => env('APP_LOCALE'),
     'fallback_locale' => env('APP_FALLBACK_LOCALE'),
     'faker_locale' => env('APP_FAKER_LOCALE'),

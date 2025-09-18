@@ -18,6 +18,7 @@ class PoetryMigration implements MigratorInterface
             $table->integer('begin')->nullable(false)->unsigned(); // year
             $table->integer('end')->nullable(false)->unsigned(); // year
             $table->smallInteger('ix_text')->nullable(false)->unsigned();
+            $table->string('ai', 32)->nullable(true);
             $table->text('text')->nullable(false);
             $table->string('lang', 3)->nullable(false);
 
@@ -27,6 +28,7 @@ class PoetryMigration implements MigratorInterface
             $table->index('begin', DB . '_lp_begin');
             $table->index('end', DB . '_lp_end');
             $table->index('lang', DB . '_lp_lang');
+            $table->index('ai', DB . '_lp_ai');
         });
     }
 }

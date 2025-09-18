@@ -6,22 +6,29 @@ use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\Person\EventType;
 use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
+use App\Models\Poetry\Poetry;
+use App\Models\Poetry\PoetryWord;
 use App\Models\Work\Work;
 use App\Models\World\Life;
 use App\Models\World\Planet;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PlanetExportAction
 {
+    private const CHUNK = 500;
+
     public function __invoke(Request $request)
     {
         $queries = [
             'work' => Work::orderBy('begin'),
             'eventTypes' => EventType::where('id', '>', EventType::HOLY_LIFE)->orderBy('id'),
             'persons' => Person::orderBy('id'),
-            'lives' => Life::orderBy(['begin', 'person_id']),
+            'lives' => Life::orderBy('begin')->orderBy('person_id'),
             'events' => PersonEvent::with(['connections.person', 'person', 'life']),
+            'poetry' => Poetry::orderBy('life_id')->orderBy('lang')->orderBy('ai')->orderBy('ix_text'),
+            'poetryWords' => PoetryWord::orderBy('word'),
         ];
 
         if ($request->isMethod('post') && $this->jsonArchive($queries)) {
@@ -42,23 +49,47 @@ class PlanetExportAction
     private function jsonArchive(array $queries): bool
     {
         $dirName = 'sc_export_' . now()->format('Md_H-i');
-        if (Storage::disk('public')->directoryExists($dirName)) {
+        $disk = Storage::disk('public');
+
+        if ($disk->directoryExists($dirName)) {
             return false;
         }
 
-        Storage::disk('public')->makeDirectory($dirName);
+        $disk->makeDirectory($dirName);
 
         foreach ($queries as $K => $query) {
-            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            if (!$query->count()) {
+                continue;
+            }
+
             $fileName = $dirName . DIRECTORY_SEPARATOR . 'sc_export_' . $K . '.json';
-            $archive = $query->get()->map(fn (JsonArchivableInterface $model) => $model->archive());
-            Storage::disk('public')->put($fileName, json_encode($archive, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $stream = fopen($disk->path($fileName), 'w');
+            fwrite($stream, "[");
+            $this->streamWriteArchive($query, $stream);
+            fwrite($stream, "\n]");
+            fclose($stream);
         }
 
         $planet = Planet::first();
         $fileName = $dirName . DIRECTORY_SEPARATOR . 'sc_export_planet.json';
-        Storage::disk('public')->put($fileName, json_encode($planet->archive(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $disk->put($fileName, json_encode($planet->archive(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         return true;
+    }
+
+    private function streamWriteArchive(Builder $query, $stream): void
+    {
+        $first = true;
+        $query->chunk(self::CHUNK, function ($clt) use ($stream, &$first) {
+            foreach ($clt as $model) {
+                /** @var JsonArchivableInterface $model */
+
+                $json = ($first ? "\n" : ",\n") .
+                    json_encode($model->archive(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+                fwrite($stream, $json);
+                $first = false;
+            }
+        });
     }
 }

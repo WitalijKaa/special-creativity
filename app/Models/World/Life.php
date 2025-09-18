@@ -241,11 +241,27 @@ class Life extends \Eloquent implements JsonArchivableInterface
         ];
     }
 
+    public function poetry_specific(string $lang, ?string $ai): \Illuminate\Database\Eloquent\Collection
+    {
+        return Poetry::whereLifeId($this->id)
+            ->whereLang($lang)
+            ->when(
+                $ai,
+                function ($query, $ai) { $query->whereAi($ai); },
+                function ($query) { $query->whereNull('ai'); }
+            )
+            ->orderBy('ix_text')
+            ->get();
+    }
+
     public $timestamps = false;
     protected $guarded = ['id'];
     public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
     public function forceEvents(): HasMany { return $this->hasMany(ForceEvent::class, 'life_id', 'id')->orderBy('id'); }
-    public function poetry(): HasMany { return $this->hasMany(Poetry::class, 'life_id', 'id')->orderBy('ix_text'); }
+    public function poetry(): HasMany { return $this->hasMany(Poetry::class, 'life_id', 'id')
+        ->where('lang', config('basic.lang'))
+        ->whereNull('ai')
+        ->orderBy('ix_text'); }
     protected function casts(): array
     {
         return [

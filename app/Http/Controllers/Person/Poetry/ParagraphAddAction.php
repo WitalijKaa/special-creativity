@@ -25,6 +25,8 @@ class ParagraphAddAction
                 $model->end = $request->end ?? $request->begin;
 
                 $lastIX = Poetry::whereLifeId($life->id)
+                    ->whereLang($request->lang)
+                    ->whereNull('ai')
                     ->orderByDesc('ix_text')
                     ->first()
                     ?->ix_text ?? 0;

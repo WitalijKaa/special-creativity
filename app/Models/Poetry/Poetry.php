@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $begin
  * @property int $end
  * @property int $ix_text
+ * @property ?string $ai
  * @property string $text
  * @property string $lang
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry query()
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereEnd($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereIxText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereAi($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereLang($value)
  *
  * @property-read Person $person
@@ -43,12 +45,13 @@ class Poetry extends \Eloquent implements JsonArchivableInterface
         return [
             'export' => 'poetry',
             'export_id' => $this->ix_text,
+            'life_id' => $this->life_id,
 
+            'text' => $this->text,
+            'lang' => $this->lang,
+            'ai' => $this->ai,
             'begin' => $this->begin,
             'end' => $this->end,
-            'lang' => $this->lang,
-            'text' => $this->text,
-            'life_id' => $this->life_id,
         ];
     }
 

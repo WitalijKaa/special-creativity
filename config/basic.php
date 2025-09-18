@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'lang' => env('BASIC_LANG', 'rus'),
+
     'standardSupplyWorkerYears' => (int) env('WORK_STANDARD_SUPPLY_YEARS'),
     'workArmy' => [
         'prefix' => env('WORK_ARMY_PREFIX'),
