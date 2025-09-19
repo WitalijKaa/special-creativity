@@ -3,6 +3,8 @@
 return [
     'lang' => env('BASIC_LANG', 'rus'),
 
+    'llm_models' => ['meta','google','microsoft','france','china'],
+
     'standardSupplyWorkerYears' => (int) env('WORK_STANDARD_SUPPLY_YEARS'),
     'workArmy' => [
         'prefix' => env('WORK_ARMY_PREFIX'),

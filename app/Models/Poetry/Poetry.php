@@ -3,6 +3,7 @@
 namespace App\Models\Poetry;
 
 use App\Models\Inteface\JsonArchivableInterface;
+use App\Models\Inteface\PoetryInterface;
 use App\Models\Person\Person;
 use App\Models\World\Life;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @mixin \Eloquent
  */
-class Poetry extends \Eloquent implements JsonArchivableInterface
+class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterface
 {
     public const string TABLE_NAME = DB . '_poetry';
     protected $table = self::TABLE_NAME;
@@ -55,6 +56,22 @@ class Poetry extends \Eloquent implements JsonArchivableInterface
         ];
     }
 
+    public function text(): string { return $this->text; }
+
+    public function translation(string $text, string $lang, string $ai): static
+    {
+        $model = new static();
+        $model->text = $text;
+        $model->lang = $lang;
+        $model->ai = $ai;
+        $model->life_id = $this->life_id;
+        $model->person_id = $this->person_id;
+        $model->ix_text = $this->ix_text;
+        $model->begin = $this->begin;
+        $model->end = $this->end;
+        return $model;
+    }
+
     public $timestamps = false;
     protected $guarded = ['id'];
     public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
@@ -67,20 +84,6 @@ class Poetry extends \Eloquent implements JsonArchivableInterface
             'ix_text' => 'integer',
             'person_id' => 'integer',
             'life_id' => 'integer',
-        ];
-    }
-
-    public static function selectOptions(): array
-    {
-        return [
-            [
-                'opt' => 'rus',
-                'lbl' => 'Russian',
-            ],
-            [
-                'opt' => 'eng',
-                'lbl' => 'English',
-            ],
         ];
     }
 }

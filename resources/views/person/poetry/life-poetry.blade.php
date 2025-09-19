@@ -3,14 +3,20 @@
 /** @var \App\Models\World\Life $life */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $poetry */
+/** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[][] $aiVariants */
 
 $factory = new \App\Dto\Form\FormInputFactory();
 
 $personAddParagraph = [
     $factory->textarea('paragraph'),
-    $factory->select('lang', \App\Models\Poetry\Poetry::selectOptions(), 'Which language?'),
+    $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'),
     $factory->number('begin', 'start of paragraph'),
     $factory->number('end', 'end of paragraph'),
+];
+
+$personTranslateParagraph = [
+    $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectTranslateFromOriginalOptions(), 'Into which language translate to?'),
+    $factory->select('llm', \App\Models\Poetry\LanguageHelper::selectAiOptions(), 'Which llm to use?'),
 ];
 
 ?><x-layout.main :title="$life->person->name . ' ' . $life->type_name . '-' . $life->current_type_no">
@@ -35,6 +41,21 @@ $personAddParagraph = [
             <p>{{$paragraph->text}}</p>
         @endforeach
     </x-layout.container>
+
+    <x-form.basic :route="route('web.person.paragraph-translate', ['life_id' => $life->id])"
+                  btn="Translate to Foreign language"
+                  :fields="$personTranslateParagraph"></x-form.basic>
+
+    @foreach($aiVariants as $variation)
+        @php($vModel = $variation->first())
+        <x-layout.header-second>{{ \App\Models\Poetry\LanguageHelper::label($vModel->lang) }} vs LLM {{ $vModel->ai }}</x-layout.header-second>
+
+        <x-layout.container>
+            @foreach($variation as $paragraph)
+                <p>{{$paragraph->text}}</p>
+            @endforeach
+        </x-layout.container>
+    @endforeach
 
     <x-layout.divider></x-layout.divider>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\Collection\PersonEventCollection;
+use App\Models\Poetry\Poetry;
 use App\Models\World\Life;
 
 class LifePoetryAction
@@ -19,6 +20,14 @@ class LifePoetryAction
             ->sortNice()
             ->addSyntheticBirthDeath($life);
 
-        return view('person.poetry.life-poetry', compact('poetry', 'life', 'events'));
+        $aiVariants = Poetry::whereLifeId($life->id)
+            ->whereNotNull('ai')
+            ->select('ai')
+            ->distinct()
+            ->get()
+            ->pluck('ai')
+            ->map(fn (string $ai) => $life->poetry_specific(LL_ENG, $ai));
+
+        return view('person.poetry.life-poetry', compact('poetry', 'aiVariants', 'life', 'events'));
     }
 }

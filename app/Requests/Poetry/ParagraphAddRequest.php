@@ -2,7 +2,6 @@
 
 namespace App\Requests\Poetry;
 
-use App\Models\Poetry\Poetry;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -17,7 +16,7 @@ class ParagraphAddRequest extends FormRequest
 
     public function rules(): array
     {
-        $lang = collect(Poetry::selectOptions())->implode(fn($item) => $item['opt'], ',');
+        $lang = collect(\App\Models\Poetry\LanguageHelper::selectOptions())->implode(fn($item) => $item['opt'], ',');
 
         return [
             'paragraph' => 'required|string',

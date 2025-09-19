@@ -3,6 +3,15 @@
 const WORK_DAYS = 250;
 const WORK_HOURS = 8;
 
+const LL_RUS = 'rus';
+const LL_ENG = 'eng';
+
+const AI_GOOGLE = 'google';
+const AI_META = 'meta';
+const AI_MICROSOFT = 'microsoft';
+const AI_FRANCE = 'france';
+const AI_CHINA = 'china';
+
 const CC_PRIMARY = 'primary';
 const CC_SECONDARY = 'secondary';
 const CC_SUCCESS = 'success';
