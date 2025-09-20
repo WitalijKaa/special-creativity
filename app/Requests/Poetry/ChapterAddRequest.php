@@ -5,12 +5,10 @@ namespace App\Requests\Poetry;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * @property-read integer $begin
- * @property-read ?integer $end
+ * @property-read string $chapter
  * @property-read string $lang
- * @property-read string $paragraph
  */
-class ParagraphAddRequest extends FormRequest
+class ChapterAddRequest extends FormRequest
 {
     protected $redirectRoute = 'web.person.list';
 
@@ -19,10 +17,8 @@ class ParagraphAddRequest extends FormRequest
         $lang = collect(\App\Models\Poetry\LanguageHelper::selectOptions())->implode(fn($item) => $item['opt'], ',');
 
         return [
-            'paragraph' => 'required|string',
+            'chapter' => 'required|string',
             'lang' => "required|string|in:$lang",
-            'begin' => 'required|integer',
-            'end' => 'sometimes',
         ];
     }
 }

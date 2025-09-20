@@ -12,12 +12,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $id
  * @property int $person_id
  * @property int $life_id
- * @property int $begin
- * @property int $end
- * @property int $ix_text
+ * @property int $chapter
  * @property ?string $ai
  * @property string $text
+ * @property int $ix_text
+ * @property int $begin
+ * @property int $end
  * @property string $lang
+ * @property int $part
+ * @property int $spectrum
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry first($columns = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry orderBy($column, $direction = 'asc')
@@ -25,11 +28,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry wherePersonId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereLifeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereChapter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereAi($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereEnd($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereIxText($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereAi($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereLang($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry wherePart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereSpectrum($value)
  *
  * @property-read Person $person
  * @property-read Life $life
@@ -40,6 +46,9 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
 {
     public const string TABLE_NAME = DB . '_poetry';
     protected $table = self::TABLE_NAME;
+
+    public const SPECTRUM_MAIN = 1;
+    public const SPECTRUM_PHILOSOPHY = 2;
 
     public function archive(): array
     {

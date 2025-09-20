@@ -8,10 +8,8 @@
 $factory = new \App\Dto\Form\FormInputFactory();
 
 $personAddParagraph = [
-    $factory->textarea('paragraph'),
+    $factory->textarea('chapter'),
     $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'),
-    $factory->number('begin', 'start of paragraph'),
-    $factory->number('end', 'end of paragraph'),
 ];
 
 $personTranslateParagraph = [
@@ -30,8 +28,8 @@ $personTranslateParagraph = [
 
     <x-layout.header-second>poetry of Life...</x-layout.header-second>
 
-    <x-form.basic :route="route('web.person.paragraph-add', ['life_id' => $life->id])"
-                  btn="add Paragraph"
+    <x-form.basic :route="route('web.person.chapter-add', ['life_id' => $life->id])"
+                  btn="smart parse chapter"
                   :fields="$personAddParagraph"></x-form.basic>
 
     <x-layout.divider></x-layout.divider>

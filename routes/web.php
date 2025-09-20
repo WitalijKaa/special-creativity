@@ -21,7 +21,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::match(['get','post'], 'personas', \App\Http\Controllers\Person\PersonListAction::class)->name('list');
         Route::match(['get','post'], 'life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]+')->name('details');
         Route::get('poetry/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life');
-        Route::post('poetry/add/{life_id}', \App\Http\Controllers\Person\Poetry\ParagraphAddAction::class)->where(['life_id'], '[0-9]+')->name('paragraph-add');
+        Route::post('poetry/add/{life_id}', \App\Http\Controllers\Person\Poetry\ChapterAddAction::class)->where(['life_id'], '[0-9]+')->name('chapter-add');
         Route::post('poetry/translate/{life_id}', \App\Http\Controllers\Person\Poetry\ParagraphTranslateAction::class)->where(['life_id'], '[0-9]+')->name('paragraph-translate');
         Route::get('{person_id}/{life_id}', \App\Http\Controllers\Person\LifeDetailsAction::class)->where(['person_id', 'life_id'], '[0-9]+')->name('details-life');
         Route::post('add-person/{author_id}', \App\Http\Controllers\Person\PersonAddAction::class)->where('author_id', '[0-9]+')->name('add');
