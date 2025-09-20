@@ -16,6 +16,13 @@ return [
 
     'channels' => [
 
+        'ai_weird' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/ai_weird.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),

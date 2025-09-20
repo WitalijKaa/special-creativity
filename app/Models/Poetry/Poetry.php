@@ -54,12 +54,16 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
     {
         return [
             'export' => 'poetry',
-            'export_id' => $this->ix_text,
-            'life_id' => $this->life_id,
+            'export_id' => $this->person->name,
+            'export_type' => $this->life->type,
 
+            'chapter' => $this->chapter,
+            'ix_text' => $this->ix_text,
             'text' => $this->text,
             'lang' => $this->lang,
             'ai' => $this->ai,
+            'part' => $this->part,
+            'spectrum' => $this->spectrum,
             'begin' => $this->begin,
             'end' => $this->end,
         ];
@@ -70,6 +74,9 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
     public function translation(string $text, string $lang, string $ai): static
     {
         $model = new static();
+        $model->chapter = $this->chapter;
+        $model->part = $this->part;
+        $model->spectrum = $this->spectrum;
         $model->text = trim($text);
         $model->lang = $lang;
         $model->ai = $ai;

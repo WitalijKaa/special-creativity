@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property-read string $to_lang
  * @property-read string $llm
  */
-class ParagraphTranslateRequest extends FormRequest
+class ChapterTranslateRequest extends FormRequest
 {
     protected $redirectRoute = 'web.person.list';
 

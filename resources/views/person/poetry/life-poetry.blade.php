@@ -7,12 +7,12 @@
 
 $factory = new \App\Dto\Form\FormInputFactory();
 
-$personAddParagraph = [
+$formAddChapter = [
     $factory->textarea('chapter'),
     $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'),
 ];
 
-$personTranslateParagraph = [
+$formTranslateChapter = [
     $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectTranslateFromOriginalOptions(), 'Into which language translate to?'),
     $factory->select('llm', \App\Models\Poetry\LanguageHelper::selectAiOptions(), 'Which llm to use?'),
 ];
@@ -28,25 +28,23 @@ $personTranslateParagraph = [
 
     <x-layout.header-second>poetry of Life...</x-layout.header-second>
 
-    <x-form.basic :route="route('web.person.chapter-add', ['life_id' => $life->id])"
-                  btn="smart parse chapter"
-                  :fields="$personAddParagraph"></x-form.basic>
-
-    <x-layout.divider></x-layout.divider>
-
     <x-layout.container>
         @foreach($poetry as $paragraph)
             <p>{{$paragraph->text}}</p>
         @endforeach
     </x-layout.container>
 
-    <x-form.basic :route="route('web.person.paragraph-translate', ['life_id' => $life->id])"
+    <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
                   btn="Translate to Foreign language"
-                  :fields="$personTranslateParagraph"></x-form.basic>
+                  :fields="$formTranslateChapter"></x-form.basic>
 
     @foreach($aiVariants as $variation)
         @php($vModel = $variation->first())
-        <x-layout.header-second>{{ \App\Models\Poetry\LanguageHelper::label($vModel->lang) }} vs LLM {{ $vModel->ai }}</x-layout.header-second>
+        <x-layout.header-second>
+            {{ \App\Models\Poetry\LanguageHelper::label($vModel->lang) }}
+            vs LLM
+            <span class="badge bg-success">{{ $vModel->ai }}</span>
+        </x-layout.header-second>
 
         <x-layout.container>
             @foreach($variation as $paragraph)
@@ -60,6 +58,12 @@ $personTranslateParagraph = [
     <x-form.container>
         @include('components.pages.life-nav', ['model' => $life])
     </x-form.container>
+
+    <x-layout.divider></x-layout.divider>
+
+    <x-form.basic :route="route('web.person.chapter-add', ['life_id' => $life->id])"
+                  btn="smart parse chapter"
+                  :fields="$formAddChapter"></x-form.basic>
 
     <x-layout.header-second>Work 💪🏻 is {{ $life->lifeWork->workYears }}</x-layout.header-second>
 
