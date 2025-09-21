@@ -1,10 +1,10 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\PoetryWord[] $words */
+/** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\PoetryWord[] $models */
 
 $factory = new \App\Dto\Form\FormInputFactory();
 
-$formFields = [
+$formAddWord = [
     $factory->input('word', 'Word'),
     $factory->textarea('definition', 'Definition'),
     $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Language'),
@@ -14,20 +14,21 @@ $formFields = [
 <x-layout.main title="Poetry words">
     <x-layout.header-main>Poetry words</x-layout.header-main>
 
-    <x-session.success></x-session.success>
-
     <x-form.basic :route="route('web.person.poetry-word-add')"
                   btn="Save word"
-                  :fields="$formFields"></x-form.basic>
+                  :fields="$formAddWord"></x-form.basic>
 
     <x-layout.divider></x-layout.divider>
 
+    <x-session.success></x-session.success>
+
     <x-table.basic name="Words" :columns="['Word', 'Definition', 'Actions']">
-        @foreach($words as $word)
+        @foreach($models as $word)
             <tr>
                 <td>{{ $word->word }}</td>
                 <td>{{ $word->definition }}</td>
                 <td>
+                    <a href="{{ route('web.person.poetry-word-edit', ['id' => $word->id]) }}" class="btn btn-primary btn-sm">edit</a>
                     <x-form.submit-nano :route="route('web.person.poetry-word-translate', ['id' => $word->id])" btn="translate"></x-form.submit-nano>
                     <x-form.submit-nano :route="route('web.person.poetry-word-delete', ['id' => $word->id])" btn="del"></x-form.submit-nano>
                 </td>

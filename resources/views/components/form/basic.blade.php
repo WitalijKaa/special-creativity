@@ -51,7 +51,7 @@
                 <div class="d-grid offset-xl-8 col-xl-4">
                     <div class="d-flex @if(!empty($btnWarn)) justify-content-between @else justify-content-end @endif">
                         @if(!empty($btnWarn))
-                            <a href="{{$btnWarn['href']}}" class="btn btn-outline-warning">{{$btnWarn['lbl']}}</a>
+                            <a href="{{$btnWarn['href']}}" class="btn btn-outline-warning me-2">{{$btnWarn['lbl']}}</a>
                         @endif
                         <button type="submit" class="btn btn-outline-success">{{$btn}}</button>
                     </div>

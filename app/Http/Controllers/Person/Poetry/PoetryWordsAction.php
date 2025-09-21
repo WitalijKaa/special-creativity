@@ -9,8 +9,8 @@ class PoetryWordsAction
 {
     public function __invoke(): View
     {
-        $words = PoetryWord::whereLang(LL_RUS)->get();
+        $models = PoetryWord::whereLang(LL_RUS)->get();
 
-        return view('person.poetry.words', compact('words'));
+        return view('person.poetry.words', compact('models'));
     }
 }
