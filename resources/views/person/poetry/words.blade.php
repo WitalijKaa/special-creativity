@@ -5,8 +5,9 @@
 $factory = new \App\Dto\Form\FormInputFactory();
 
 $formAddWord = [
-    $factory->input('word', 'Word'),
-    $factory->textarea('definition', 'Definition'),
+    $factory->input('word'),
+    $factory->input('word_eng', 'English'),
+    $factory->textarea('definition'),
     $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Language'),
 ];
 
@@ -22,10 +23,11 @@ $formAddWord = [
 
     <x-session.success></x-session.success>
 
-    <x-table.basic name="Words" :columns="['Word', 'Definition', 'Actions']">
+    <x-table.basic name="Words" :columns="['Word', 'English', 'Definition', 'Actions']">
         @foreach($models as $word)
             <tr>
                 <td>{{ $word->word }}</td>
+                <td>{{ $word->word_eng }}</td>
                 <td>{{ $word->definition }}</td>
                 <td>
                     <a href="{{ route('web.person.poetry-word-edit', ['id' => $word->id]) }}" class="btn btn-primary btn-sm">edit</a>

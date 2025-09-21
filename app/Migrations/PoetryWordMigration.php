@@ -14,6 +14,7 @@ class PoetryWordMigration implements MigratorInterface
         Schema::create(static::tableName(), function (Blueprint $table) {
             $table->id();
             $table->string('word', 125)->nullable(false);
+            $table->string('word_eng', 125)->nullable(false);
             $table->text('definition')->nullable(false);
             $table->string('lang', 3)->nullable(false);
 

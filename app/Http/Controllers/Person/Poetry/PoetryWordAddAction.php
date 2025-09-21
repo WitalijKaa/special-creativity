@@ -11,6 +11,7 @@ class PoetryWordAddAction
     {
         PoetryWord::create([
             'word' => trim($request->word),
+            'word_eng' => trim($request->word_eng),
             'definition' => trim($request->definition),
             'lang' => $request->lang,
         ]);

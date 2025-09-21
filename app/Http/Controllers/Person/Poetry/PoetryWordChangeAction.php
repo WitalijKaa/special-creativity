@@ -11,6 +11,7 @@ class PoetryWordChangeAction
     {
         $model = PoetryWord::query()->findOrFail($id);
         $model->word = trim($request->word);
+        $model->word_eng = trim($request->word_eng);
         $model->definition = trim($request->definition);
         $model->lang = $request->lang;
         $model->save();
