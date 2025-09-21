@@ -22,12 +22,15 @@ $formFields = [
 
     <x-layout.divider></x-layout.divider>
 
-    <x-table.basic name="Words" :columns="['Word', 'Definition', 'Language']">
+    <x-table.basic name="Words" :columns="['Word', 'Definition', 'Actions']">
         @foreach($words as $word)
             <tr>
                 <td>{{ $word->word }}</td>
                 <td>{{ $word->definition }}</td>
-                <td>{{ $word->lang }}</td>
+                <td>
+                    <x-form.submit-nano :route="route('web.person.poetry-word-translate', ['id' => $word->id])" btn="translate"></x-form.submit-nano>
+                    <x-form.submit-nano :route="route('web.person.poetry-word-delete', ['id' => $word->id])" btn="del"></x-form.submit-nano>
+                </td>
             </tr>
         @endforeach
     </x-table.basic>

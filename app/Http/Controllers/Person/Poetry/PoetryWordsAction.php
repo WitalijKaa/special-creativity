@@ -11,6 +11,6 @@ class PoetryWordsAction
     {
         $words = PoetryWord::whereLang(LL_RUS)->get();
 
-        return view('poetry.words', compact('words'));
+        return view('person.poetry.words', compact('words'));
     }
 }
