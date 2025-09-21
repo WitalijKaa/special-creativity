@@ -28,6 +28,10 @@ $formTranslateChapter = [
 
     <x-layout.header-second>poetry of Life...</x-layout.header-second>
 
+    @if($poetry->count())
+        <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null'])" method="get" btn="Edit paragraphs"></x-form.submit>
+    @endif
+
     <x-layout.container>
         @foreach($poetry as $paragraph)
             <p>{{$paragraph->text}}</p>
@@ -45,6 +49,10 @@ $formTranslateChapter = [
             vs LLM
             <span class="badge bg-success">{{ $vModel->ai }}</span>
         </x-layout.header-second>
+
+        @if($poetry->count())
+            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai])" method="get" btn="Edit paragraphs"></x-form.submit>
+        @endif
 
         <x-layout.container>
             @foreach($variation as $paragraph)

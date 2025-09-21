@@ -22,12 +22,14 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::match(['get','post'], 'life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]+')->name('details');
 
         Route::get('poetry/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life');
+        Route::get('poetry-edit/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\ParagraphsEditAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-edit');
+        Route::post('poetry-paragraph-change/{id}', \App\Http\Controllers\Person\Poetry\ParagraphChangeAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-change');
         Route::post('poetry/add/{life_id}', \App\Http\Controllers\Person\Poetry\ChapterAddAction::class)->where(['life_id'], '[0-9]+')->name('chapter-add');
         Route::post('poetry/translate/{life_id}', \App\Http\Controllers\Person\Poetry\ChapterTranslateAction::class)->where(['life_id'], '[0-9]+')->name('chapter-translate');
         Route::get('poetry-words', \App\Http\Controllers\Person\Poetry\PoetryWordsAction::class)->name('poetry-words');
         Route::get('poetry-word-edit/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordEditAction::class)->where('id', '[0-9]+')->name('poetry-word-edit');
         Route::post('poetry-word-add', \App\Http\Controllers\Person\Poetry\PoetryWordAddAction::class)->name('poetry-word-add');
-        Route::post('poetry-word-change/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordUpdateAction::class)->where('id', '[0-9]+')->name('poetry-word-change');
+        Route::post('poetry-word-change/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordChangeAction::class)->where('id', '[0-9]+')->name('poetry-word-change');
         Route::post('poetry-word-translate/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordTranslateAction::class)->where('id', '[0-9]+')->name('poetry-word-translate');
         Route::post('poetry-word-delete/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordDeleteAction::class)->where('id', '[0-9]+')->name('poetry-word-delete');
 

@@ -26,7 +26,7 @@ class LifePoetryAction
             ->distinct()
             ->get()
             ->pluck('ai')
-            ->map(fn (string $ai) => $life->poetry_specific(LL_ENG, $ai));
+            ->map(fn (string $llm) => $life->poetrySpecific(LL_ENG, $llm));
 
         return view('person.poetry.life-poetry', compact('poetry', 'aiVariants', 'life', 'events'));
     }

@@ -16,7 +16,7 @@ class ChapterTranslateAction
             return redirect(route('web.person.list'));
         }
 
-        $poetry = $life->poetry_specific(LanguageHelper::oppositeLang($request->to_lang), null);
+        $poetry = $life->poetrySpecific(LanguageHelper::oppositeLang($request->to_lang), null);
 
         if ($poetry->count() && LL_ENG == $request->to_lang) {
             $translate = new TranslateWithAi();

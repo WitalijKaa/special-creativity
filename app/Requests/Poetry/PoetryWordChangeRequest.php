@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property-read string $definition
  * @property-read string $lang
  */
-class PoetryWordUpdateRequest extends FormRequest
+class PoetryWordChangeRequest extends FormRequest
 {
     public function rules(): array
     {

@@ -48,6 +48,11 @@
                         </div>
                     @endif
                 @endforeach
+                @if(!empty($bottomInfo))
+                    <div class="d-grid col-xl-4">
+                        <div class="text-muted small">{{ $bottomInfo }}</div>
+                    </div>
+                @endif
                 <div class="d-grid offset-xl-8 col-xl-4">
                     <div class="d-flex @if(!empty($btnWarn)) justify-content-between @else justify-content-end @endif">
                         @if(!empty($btnWarn))

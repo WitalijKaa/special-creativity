@@ -241,12 +241,12 @@ class Life extends \Eloquent implements JsonArchivableInterface
         ];
     }
 
-    public function poetry_specific(string $lang, ?string $ai): \Illuminate\Database\Eloquent\Collection
+    public function poetrySpecific(string $lang, ?string $llm): \Illuminate\Database\Eloquent\Collection
     {
         return Poetry::whereLifeId($this->id)
             ->whereLang($lang)
             ->when(
-                $ai,
+                $llm,
                 function ($query, $ai) { $query->whereAi($ai); },
                 function ($query) { $query->whereNull('ai'); }
             )

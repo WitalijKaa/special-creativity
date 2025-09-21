@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\Poetry\PoetryWord;
-use App\Requests\Poetry\PoetryWordUpdateRequest;
+use App\Requests\Poetry\PoetryWordChangeRequest;
 use Illuminate\Http\RedirectResponse;
 
-class PoetryWordUpdateAction
+class PoetryWordChangeAction
 {
-    public function __invoke(PoetryWordUpdateRequest $request, int $id): RedirectResponse
+    public function __invoke(PoetryWordChangeRequest $request, int $id): RedirectResponse
     {
         $model = PoetryWord::query()->findOrFail($id);
         $model->word = trim($request->word);
