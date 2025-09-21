@@ -51,7 +51,7 @@ $formTranslateChapter = [
         </x-layout.header-second>
 
         @if($poetry->count())
-            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai])" method="get" btn="Edit paragraphs"></x-form.submit>
+            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai ?? 'null'])" method="get" btn="Edit paragraphs"></x-form.submit>
         @endif
 
         <x-layout.container>

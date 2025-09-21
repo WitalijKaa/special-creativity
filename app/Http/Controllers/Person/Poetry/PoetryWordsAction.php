@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\Poetry\PoetryWord;
-use Illuminate\Contracts\View\View;
 
 class PoetryWordsAction
 {
-    public function __invoke(): View
+    public function __invoke()
     {
         $models = PoetryWord::whereLang(LL_RUS)->get();
 

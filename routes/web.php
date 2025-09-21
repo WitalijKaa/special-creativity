@@ -24,6 +24,8 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('poetry/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life');
         Route::get('poetry-edit/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\ParagraphsEditAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-edit');
         Route::post('poetry-paragraph-change/{id}', \App\Http\Controllers\Person\Poetry\ParagraphChangeAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-change');
+        Route::post('poetry-paragraph-delete/{id}', \App\Http\Controllers\Person\Poetry\ParagraphDeleteAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-delete');
+        Route::post('poetry-paragraph-move-down/{id}', \App\Http\Controllers\Person\Poetry\ParagraphMoveDownAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-move-down');
         Route::post('poetry/add/{life_id}', \App\Http\Controllers\Person\Poetry\ChapterAddAction::class)->where(['life_id'], '[0-9]+')->name('chapter-add');
         Route::post('poetry/translate/{life_id}', \App\Http\Controllers\Person\Poetry\ChapterTranslateAction::class)->where(['life_id'], '[0-9]+')->name('chapter-translate');
         Route::get('poetry-words', \App\Http\Controllers\Person\Poetry\PoetryWordsAction::class)->name('poetry-words');

@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\Poetry\Poetry;
 use App\Requests\Poetry\PoetryParagraphChangeRequest;
-use Illuminate\Http\RedirectResponse;
 
 class ParagraphChangeAction
 {
-    public function __invoke(int $id, PoetryParagraphChangeRequest $request): RedirectResponse
+    public function __invoke(int $id, PoetryParagraphChangeRequest $request)
     {
         $model = Poetry::query()->findOrFail($id);
         $model->text = trim($request->text);

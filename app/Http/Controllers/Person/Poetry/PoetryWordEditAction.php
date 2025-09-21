@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\Poetry\PoetryWord;
-use Illuminate\Contracts\View\View;
 
 class PoetryWordEditAction
 {
-    public function __invoke(int $id): View
+    public function __invoke(int $id)
     {
         $model = PoetryWord::query()->findOrFail($id);
 

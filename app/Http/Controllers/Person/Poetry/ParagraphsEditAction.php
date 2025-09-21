@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\World\Life;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class ParagraphsEditAction
 {
-    public function __invoke(int $life_id, string $lang, string $llm): View|RedirectResponse
+    public function __invoke(int $life_id, string $lang, string $llm)
     {
         $llm = 'null' == $llm ? null : $llm;
 

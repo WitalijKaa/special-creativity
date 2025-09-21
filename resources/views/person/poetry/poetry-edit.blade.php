@@ -25,6 +25,11 @@ $factory = new \App\Dto\Form\FormInputFactory();
                       btn="Save paragraph"
                       :bottom-info="'Y ' . $paragraph->begin . ($paragraph->begin == $paragraph->end ? '' : ('-' . $paragraph->end))"
                       :fields="[$fText]"></x-form.basic>
+
+        <x-form.submit :route="route('web.person.poetry-paragraph-delete', ['id' => $paragraph->id])" btn="del"></x-form.submit>
+        <x-form.submit :route="route('web.person.poetry-paragraph-move-down', ['id' => $paragraph->id])" btn="move down"></x-form.submit>
+
+        <x-layout.divider></x-layout.divider>
     @endforeach
 
     <x-layout.container>

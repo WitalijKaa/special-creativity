@@ -245,11 +245,7 @@ class Life extends \Eloquent implements JsonArchivableInterface
     {
         return Poetry::whereLifeId($this->id)
             ->whereLang($lang)
-            ->when(
-                $llm,
-                function ($query, $ai) { $query->whereAi($ai); },
-                function ($query) { $query->whereNull('ai'); }
-            )
+            ->whereAi($llm)
             ->orderBy('ix_text')
             ->get();
     }
