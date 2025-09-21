@@ -63,6 +63,9 @@ $basicEventType = [
             <a href="{{route('web.planet.export')}}" type="button" class="btn btn-danger btn-lg">Export</a>
             @include('components.pages.major-nav')
             <br><br>
+            <a href="{{route('web.person.poetry-words')}}" type="button" class="btn btn-danger btn-lg">Poetry words</a>
+            <a href="{{route('web.prediction.future')}}" type="button" class="btn btn-warning btn-lg">Predictions</a>
+            <br><br>
             <a href="{{route('web.visual.lives-timeline')}}" type="button" class="btn btn-info btn-lg">Lives-T</a>
             <a href="{{route('web.visual.years-population')}}" type="button" class="btn btn-info btn-lg">Years-Persons</a>
             <br><br>

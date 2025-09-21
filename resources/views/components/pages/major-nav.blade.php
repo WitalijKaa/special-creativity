@@ -2,4 +2,3 @@
 <a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
 <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
 <a href="{{route('web.basic.events')}}" type="button" class="btn btn-success btn-lg">Events</a>
-<a href="{{route('web.prediction.future')}}" type="button" class="btn btn-warning btn-lg">Predictions</a>

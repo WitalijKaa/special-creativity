@@ -1,0 +1,41 @@
+<?php
+
+/** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\PoetryWord[] $words */
+
+$factory = new \App\Dto\Form\FormInputFactory();
+
+$formFields = [
+    $factory->input('word', 'Word'),
+    $factory->textarea('definition', 'Definition'),
+    $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Language'),
+];
+
+?>
+<x-layout.main title="Poetry words">
+    <x-layout.header-main>Poetry words</x-layout.header-main>
+
+    <x-session.success></x-session.success>
+
+    <x-form.basic :route="route('web.person.poetry-word-add')"
+                  btn="Save word"
+                  :fields="$formFields"></x-form.basic>
+
+    <x-layout.divider></x-layout.divider>
+
+    <x-table.basic name="Words" :columns="['Word', 'Definition', 'Language']">
+        @foreach($words as $word)
+            <tr>
+                <td>{{ $word->word }}</td>
+                <td>{{ $word->definition }}</td>
+                <td>{{ $word->lang }}</td>
+            </tr>
+        @endforeach
+    </x-table.basic>
+
+    <x-layout.divider></x-layout.divider>
+
+    <x-form.container>
+        <a href="{{ route('web.planet.params') }}" type="button" class="btn btn-secondary btn-lg">Params</a>
+        <a href="{{ route('web.person.list') }}" type="button" class="btn btn-primary btn-lg">Personas</a>
+    </x-form.container>
+</x-layout.main>
