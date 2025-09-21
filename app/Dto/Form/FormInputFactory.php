@@ -6,9 +6,16 @@ class FormInputFactory
 {
     private ?FormFieldInputDto $preDefined;
 
-    public function input(string $id, null|string $label = null): FormFieldInputDto
+    public function input(string $id, null|string|self $label = null, null|self $preDefined = null): FormFieldInputDto
     {
-        $dto = $this->flashPreDefined() ?? new FormFieldInputDto();
+        if ($label instanceof FormInputFactory) {
+            $dto = $label->flashPreDefined();
+            $label = null;
+        }
+        else if ($preDefined instanceof FormInputFactory) {
+            $dto = $preDefined->flashPreDefined();
+        }
+        $dto = empty($dto) ? new FormFieldInputDto() : $dto;
         $dto->id = $id;
         $dto->label = $label ?? ucfirst($id);
         return $dto;
@@ -51,9 +58,6 @@ class FormInputFactory
 
     private function flashPreDefined(): ?FormFieldInputDto
     {
-        if (empty($this->preDefined)) {
-            return null;
-        }
         $return = $this->preDefined;
         $this->preDefined = null;
         return $return;

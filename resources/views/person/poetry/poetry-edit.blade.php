@@ -4,22 +4,17 @@
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $poetry */
 
 $factory = new \App\Dto\Form\FormInputFactory();
+$vPerson = new \App\Models\View\PersonView();
 
-?><x-layout.main :title="$life->person->name . ' ' . $life->type_name . '-' . $life->current_type_no">
-    <x-layout.header-main>
-        {{ $life->person->name }} {{ $life->person->nick }} {{ $life->role_name }}
-        <br>
-        [{{ $life->begin }}-{{ $life->end }}]Y<small><small>{{ $life->end - $life->begin }}</small></small>
-        <br>
-        {{ $life->type_name }}-{{ $life->current_type_no }}
-    </x-layout.header-main>
+?><x-layout.main :title="$vPerson->titleLife($life) . ' edit Poetry'">
+    <x-pages.headers.life-header :model="$life"></x-pages.headers.life-header>
 
     <x-layout.header-second>Edit paragraph (only a single one)</x-layout.header-second>
 
     <x-session.success></x-session.success>
 
     @foreach($poetry as $paragraph)
-        @php($fText = $factory->withValue($paragraph->text)->textarea('text', 'Paragraph #' . $paragraph->ix_text))
+        @php($fText = $factory->textarea('text', 'Paragraph #' . $paragraph->ix_text, $factory->withValue($paragraph->text)))
 
         <x-form.basic :route="route('web.person.poetry-paragraph-change', ['id' => $paragraph->id])"
                       btn="Save paragraph"
@@ -32,7 +27,8 @@ $factory = new \App\Dto\Form\FormInputFactory();
         <x-layout.divider></x-layout.divider>
     @endforeach
 
-    <x-layout.container>
-        <a href="{{ route('web.person.poetry-life', ['life_id' => $life->id]) }}" class="btn btn-secondary btn-lg">Back to Poetry</a>
-    </x-layout.container>
+    <x-form.container>
+        @include('components.pages.life-nav', ['model' => $life])
+    </x-form.container>
+
 </x-layout.main>

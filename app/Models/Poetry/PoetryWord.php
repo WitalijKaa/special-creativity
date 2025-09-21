@@ -2,6 +2,7 @@
 
 namespace App\Models\Poetry;
 
+use App\Models\Collection\PoetryWordCollection;
 use App\Models\Inteface\JsonArchivableInterface;
 
 /**
@@ -24,6 +25,11 @@ class PoetryWord extends \Eloquent implements JsonArchivableInterface
 {
     public const string TABLE_NAME = DB . '_poetry_word';
     protected $table = self::TABLE_NAME;
+
+    public static function byLang(string $lang): PoetryWordCollection
+    {
+        return PoetryWordCollection::toCollection(PoetryWord::whereLang($lang)->get());
+    }
 
     public function archive(): array
     {

@@ -1,1 +1,15 @@
 @import 'bootstrap/scss/bootstrap';
+
+.poetry-word, .name-word  {
+    border-radius: 4px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.poetry-word {
+    background-color: #cfd8dc;
+}
+
+.name-word {
+    background-color: #fff3e0;
+}

@@ -3,12 +3,18 @@
 namespace App\Models\View;
 
 use App\Models\Collection\LifeCollection;
+use App\Models\Collection\PoetryWordCollection;
 use App\Models\Person\Person;
 use App\Models\World\ForceEvent;
 use App\Models\World\Life;
 
 class PersonView extends AbstractView
 {
+    public function titleLife(Life $model): string
+    {
+        return $model->person->name . ' ' . $model->type_name . '-' . $model->current_type_no;
+    }
+
     public function labelAuthor(Person $model): string
     {
         if (!$model->author) {
@@ -199,5 +205,16 @@ class PersonView extends AbstractView
             '</div>';
 
         return '<div class="w-75">' . $names . ' <u>_' . ($year - $life->begin) . '_</u></div>' . $count;
+    }
+
+    public function wordSpanClass(string $word, PoetryWordCollection $words): array
+    {
+        if ($tip = $words->wordTip($word)) {
+            return ['poetry-word', $tip];
+        }
+        if ($words->isName($word)) {
+            return ['name-word', ''];
+        }
+        return ['', ''];
     }
 }

@@ -1,5 +1,7 @@
 # SPECIAL CREATIVITY helper
 
+----
+
 #### composer install
 #### npm install
 #### npm run build
@@ -8,4 +10,11 @@
 #### exit
 #### php artisan migrate
 
+----
+
 #### php artisan ide-helper:generate
+
+----
+
+#### osp node use 24.8.0
+#### npm run build

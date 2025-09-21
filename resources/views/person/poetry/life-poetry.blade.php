@@ -4,6 +4,7 @@
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $poetry */
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[][] $aiVariants */
+/** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $words */
 
 $factory = new \App\Dto\Form\FormInputFactory();
 
@@ -17,14 +18,10 @@ $formTranslateChapter = [
     $factory->select('llm', \App\Models\Poetry\LanguageHelper::selectAiOptions(), 'Which llm to use?'),
 ];
 
-?><x-layout.main :title="$life->person->name . ' ' . $life->type_name . '-' . $life->current_type_no">
-    <x-layout.header-main>
-        {{ $life->person->name }} {{ $life->person->nick }} {{ $life->role_name }}
-        <br>
-        [{{ $life->begin }}-{{ $life->end }}]Y<small><small>{{ $life->end - $life->begin }}</small></small>
-        <br>
-        {{ $life->type_name }}-{{ $life->current_type_no }}
-    </x-layout.header-main>
+$vPerson = new \App\Models\View\PersonView();
+
+?><x-layout.main :title="$vPerson->titleLife($life) . ' Poetry'">
+    <x-pages.headers.life-header :model="$life"></x-pages.headers.life-header>
 
     <x-layout.header-second>poetry of Life...</x-layout.header-second>
 
@@ -34,7 +31,13 @@ $formTranslateChapter = [
 
     <x-layout.container>
         @foreach($poetry as $paragraph)
-            <p>{{$paragraph->text}}</p>
+            @php($pList = explode(' ', $paragraph->text))
+            <p>
+                @foreach($pList as $word)
+                    @php([$wordClass, $wordTip] = $vPerson->wordSpanClass($word, $words))
+                    <span class="{{$wordClass}}">{{$word}}</span>
+                @endforeach
+            </p>
         @endforeach
     </x-layout.container>
 
@@ -60,12 +63,6 @@ $formTranslateChapter = [
             @endforeach
         </x-layout.container>
     @endforeach
-
-    <x-layout.divider></x-layout.divider>
-
-    <x-form.container>
-        @include('components.pages.life-nav', ['model' => $life])
-    </x-form.container>
 
     <x-layout.divider></x-layout.divider>
 

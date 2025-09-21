@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\Collection\PersonEventCollection;
 use App\Models\Poetry\Poetry;
+use App\Models\Poetry\PoetryWord;
 use App\Models\World\Life;
 
 class LifePoetryAction
@@ -28,6 +29,8 @@ class LifePoetryAction
             ->pluck('ai')
             ->map(fn (string $llm) => $life->poetrySpecific(LL_ENG, $llm));
 
-        return view('person.poetry.life-poetry', compact('poetry', 'aiVariants', 'life', 'events'));
+        $words = PoetryWord::byLang(LL_RUS);
+
+        return view('person.poetry.life-poetry', compact('poetry', 'aiVariants', 'life', 'events', 'words'));
     }
 }

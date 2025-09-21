@@ -41,7 +41,7 @@ $formAddWord = [
     <x-layout.divider></x-layout.divider>
 
     <x-form.container>
-        <a href="{{ route('web.planet.params') }}" type="button" class="btn btn-secondary btn-lg">Params</a>
-        <a href="{{ route('web.person.list') }}" type="button" class="btn btn-primary btn-lg">Personas</a>
+        @include('components.pages.major-nav')
     </x-form.container>
+
 </x-layout.main>
