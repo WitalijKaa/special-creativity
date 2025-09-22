@@ -49,6 +49,11 @@ class EventType extends \Eloquent implements JsonArchivableInterface
         return $return;
     }
 
+    public static function fromArchive(array $archive): void
+    {
+        static::create($archive);
+    }
+
     public $timestamps = false;
     protected $guarded = ['id'];
     protected function casts(): array

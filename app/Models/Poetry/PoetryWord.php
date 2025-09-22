@@ -34,13 +34,16 @@ class PoetryWord extends \Eloquent implements JsonArchivableInterface
     public function archive(): array
     {
         return [
-            'export' => 'poetry_word',
-
             'word' => $this->word,
             'word_eng' => $this->word_eng,
             'definition' => $this->definition,
             'lang' => $this->lang,
         ];
+    }
+
+    public static function fromArchive(array $archive): void
+    {
+        static::create($archive);
     }
 
     public $timestamps = false;

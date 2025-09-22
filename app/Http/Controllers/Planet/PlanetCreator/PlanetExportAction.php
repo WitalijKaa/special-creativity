@@ -21,7 +21,17 @@ class PlanetExportAction
 
     public function __invoke(Request $request)
     {
-        $queries = [
+        if ($request->isMethod('post') && $this->jsonArchive(self::exportQueries())) {
+            return redirect()->route('web.planet.export')->with('status', "Export SUCCESS!");
+        }
+
+        return view('planet.export', ['json' => $this->jsonSummary(self::exportQueries())]);
+    }
+
+    public static function exportQueries(): array
+    {
+        return [
+            'planet' => Planet::orderBy('id'),
             'work' => Work::orderBy('begin'),
             'eventTypes' => EventType::where('id', '>', EventType::HOLY_LIFE)->orderBy('id'),
             'persons' => Person::orderBy('id'),
@@ -30,12 +40,6 @@ class PlanetExportAction
             'poetry' => Poetry::orderBy('life_id')->orderBy('lang')->orderBy('ai')->orderBy('ix_text'),
             'poetryWords' => PoetryWord::orderBy('word'),
         ];
-
-        if ($request->isMethod('post') && $this->jsonArchive($queries)) {
-            return redirect()->route('web.planet.export')->with('status', "Export SUCCESS!");
-        }
-
-        return view('planet.export', ['json' => $this->jsonSummary($queries)]);
     }
 
     private function jsonSummary(array $queries): array
@@ -69,10 +73,6 @@ class PlanetExportAction
             fwrite($stream, "\n]");
             fclose($stream);
         }
-
-        $planet = Planet::first();
-        $fileName = $dirName . DIRECTORY_SEPARATOR . 'sc_export_planet.json';
-        $disk->put($fileName, json_encode($planet->archive(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         return true;
     }

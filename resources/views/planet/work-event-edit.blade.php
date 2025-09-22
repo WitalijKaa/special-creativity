@@ -1,8 +1,15 @@
-<?php
+﻿<?php
 
 /** @var \App\Models\Person\PersonEvent $model */
 
 $factory = new \App\Dto\Form\FormInputFactory();
+
+$basicEventEdit = [
+    $factory->number('begin', $factory->withValue(old('begin') ?? $model->begin)),
+    $factory->number('end', $factory->withValue(old('end') ?? $model->end)),
+    $factory->number('strong', 'how strong % worked?', $factory->withValue(old('strong') ?? $model->strong)),
+    $factory->textarea('comment', $factory->withValue(old('comment') ?? $model->comment)),
+];
 
 ?><x-layout.main :title="'Work Event ' . $model->work->name">
     <x-layout.header-main>{{ $model->work->name }} Work Event [{{ $model->begin }}-{{ $model->end }}]Y</x-layout.header-main>

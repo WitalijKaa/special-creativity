@@ -2,6 +2,8 @@
 
 namespace App\Models\World;
 
+use App\Models\Inteface\JsonArchivableInterface;
+
 /**
  * @property int $id
  * @property string $name
@@ -12,7 +14,7 @@ namespace App\Models\World;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Planet whereName($value)
  * @mixin \Eloquent
  */
-class Planet extends \Eloquent
+class Planet extends \Eloquent implements JsonArchivableInterface
 {
     public const int HOME_PLANET = 1;
 
@@ -24,5 +26,10 @@ class Planet extends \Eloquent
     public function archive(): array
     {
         return ['name' => $this->name];
+    }
+
+    public static function fromArchive(array $archive): void
+    {
+        static::create($archive);
     }
 }

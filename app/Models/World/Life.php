@@ -12,6 +12,7 @@ use App\Models\Person\PersonEvent;
 use App\Models\Person\PersonEventSynthetic;
 use App\Models\Poetry\Poetry;
 use App\Models\Work\LifeWork;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
@@ -229,16 +230,30 @@ class Life extends \Eloquent implements JsonArchivableInterface
     public function archive(): array
     {
         return [
-            'export' => 'life',
-            'export_id' => $this->person->name,
+            'person' => $this->person->name,
 
             'begin' => $this->begin,
             'end' => $this->end,
             'type' => $this->type,
             'role' => $this->role,
-            'father' => null,
-            'mother' => null,
+            'begin_force_person' => $this->begin_force_person,
         ];
+    }
+
+    public static function fromArchive(array $archive): void
+    {
+        $archive['person_id'] = Person::whereName($archive['person'])->first()->id;
+        static::create($archive);
+    }
+
+    public static function getByPersonNameLifeTypeYears(string $name, int $type, int $beginMax, int $endMin): Life
+    {
+        return static::wherePersonId(Person::whereName($name)->first()->id)
+            ->whereType($type)
+            ->where(function (Builder $builder) use ($beginMax, $endMin) {
+                return $builder->where('begin', '<=', $beginMax)->where('end', '>=', $endMin);
+            })
+            ->first();
     }
 
     public function poetrySpecific(string $lang, ?string $llm): \Illuminate\Database\Eloquent\Collection

@@ -6,6 +6,7 @@ use App\Models\Collection\PersonCollection;
 use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\Work\Work;
 use App\Models\World\Life;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
@@ -94,9 +95,8 @@ class PersonEvent extends \Eloquent implements JsonArchivableInterface
     public function archive(): array
     {
         $return = [
-            'export' => 'event',
-            'export_id' => $this->person->name,
-            'export_type' => $this->life->type,
+            'person' => $this->person->name,
+            'life_type' => $this->life->type,
 
             'begin' => $this->begin,
             'end' => $this->end,
@@ -116,6 +116,38 @@ class PersonEvent extends \Eloquent implements JsonArchivableInterface
         }
 
         return $return;
+    }
+
+    public static function fromArchive(array $archive): void
+    {
+        $life = Life::getByPersonNameLifeTypeYears($archive['person'], $archive['life_type'], $archive['begin'], $archive['end']);
+        $archive['person_id'] = $life->person_id;
+        $archive['life_id'] = $life->id;
+        $archive['type_id'] = EventType::whereName($archive['type'])->first()->id;
+        if (!empty($archive['work'])) {
+            $archive['work_id'] = Work::whereName($archive['work'])->first()->id;
+        }
+
+        $connections = [];
+        for ($ix = 1; $ix <= 111; $ix++) {
+            if (!empty($archive['connect_' . $ix])) {
+                $connections[$ix] = Life::getByPersonNameLifeTypeYears($archive['connect_' . $ix], $archive['life_type'], $archive['begin'], $archive['end']);
+            } else {
+                break;
+            }
+        }
+
+        $event = new static($archive);
+        $event->save();
+
+        foreach ($connections as $connectLife) {
+            /** @var $connectLife Life */
+            $model = new PersonEventConnect();
+            $model->person_id = $connectLife->person_id;
+            $model->life_id = $connectLife->id;
+            $model->event_id = $event->id;
+            $model->save();
+        }
     }
 
     public $timestamps = false;

@@ -61,6 +61,7 @@ $basicEventType = [
 
         <x-form.container>
             <a href="{{route('web.planet.export')}}" type="button" class="btn btn-danger btn-lg">Export</a>
+            <a href="{{route('web.planet.import')}}" type="button" class="btn btn-danger btn-lg">Import</a>
             @include('components.pages.major-nav')
             <br><br>
             <a href="{{route('web.person.poetry-words')}}" type="button" class="btn btn-danger btn-lg">Poetry words</a>

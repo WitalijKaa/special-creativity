@@ -229,12 +229,17 @@ class Person extends \Eloquent implements JsonArchivableInterface
     public function archive(): array
     {
         return [
-            'export' => 'person',
-            'export_id' => $this->person_author_id ? $this->author->name : null,
-
+            'person_author_id' => $this->person_author_id,
             'name' => $this->name,
             'nick' => $this->nick,
+            'type' => $this->type,
             'begin' => $this->begin,
+            'force_person' => $this->force_person,
         ];
+    }
+
+    public static function fromArchive(array $archive): void
+    {
+        static::create($archive);
     }
 }

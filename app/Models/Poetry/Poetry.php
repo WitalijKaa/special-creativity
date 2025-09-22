@@ -6,6 +6,7 @@ use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\Inteface\PoetryInterface;
 use App\Models\Person\Person;
 use App\Models\World\Life;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -53,9 +54,8 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
     public function archive(): array
     {
         return [
-            'export' => 'poetry',
-            'export_id' => $this->person->name,
-            'export_type' => $this->life->type,
+            'person' => $this->person->name,
+            'life_type' => $this->life->type,
 
             'chapter' => $this->chapter,
             'ix_text' => $this->ix_text,
@@ -67,6 +67,15 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
             'begin' => $this->begin,
             'end' => $this->end,
         ];
+    }
+
+    public static function fromArchive(array $archive): void
+    {
+        $life = Life::getByPersonNameLifeTypeYears($archive['person'], $archive['life_type'], $archive['begin'], $archive['end']);
+        $archive['person_id'] = $life->person_id;
+        $archive['life_id'] = $life->id;
+
+        static::create($archive);
     }
 
     public function text(): string { return $this->text; }

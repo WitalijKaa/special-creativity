@@ -74,6 +74,11 @@ class Work extends \Eloquent implements JsonArchivableInterface
         return $return;
     }
 
+    public static function fromArchive(array $archive): void
+    {
+        static::create($archive);
+    }
+
     public $timestamps = false;
     protected $guarded = ['id'];
     public function events(): HasMany { return $this->hasMany(PersonEvent::class, 'work_id', 'id'); }
