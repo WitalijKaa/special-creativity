@@ -9,6 +9,7 @@ use App\Models\Inteface\JsonArchivableInterface;
  * @property int $id
  * @property string $word
  * @property string $word_eng
+ * @property ?string $word_ai
  * @property string $definition
  * @property string $lang
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PoetryWord query()
@@ -16,6 +17,7 @@ use App\Models\Inteface\JsonArchivableInterface;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PoetryWord whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PoetryWord whereWord($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PoetryWord whereWordEng($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PoetryWord whereWordAi($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PoetryWord whereDefinition($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PoetryWord whereLang($value)
  *
@@ -36,6 +38,7 @@ class PoetryWord extends \Eloquent implements JsonArchivableInterface
         return [
             'word' => $this->word,
             'word_eng' => $this->word_eng,
+            'word_ai' => $this->word_ai,
             'definition' => $this->definition,
             'lang' => $this->lang,
         ];

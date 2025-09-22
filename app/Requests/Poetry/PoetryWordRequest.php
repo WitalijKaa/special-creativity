@@ -7,10 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * @property-read string $word
  * @property-read string $word_eng
+ * @property-read ?string $word_ai
  * @property-read string $definition
  * @property-read string $lang
  */
-class PoetryWordAddRequest extends FormRequest
+class PoetryWordRequest extends FormRequest
 {
     protected $redirectRoute = 'web.planet.poetry-words';
 
@@ -21,6 +22,7 @@ class PoetryWordAddRequest extends FormRequest
         return [
             'word' => 'required|string|max:125',
             'word_eng' => 'required|string|max:125',
+            'word_ai' => 'nullable|string|max:125',
             'definition' => 'required|string',
             'lang' => "required|string|in:$lang",
         ];

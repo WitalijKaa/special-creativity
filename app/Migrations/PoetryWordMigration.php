@@ -15,6 +15,7 @@ class PoetryWordMigration implements MigratorInterface
             $table->id();
             $table->string('word', 125)->nullable(false);
             $table->string('word_eng', 125)->nullable(false);
+            $table->string('word_ai', 125)->nullable();
             $table->text('definition')->nullable(false);
             $table->string('lang', 3)->nullable(false);
 

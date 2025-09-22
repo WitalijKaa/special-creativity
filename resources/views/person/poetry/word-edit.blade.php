@@ -7,6 +7,7 @@ $factory = new \App\Dto\Form\FormInputFactory();
 $formUpdateWord = [
     $factory->input('word', $factory->withValue($model->word)),
     $factory->input('word_eng', 'in English', $factory->withValue($model->word_eng)),
+    $factory->input('word_ai', 'origin for AI', $factory->withValue($model->word_ai)),
     $factory->textarea('definition', $factory->withValue($model->definition)),
     $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Language', $factory->withValue($model->lang)),
 ];

@@ -6,7 +6,6 @@ use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\Inteface\PoetryInterface;
 use App\Models\Person\Person;
 use App\Models\World\Life;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
