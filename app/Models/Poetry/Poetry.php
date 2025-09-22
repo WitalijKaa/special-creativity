@@ -88,6 +88,13 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
         return $model;
     }
 
+    public static function isEndingWord(string $word): bool
+    {
+        return str_contains($word, '.') ||
+            str_contains($word, ',') ||
+            str_contains($word, ':');
+    }
+
     public $timestamps = false;
     protected $guarded = ['id'];
     public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }

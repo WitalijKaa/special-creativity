@@ -19,6 +19,7 @@ $formTranslateChapter = [
 ];
 
 $vPerson = new \App\Models\View\PersonView();
+$isNextWordTip = false;
 
 ?><x-layout.main :title="$vPerson->titleLife($life) . ' Poetry'">
     <x-pages.headers.life-header :model="$life"></x-pages.headers.life-header>
@@ -33,9 +34,19 @@ $vPerson = new \App\Models\View\PersonView();
         @foreach($poetry as $paragraph)
             @php($pList = explode(' ', $paragraph->text))
             <p>
-                @foreach($pList as $word)
-                    @php([$wordClass, $wordTip] = $vPerson->wordSpanClass($word, $words))
-                    <span class="{{$wordClass}}">{{$word}}</span>
+                @foreach($pList as $ixW => $word)
+                    @if($isNextWordTip)
+                        @php($isNextWordTip = false)
+                    @else
+                        @php($nextWord = \App\Models\Poetry\Poetry::isEndingWord($word) || empty($pList[$ixW + 1]) ? null : $pList[$ixW + 1])
+                        @php([$wordClass, $wordTip, $isNextWordTip] = $vPerson->wordSpanClass($word, $words, $nextWord))
+
+                        @if($isNextWordTip)
+                            <span class="{{$wordClass}}">{{$word}} {{$nextWord}}</span>
+                        @else
+                            <span class="{{$wordClass}}">{{$word}}</span>
+                        @endif
+                    @endif
                 @endforeach
             </p>
         @endforeach
@@ -53,9 +64,8 @@ $vPerson = new \App\Models\View\PersonView();
             <span class="badge bg-success">{{ $vModel->ai }}</span>
         </x-layout.header-second>
 
-        @if($poetry->count())
-            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai ?? 'null'])" method="get" btn="Edit paragraphs"></x-form.submit>
-        @endif
+        <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai])" method="get" btn="Edit paragraphs"></x-form.submit>
+        <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai])" method="get" btn="Kill paragraphs"></x-form.submit>
 
         <x-layout.container>
             @foreach($variation as $paragraph)

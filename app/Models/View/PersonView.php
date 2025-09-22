@@ -207,14 +207,18 @@ class PersonView extends AbstractView
         return '<div class="w-75">' . $names . ' <u>_' . ($year - $life->begin) . '_</u></div>' . $count;
     }
 
-    public function wordSpanClass(string $word, PoetryWordCollection $words): array
+    public function wordSpanClass(string $word, PoetryWordCollection $words, ?string $nextWord): array
     {
-        if ($tip = $words->wordTip($word)) {
-            return ['poetry-word', $tip];
+        if (mb_strlen($word) <= 2) {
+            return ['', '', false];
+        }
+        if ($isPoetryWord = $words->parsePoetryWord($word, $nextWord)) {
+            [$tip, $isNextWordTip] = $isPoetryWord;
+            return ['poetry-word', $tip, $isNextWordTip];
         }
         if ($words->isName($word)) {
-            return ['name-word', ''];
+            return ['name-word', '', false];
         }
-        return ['', ''];
+        return ['', '', false];
     }
 }

@@ -3,7 +3,7 @@
         <div class="col-12 col-md-10">
             <form action="{{$route}}" method="{{empty($method) ? 'post' : $method}}">
                 @csrf
-                <button type="submit" class="btn btn-primary btn-lg">{{$btn}}</button>
+                <button type="submit" class="btn {{empty($color) ? 'btn-primary' : 'btn-' . $color}} btn-lg">{{$btn}}</button>
             </form>
         </div>
     </div>
