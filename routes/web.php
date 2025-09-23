@@ -14,10 +14,12 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'planet.', 'prefix' => 'planet'], function() {
+        Route::get('once-create', App\Http\Controllers\Planet\PlanetCreator\PlanetOnceCreateAction::class)->name('once-create');
+        Route::post('once-create/save', App\Http\Controllers\Planet\PlanetCreator\PlanetCreateAction::class)->name('save');
+
         Route::get('params', App\Http\Controllers\Planet\PlanetCreator\PlanetParamsAction::class)->name('params');
         Route::match(['get','post'], 'export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');
         Route::match(['get','post'], 'import', App\Http\Controllers\Planet\PlanetCreator\PlanetImportAction::class)->name('import');
-        Route::post('params/save', App\Http\Controllers\Planet\PlanetCreator\PlanetSaveAction::class)->name('save');
 
         Route::get('event/{id}', \App\Http\Controllers\Person\PersonEventFormAction::class)->where('id', '[0-9]+')->name('event-edit-form');
         Route::match(['get','post'], 'work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');

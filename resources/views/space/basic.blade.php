@@ -46,7 +46,7 @@
         </x-layout.wrapper>
 
         <x-layout.wrapper>
-            <x-button.link-wide :cc="CC_DANGER" :route="route('web.logout')" label="Exit" />
+            <x-button.link-wide :cc="CC_DANGER" :route="route('web.logout')" label="Exit {{Auth::user()->login}}" />
         </x-layout.wrapper>
 
         <div style="height: 5vh;"></div>

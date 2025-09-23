@@ -21,7 +21,7 @@ class PersonAddAction
         // validation
 
         if ($author->force_person < Person::FORCE) {
-            return $back('begin', 'May create only during Allods life');
+            return $back('begin', 'Not enough Force amount');
         }
         if (!$prevAuthorLife->is_allods) {
             return $back('begin', 'May create only during Allods life');

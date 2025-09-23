@@ -35,7 +35,7 @@ class AuthController extends Controller
         if (Planet::count()) {
             return redirect(route('web.space.basic'));
         }
-        return redirect(route('web.planet.params'));
+        return redirect(route('web.planet.once-create'));
     }
 
     public function escape()
