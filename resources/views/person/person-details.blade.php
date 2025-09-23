@@ -2,7 +2,7 @@
 
 /** @var int $year */
 /** @var \App\Models\Person\Person $model */
-$viewLives = $year > 0 ? $model->lives->filter(fn (\App\Models\World\Life $life) => $life->begin <= $year)->values() : $model->lives;
+$viewLives = $year > 0 ? $model->lives->filter(fn(\App\Models\World\Life $life) => $life->begin <= $year)->values() : $model->lives;
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[]|null $eventsFuture */
 
@@ -19,13 +19,11 @@ $personAdd = [
 
 
 $nextLifeType = old('type') ?? (((!$model->lives->count() && $model->id != App\Models\Person\Person::ORIGINAL) || $model->lives->last()?->is_allods) ? \App\Models\World\Life::PLANET : \App\Models\World\Life::ALLODS);
-$personAddLife = [
+$addLifeForm = [
     $fBegin,
     $factory->number('end', 'Death, the End'),
     $factory->select('type', \App\Models\World\Life::selectTypeOptions(), 'What is the Life?', $factory->withValue($nextLifeType)),
     $factory->select('role', \App\Models\World\Life::selectRoleOptions(), 'Who was the Persona?', $factory->withValue(old('role') ?? ($nextLifeType == \App\Models\World\Life::PLANET ? \App\Models\World\Life::MAN : \App\Models\World\Life::SPIRIT))),
-    $factory->input('father', 'the Name of the Father'),
-    $factory->input('mother', 'the Name of the Mother'),
 ];
 
 $vPerson = new \App\Models\View\PersonView();
@@ -37,25 +35,6 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 <x-layout.main :title="$titlePage">
     <x-layout.header-main>{{$titlePage}}</x-layout.header-main>
 
-    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->is_allods)
-        <x-layout.header-second>a new Persona may be created</x-layout.header-second>
-
-        <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
-                      btn="create Persona"
-                      :fields="$personAdd"></x-form.basic>
-
-        <x-layout.divider></x-layout.divider>
-    @endif
-
-    <x-form.basic :route="route('web.person.details', ['id' => $model->id])"
-                  btn="show Year"
-                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.details', ['id' => $model->id])] : null"
-                  :fields="[$fYear]"></x-form.basic>
-
-    <x-layout.container>
-        @include('components.pages.person-details-nav', ['$model' => $model])
-    </x-layout.container>
-
     <x-layout.container>
         <div class="list-group">
             @foreach($viewLives as $life)
@@ -64,18 +43,42 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
         </div>
     </x-layout.container>
 
-    <x-layout.container>
-        @include('components.pages.person-details-nav', ['$model' => $model])
-    </x-layout.container>
+    @if($model->force_person == \App\Models\Person\Person::FORCE && $model->lives->last()?->is_allods)
+        <x-layout.header-second>a new Persona may be created</x-layout.header-second>
 
-    <x-layout.container>
-        @include('widgets.person.events', ['events' => $events, 'person' => $model])
-        @if($eventsFuture)
-            <div class="mb-5 mt-5"></div>
-            @include('widgets.person.events', ['events' => $eventsFuture, 'person' => $model])
-        @endif
-    </x-layout.container>
+        <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
+                      btn="create Persona"
+                      :fields="$personAdd"></x-form.basic>
+        <x-layout.divider></x-layout.divider>
+    @endif
 
+    @if($model->lives->count() > 4)
+        <x-layout.divider></x-layout.divider>
+
+        <x-form.basic :route="route('web.person.details', ['id' => $model->id])"
+                      btn="show Year"
+                      :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.details', ['id' => $model->id])] : null"
+                      :fields="[$fYear]"></x-form.basic>
+
+        <x-layout.divider></x-layout.divider>
+
+        <x-layout.container>
+            <x-pages.person-details-nav :model="$model" />
+            <x-pages.major-nav />
+        </x-layout.container>
+    @endif
+
+    @if($model->lives->count())
+        <x-layout.container>
+            <x-layout.header-second>some Events during lives path</x-layout.header-second>
+
+            @include('widgets.person.events', ['events' => $events, 'person' => $model])
+            @if($eventsFuture)
+                <div class="mb-5 mt-5"></div>
+                @include('widgets.person.events', ['events' => $eventsFuture, 'person' => $model])
+            @endif
+        </x-layout.container>
+    @endif
 
     @if($year < 1)
 
@@ -84,14 +87,15 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
         @php($fBegin->label = 'the year of Beginning of Life')
         <x-form.basic :route="route('web.person.add-life', ['id' => $model->id])"
                       btn="add Life"
-                      :fields="$personAddLife"></x-form.basic>
+                      :fields="$addLifeForm"></x-form.basic>
 
     @endif
 
     <x-layout.divider></x-layout.divider>
 
     <x-layout.container>
-        @include('components.pages.person-details-nav', ['$model' => $model])
+        <x-pages.person-details-nav :model="$model" />
+        <x-pages.major-nav />
     </x-layout.container>
 
 </x-layout.main>

@@ -1,7 +1,13 @@
 @if(!Route::is('web.person.list'))
-    <x-layout.wrapper>
-        <x-button.link :cc="CC_INFO" :route="route('web.person.list')" label="Personas" :badge="$persons ?? null" />
-    </x-layout.wrapper>
+    @if(empty($forcedBeforePerson))
+        <x-layout.wrapper>
+            <x-button.link :cc="CC_INFO" :route="route('web.person.list')" label="Personas" :badge="$persons ?? null" />
+        </x-layout.wrapper>
+    @else
+        <x-layout.wrapper>
+            <x-button.links :items="array_merge($forcedBeforePerson, [['cc' => CC_INFO, 'route' => route('web.person.list'), 'label' => 'Personas']])" />
+        </x-layout.wrapper>
+    @endif
 @endif
 
 <x-layout.wrapper>

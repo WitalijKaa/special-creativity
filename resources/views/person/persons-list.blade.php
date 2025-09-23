@@ -2,6 +2,7 @@
 
 /** @var int $year */
 /** @var \App\Models\Person\Person[] $models */
+/** @var int $planetLives */
 
 $factory = new \App\Dto\Form\FormInputFactory();
 
@@ -11,23 +12,27 @@ $titlePage = $models->count() . ' Personas';
 $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 
 ?><x-layout.main :title="$titlePage">
-    <x-layout.header-main>{{ $titlePage }}</x-layout.header-main>
+    <x-layout.header-main>total population: {{ $titlePage }}</x-layout.header-main>
 
-    <x-form.basic :route="route('web.person.list')"
-                  btn="show Year"
-                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.list')] : null"
-                  :fields="[$fYear]"></x-form.basic>
+    @if ($planetLives)
+        <x-form.basic :route="route('web.person.list')"
+                      btn="show Year"
+                      :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.list')] : null"
+                      :fields="[$fYear]"></x-form.basic>
+
+        <x-layout.divider></x-layout.divider>
+
+        <x-layout.container>
+            <x-pages.major-nav />
+        </x-layout.container>
+
+        <x-layout.divider></x-layout.divider>
+    @endif
 
     <x-layout.container>
-        <x-layout.wrapper>
-            @include('components.pages.persons-list-nav')
-        </x-layout.wrapper>
-        <x-pages.major-nav />
-    </x-layout.container>
-
-    <x-layout.divider></x-layout.divider>
-
-    <x-layout.container>
+        @if ($planetLives)
+            <x-pages.persons-list-nav />
+        @endif
         <div class="list-group">
             @foreach($models as $person)
                 @include('widgets.person.list-item', ['person' => $person, 'year' => $year])
@@ -38,9 +43,6 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
     <x-layout.divider></x-layout.divider>
 
     <x-layout.container>
-        <x-layout.wrapper>
-            @include('components.pages.persons-list-nav')
-        </x-layout.wrapper>
         <x-pages.major-nav />
     </x-layout.container>
 

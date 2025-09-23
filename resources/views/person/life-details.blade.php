@@ -28,16 +28,21 @@ $vPerson = new \App\Models\View\PersonView();
     <x-pages.headers.life-header :model="$model"></x-pages.headers.life-header>
 
     <x-layout.container>
-        @include('widgets.person.events', ['events' => $events, 'person' => $model->person, 'lifeWork' => $model->lifeWork])
+        <x-pages.life-nav :model="$model" />
     </x-layout.container>
 
-    <x-layout.header-second>Work 💪🏻 is {{ $model->lifeWork->workYears }}</x-layout.header-second>
+    @if($events->count())
+        <x-layout.header-second>Events of this Life</x-layout.header-second>
+        <x-layout.container>
+            @include('widgets.person.events', ['events' => $events, 'person' => $model->person, 'lifeWork' => $model->lifeWork])
+        </x-layout.container>
+    @endif
 
-    <x-layout.container>
-        @include('components.pages.life-nav', ['model' => $model])
-    </x-layout.container>
+    @if($model->lifeWork->workYears)
+        <x-layout.header-second>Work 💪🏻 is {{ $model->lifeWork->workYears }}</x-layout.header-second>
+    @endif
 
-    <x-layout.header-second>edit Events of this Life</x-layout.header-second>
+    <x-layout.header-second>add Event to this Life</x-layout.header-second>
 
     <x-form.basic :route="route('web.person.add-event', ['id' => $model->id])"
                   btn="add Event"
@@ -46,7 +51,7 @@ $vPerson = new \App\Models\View\PersonView();
     <x-layout.divider></x-layout.divider>
 
     <x-layout.container>
-        @include('components.pages.life-nav', ['model' => $model])
+        <x-pages.life-nav :model="$model" />
     </x-layout.container>
 
 </x-layout.main>

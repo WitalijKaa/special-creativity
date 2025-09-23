@@ -82,14 +82,27 @@ $isNextWordTip = false;
                   btn="smart parse chapter"
                   :fields="$formAddChapter"></x-form.basic>
 
-    <x-layout.header-second>Work 💪🏻 is {{ $life->lifeWork->workYears }}</x-layout.header-second>
+    <x-layout.divider />
 
     <x-layout.container>
-        @include('widgets.person.events', ['events' => $events, 'person' => $life->person, 'lifeWork' => $life->lifeWork])
+        <x-pages.life-nav :model="$life" />
     </x-layout.container>
 
+    <x-layout.divider />
+
+    @if($life->lifeWork->workYears)
+        <x-layout.header-second>Work 💪🏻 is {{ $life->lifeWork->workYears }}</x-layout.header-second>
+    @endif
+
+    @if($events->count())
+        <x-layout.header-second>Events of this Life</x-layout.header-second>
+        <x-layout.container>
+            @include('widgets.person.events', ['events' => $events, 'person' => $life->person, 'lifeWork' => $life->lifeWork])
+        </x-layout.container>
+    @endif
+
     <x-layout.container>
-        @include('components.pages.life-nav', ['model' => $life])
+        <x-pages.life-nav :model="$life" />
     </x-layout.container>
 
 </x-layout.main>

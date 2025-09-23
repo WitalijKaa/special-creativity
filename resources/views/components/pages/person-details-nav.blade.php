@@ -2,9 +2,14 @@
 
 /** @var \App\Models\Person\Person $model */
 
-?><a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
-<a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-<a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
-@if($model->only_vizavi)
-    <a href="{{route('web.person.details', ['id' => $model->only_vizavi->id])}}" type="button" class="btn btn-danger btn-lg">{{ $model->only_vizavi->name }}</a>
+$vizaviList = [];
+
+foreach ($model->vizavi as $vizavi) {
+    $vizaviList[] = ['cc' => CC_DANGER, 'route' => route('web.person.details', ['id' => $vizavi->id]), 'label' => $vizavi->name];
+}
+
+?>@if($vizaviList)
+    <x-layout.wrapper>
+        <x-button.links :items="$vizaviList" />
+    </x-layout.wrapper>
 @endif

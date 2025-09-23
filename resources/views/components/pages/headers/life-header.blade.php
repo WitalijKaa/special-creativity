@@ -3,9 +3,11 @@
 /** @var \App\Models\World\Life $model */
 
 ?><x-layout.header-main>
-    {{ $model->person->name }} {{ $model->person->nick }} {{ $model->role_name }}
+    <small><small>name:</small></small> {{ $model->person->name }} {{ $model->person->nick }}
     <br>
-    [{{ $model->begin }}-{{ $model->end }}]Y<small><small>{{ $model->end - $model->begin }}</small></small>
+    <small><small>role in life:</small></small> {{ $model->role_name }}
     <br>
-    {{ $model->type_name }}-{{ $model->current_type_no }}
+    <small><small>length of life:</small></small> [{{ $model->begin }}-{{ $model->end }}]Y<small><small>{{ $model->end - $model->begin }}</small></small>
+    <br>
+    <small><small>number of life:</small></small> {{ $model->type_name }}-{{ $model->current_type_no }}
 </x-layout.header-main>

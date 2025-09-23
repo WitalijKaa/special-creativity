@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Person;
 
 use App\Models\Person\Person;
+use App\Models\World\Life;
+use App\Models\World\Planet;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PersonListAction
@@ -17,6 +19,8 @@ class PersonListAction
         $models = !$year ? Person::all() : Person::where('begin', '<', $year)->get();
         $models = $desc ? $models->sortByDesc($sort) : $models->sortBy($sort);
 
-        return view('person.persons-list', compact('models', 'year'));
+        $planetLives = Life::whereType(Life::PLANET)->count();
+
+        return view('person.persons-list', compact('models', 'year', 'planetLives'));
     }
 }
