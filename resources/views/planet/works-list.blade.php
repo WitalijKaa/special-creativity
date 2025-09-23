@@ -7,17 +7,15 @@ $factory = new \App\Dto\Form\FormInputFactory();
 
 $fYear = $factory->number('year', 'Year of current moment', $factory->withValue($year > 0 ? $year : null));
 
-
-?>
-<x-layout.main title="Work">
+?><x-layout.main title="Work">
     <x-layout.header-main>Work</x-layout.header-main>
 
-    <x-form.basic :route="route('web.planet.works-list')"
+    <x-form.basic :route="route('web.basic.works-list')"
                   btn="show Year"
-                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.planet.works-list')] : null"
+                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.basic.works-list')] : null"
                   :fields="[$fYear]"></x-form.basic>
 
-    <div class="mb-5 mt-5"></div>
+    <x-layout.divider />
 
     <x-layout.container>
         <div class="list-group">
@@ -25,7 +23,7 @@ $fYear = $factory->number('year', 'Year of current moment', $factory->withValue(
                 @continue(!$work->events->count())
                 @php($isCorrected = $work->calculations->begin == $work->begin && $work->calculations->end == $work->end)
 
-                <a href="{{route('web.planet.works-details', ['id' => $work->id])}}" class="list-group-item list-group-item-action list-group-item-primary">
+                <a href="{{route('web.basic.works-details', ['id' => $work->id])}}" class="list-group-item list-group-item-action list-group-item-primary">
 
                     <div class="d-flex w-100 justify-content-between mb-1">
                         <div class="d-flex w-50 justify-content-between">
@@ -57,8 +55,6 @@ $fYear = $factory->number('year', 'Year of current moment', $factory->withValue(
             @endforeach
         </div>
     </x-layout.container>
-
-    @include('widgets.planet.works-simple')
 
     <x-layout.divider />
 

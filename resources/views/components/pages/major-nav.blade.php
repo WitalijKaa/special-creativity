@@ -13,7 +13,7 @@
 <x-layout.wrapper>
     <x-button.links :items="[
                 ['route' => route('web.basic.events'), 'label' => 'Events'],
-                ['route' => route('web.planet.works-list'), 'label' => 'Work'],
+                (!Route::is('web.basic.work-create') ? ['route' => route('web.basic.work-create'), 'label' => 'Works'] : ['route' => route('web.basic.works-list'), 'label' => 'Works detailed']),
                 ['cc' => CC_SUCCESS, 'route' => route('web.person.poetry-words'), 'label' => 'Poetry words'],
                 ['cc' => CC_LIGHT, 'route' => route('web.prediction.future'), 'label' => 'Predictions'],
                 ['cc' => CC_DARK, 'route' => route('web.visual.lives-timeline'), 'label' => 'Lives Timeline'],

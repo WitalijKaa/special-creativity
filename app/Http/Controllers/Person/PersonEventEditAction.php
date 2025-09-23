@@ -16,6 +16,6 @@ class PersonEventEditAction
         $model->comment = $request->comment;
         $model->save();
 
-        return $model->work_id ? redirect(route('web.planet.works-details', ['id' => $model->work_id])) : redirect()->back();
+        return $model->work_id ? redirect(route('web.basic.works-details', ['id' => $model->work_id])) : redirect()->back();
     }
 }

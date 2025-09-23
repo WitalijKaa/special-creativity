@@ -29,9 +29,9 @@ $basicWorkEdit = [
 
     <x-layout.header-second>workers</x-layout.header-second>
 
-    <x-form.basic :route="route('web.planet.works-details', ['id' => $model->id])"
+    <x-form.basic :route="route('web.basic.works-details', ['id' => $model->id])"
                   btn="show Year"
-                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.planet.works-details', ['id' => $model->id])] : null"
+                  :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.basic.works-details', ['id' => $model->id])] : null"
                   :fields="[$fYear]"></x-form.basic>
 
     <div class="mb-5 mt-5"></div>
@@ -53,10 +53,8 @@ $basicWorkEdit = [
     <x-layout.divider />
 
     <x-layout.container>
-        <a href="{{route('web.basic.space')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
-        <a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
-        <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-        <a href="{{route('web.basic.work-correct', ['id' => $model->id])}}" type="button" class="btn btn-danger btn-lg">Correct me</a>
+        <x-pages.major-nav />
+        <x-button.link :cc="CC_DANGER" :route="route('web.basic.work-correct', ['id' => $model->id])" label="Correct me"/>
     </x-layout.container>
 
 </x-layout.main>

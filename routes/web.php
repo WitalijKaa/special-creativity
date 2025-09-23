@@ -17,8 +17,6 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::match(['get','post'], 'import', App\Http\Controllers\Planet\PlanetCreator\PlanetImportAction::class)->name('import');
 
         Route::get('event/{id}', \App\Http\Controllers\Person\PersonEventFormAction::class)->where('id', '[0-9]+')->name('event-edit-form');
-        Route::match(['get','post'], 'work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');
-        Route::match(['get','post'], 'work', \App\Http\Controllers\Planet\Work\WorksListAction::class)->name('works-list');
     });
 
     Route::group(['as' => 'person.', 'prefix' => 'life'], function() {
@@ -50,10 +48,14 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('space', App\Http\Controllers\BasicAction::class)->name('space');
         Route::match(['get','post'], 'events', \App\Http\Controllers\Person\EventListAction::class)->name('events');
         Route::post('event', \App\Http\Controllers\Planet\EventTypeAddAction::class)->name('event-type');
-        Route::post('work', \App\Http\Controllers\Planet\Work\WorkAddAction::class)->name('work');
+        Route::post('event-edit/{id}', \App\Http\Controllers\Person\PersonEventEditAction::class)->where('id', '[0-9]+')->name('event-edit');
+
+        Route::match(['get','post'], 'work/{id}', \App\Http\Controllers\Planet\Work\WorksDetailsAction::class)->where('id', '[0-9]+')->name('works-details');
+        Route::match(['get','post'], 'works-list', \App\Http\Controllers\Planet\Work\WorksListAction::class)->name('works-list');
+        Route::get('work-create', App\Http\Controllers\Planet\Work\WorkCreateAction::class)->name('work-create');
+        Route::post('work-add', \App\Http\Controllers\Planet\Work\WorkAddAction::class)->name('work-add');
         Route::post('work-edit/{id}', \App\Http\Controllers\Planet\Work\WorkEditAction::class)->where('id', '[0-9]+')->name('work-edit');
         Route::get('work-correct/{id}', \App\Http\Controllers\Planet\Work\WorkCorrectAction::class)->where('id', '[0-9]+')->name('work-correct');
-        Route::post('event-edit/{id}', \App\Http\Controllers\Person\PersonEventEditAction::class)->where('id', '[0-9]+')->name('event-edit');
     });
 
     Route::group(['as' => 'visual.', 'prefix' => 'routine'], function() {
