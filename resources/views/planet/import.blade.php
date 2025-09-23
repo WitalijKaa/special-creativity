@@ -18,10 +18,10 @@ $importForm = [
                       :fields="$importForm"></x-form.basic>
     </x-layout.container>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
-        <a href="{{ route('web.planet.params') }}" class="btn btn-secondary btn-lg">Planet</a>
+        <a href="{{ route('web.basic.space') }}" class="btn btn-secondary btn-lg">Planet</a>
         <a href="{{ route('web.person.list') }}" class="btn btn-primary btn-lg">Personas</a>
     </x-layout.container>
 

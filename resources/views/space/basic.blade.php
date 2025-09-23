@@ -27,7 +27,7 @@
         @endforeach
     </x-layout.container-sm>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container-md>
 
@@ -45,13 +45,10 @@
             ]" />
         </x-layout.wrapper>
 
+        <div style="height: 5vh;"></div>
+
         <x-layout.wrapper>
             <x-button.link-wide :cc="CC_DANGER" :route="route('web.logout')" label="Exit {{Auth::user()->login}}" />
-        </x-layout.wrapper>
-
-        <div style="height: 5vh;"></div>
-        <x-layout.wrapper>
-            <x-button.link :cc="CC_SECONDARY" :route="route('web.planet.params')" label="old-params" />
         </x-layout.wrapper>
 
     </x-layout.container-md>

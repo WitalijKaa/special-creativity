@@ -74,7 +74,7 @@ $isNextWordTip = false;
             </x-layout.container>
         @endforeach
 
-        <x-layout.divider></x-layout.divider>
+        <x-layout.divider />
 
     @endif
 

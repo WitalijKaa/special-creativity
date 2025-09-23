@@ -54,7 +54,7 @@ $calcSummaryAges = function (int $Y, \App\Models\Collection\LifeCollection $plan
                   :btn-warn="['lbl' => 'Back', 'href' => route('web.visual.years-population')]"
                   :fields="$visualYearsPopulation"></x-form.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         @foreach($years as $Y => $livesCollections)
@@ -121,7 +121,7 @@ $calcSummaryAges = function (int $Y, \App\Models\Collection\LifeCollection $plan
         @endforeach
     </x-layout.container>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         @include('components.pages.persons-list-nav')

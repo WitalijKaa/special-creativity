@@ -13,7 +13,7 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class WorkAddRequest extends FormRequest
 {
-    protected $redirectRoute = 'web.planet.params';
+    protected $redirectRoute = 'web.basic.space';
 
     public function rules(): array
     {

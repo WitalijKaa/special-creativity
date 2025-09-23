@@ -27,7 +27,7 @@ $planetForm = [
                   btn="Create the Planet"
                   :fields="$planetForm"></x-form.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         <div class="row">

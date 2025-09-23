@@ -33,7 +33,7 @@ class AuthController extends Controller
         (new DbLoginMiddleware())->handle($request, fn () => true);
         Migrator::migrate();
         if (Planet::count()) {
-            return redirect(route('web.space.basic'));
+            return redirect(route('web.basic.space'));
         }
         return redirect(route('web.planet.once-create'));
     }

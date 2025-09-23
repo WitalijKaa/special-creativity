@@ -20,13 +20,13 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
                       :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.list')] : null"
                       :fields="[$fYear]"></x-form.basic>
 
-        <x-layout.divider></x-layout.divider>
+        <x-layout.divider />
 
         <x-layout.container>
             <x-pages.major-nav />
         </x-layout.container>
 
-        <x-layout.divider></x-layout.divider>
+        <x-layout.divider />
     @endif
 
     <x-layout.container>
@@ -40,7 +40,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
         </div>
     </x-layout.container>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         <x-pages.major-nav />

@@ -49,18 +49,18 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
         <x-form.basic :route="route('web.person.add', ['author_id' => $model->id])"
                       btn="create Persona"
                       :fields="$personAdd"></x-form.basic>
-        <x-layout.divider></x-layout.divider>
+        <x-layout.divider />
     @endif
 
     @if($model->lives->count() > 4)
-        <x-layout.divider></x-layout.divider>
+        <x-layout.divider />
 
         <x-form.basic :route="route('web.person.details', ['id' => $model->id])"
                       btn="show Year"
                       :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.details', ['id' => $model->id])] : null"
                       :fields="[$fYear]"></x-form.basic>
 
-        <x-layout.divider></x-layout.divider>
+        <x-layout.divider />
 
         <x-layout.container>
             <x-pages.person-details-nav :model="$model" />
@@ -91,7 +91,7 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 
     @endif
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         <x-pages.person-details-nav :model="$model" />

@@ -9,15 +9,10 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
 
     Route::get('escape', [\App\Http\Controllers\AuthController::class, 'escape'])->name('logout');
 
-    Route::group(['as' => 'space.', 'prefix' => 'space'], function() {
-        Route::get('basic', App\Http\Controllers\BasicAction::class)->name('basic');
-    });
-
     Route::group(['as' => 'planet.', 'prefix' => 'planet'], function() {
         Route::get('once-create', App\Http\Controllers\Planet\PlanetCreator\PlanetOnceCreateAction::class)->name('once-create');
         Route::post('once-create/save', App\Http\Controllers\Planet\PlanetCreator\PlanetCreateAction::class)->name('save');
 
-        Route::get('params', App\Http\Controllers\Planet\PlanetCreator\PlanetParamsAction::class)->name('params');
         Route::match(['get','post'], 'export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');
         Route::match(['get','post'], 'import', App\Http\Controllers\Planet\PlanetCreator\PlanetImportAction::class)->name('import');
 
@@ -52,6 +47,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
     });
 
     Route::group(['as' => 'basic.', 'prefix' => 'basic'], function() {
+        Route::get('space', App\Http\Controllers\BasicAction::class)->name('space');
         Route::match(['get','post'], 'events', \App\Http\Controllers\Person\EventListAction::class)->name('events');
         Route::post('event', \App\Http\Controllers\Planet\EventTypeAddAction::class)->name('event-type');
         Route::post('work', \App\Http\Controllers\Planet\Work\WorkAddAction::class)->name('work');

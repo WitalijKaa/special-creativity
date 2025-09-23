@@ -15,7 +15,7 @@ class CycleLifeAtPlanetAction
 {
     public function __invoke()
     {
-        $back = fn (string $field, string $msg) => redirect(route('web.planet.params'))
+        $back = fn (string $field, string $msg) => redirect(route('web.basic.space'))
             ->withErrors([$field => [$msg]]);
 
         $persons = Person::all();
@@ -125,6 +125,6 @@ class CycleLifeAtPlanetAction
             }
         }
 
-        return redirect(route('web.planet.params'));
+        return redirect(route('web.basic.space'));
     }
 }

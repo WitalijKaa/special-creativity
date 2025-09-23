@@ -37,7 +37,7 @@ $titlePage = $models->count() . ' Lives-T';
                   :btn-warn="['lbl' => 'Back', 'href' => route('web.visual.lives-timeline')]"
                   :fields="$visualLivesTimeline"></x-form.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <div style="height: {{ $length * $sizePX }}px; width: {{ $models->count() * $sizePX }}px; background-color: #cfd8dc; position: relative;">
         @foreach($models as $person)
@@ -75,7 +75,7 @@ $titlePage = $models->count() . ' Lives-T';
         @endwhile
     </div>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         @include('components.pages.persons-list-nav')

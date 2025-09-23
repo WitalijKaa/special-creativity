@@ -18,7 +18,7 @@ $basicEventEdit = [
                   btn="Change Work"
                   :fields="$basicEventEdit"></x-form.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         @include('components.pages.major-nav')

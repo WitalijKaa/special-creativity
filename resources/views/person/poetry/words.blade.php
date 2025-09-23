@@ -20,7 +20,7 @@ $formAddWord = [
                   btn="Save word"
                   :fields="$formAddWord"></x-form.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-session.success></x-session.success>
 
@@ -40,7 +40,7 @@ $formAddWord = [
         @endforeach
     </x-table.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         @include('components.pages.major-nav')

@@ -17,6 +17,6 @@ class EventTypeAddAction
         $model->is_slave = !!$request->is_slave;
         $model->save();
 
-        return redirect(route('web.planet.params'));
+        return redirect(route('web.basic.events'));
     }
 }

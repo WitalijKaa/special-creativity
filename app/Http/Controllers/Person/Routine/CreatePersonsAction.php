@@ -41,7 +41,7 @@ class CreatePersonsAction
             $zvezdi++;
         }
 
-        return redirect(route('web.planet.params'));
+        return redirect(route('web.basic.space'));
     }
 
     private function nextName()

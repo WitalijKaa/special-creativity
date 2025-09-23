@@ -11,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class WorkEditRequest extends FormRequest
 {
-    protected $redirectRoute = 'web.planet.params';
+    protected $redirectRoute = 'web.basic.space';
 
     public function rules(): array
     {

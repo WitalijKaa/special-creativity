@@ -21,8 +21,8 @@
             ]" />
 </x-layout.wrapper>
 
-@if(!Route::is('web.space.basic'))
+@if(!Route::is('web.basic.space'))
     <x-layout.wrapper>
-        <x-button.link :cc="CC_SECONDARY" :route="route('web.space.basic')" label="Planet" />
+        <x-button.link :cc="CC_SECONDARY" :route="route('web.basic.space')" label="Planet" />
     </x-layout.wrapper>
 @endif

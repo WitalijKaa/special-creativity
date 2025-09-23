@@ -48,7 +48,7 @@ $vPerson = new \App\Models\View\PersonView();
                   btn="add Event"
                   :fields="$personAddEvent"></x-form.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
         <x-pages.life-nav :model="$model" />

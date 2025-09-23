@@ -9,7 +9,7 @@
     <x-session.success></x-session.success>
     <x-form.submit :route="route('web.planet.export')" btn="Export to files"></x-form.submit>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-table.basic name="Export statistics" :columns="['Items name', 'Items count']">
         @foreach($json as $itemName => $count)
@@ -20,10 +20,10 @@
         @endforeach
     </x-table.basic>
 
-    <x-layout.divider></x-layout.divider>
+    <x-layout.divider />
 
     <x-layout.container>
-        <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
+        <a href="{{route('web.basic.space')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
         <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
     </x-layout.container>
 </x-layout.main>

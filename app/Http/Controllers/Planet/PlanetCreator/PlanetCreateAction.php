@@ -35,6 +35,6 @@ class PlanetCreateAction
         $person->force_person = $request->force;
         $person->save();
 
-        return redirect(route('web.space.basic'));
+        return redirect(route('web.basic.space'));
     }
 }
