@@ -18,9 +18,12 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
                   :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.list')] : null"
                   :fields="[$fYear]"></x-form.basic>
 
-    <x-form.container>
-        @include('components.pages.persons-list-nav')
-    </x-form.container>
+    <x-layout.container>
+        <x-layout.wrapper>
+            @include('components.pages.persons-list-nav')
+        </x-layout.wrapper>
+        <x-pages.major-nav />
+    </x-layout.container>
 
     <x-layout.divider></x-layout.divider>
 
@@ -34,8 +37,11 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 
     <x-layout.divider></x-layout.divider>
 
-    <x-form.container>
-        @include('components.pages.persons-list-nav')
-    </x-form.container>
+    <x-layout.container>
+        <x-layout.wrapper>
+            @include('components.pages.persons-list-nav')
+        </x-layout.wrapper>
+        <x-pages.major-nav />
+    </x-layout.container>
 
 </x-layout.main>

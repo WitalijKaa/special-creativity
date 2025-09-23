@@ -17,9 +17,9 @@ $predictionFuture = [
                   btn="make Prediction"
                   :fields="$predictionFuture"></x-form.basic>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.major-nav')
-    </x-form.container>
+    </x-layout.container>
 
     @if($growPercentPrediction)
         <x-layout.header-second>Prediction persons grow</x-layout.header-second>

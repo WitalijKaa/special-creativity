@@ -123,9 +123,9 @@ $calcSummaryAges = function (int $Y, \App\Models\Collection\LifeCollection $plan
 
     <x-layout.divider></x-layout.divider>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.persons-list-nav')
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>
 

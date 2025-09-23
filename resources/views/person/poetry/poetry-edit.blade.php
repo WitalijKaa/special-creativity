@@ -27,8 +27,8 @@ $vPerson = new \App\Models\View\PersonView();
         <x-layout.divider></x-layout.divider>
     @endforeach
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.life-nav', ['model' => $life])
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>

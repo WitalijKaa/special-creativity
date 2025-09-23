@@ -62,9 +62,9 @@ $fYear = $factory->number('year', 'Year of current moment', $factory->withValue(
 
     <x-layout.divider></x-layout.divider>
 
-    <x-form.container>
+    <x-layout.container>
         <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
         <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>

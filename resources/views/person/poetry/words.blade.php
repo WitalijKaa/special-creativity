@@ -42,8 +42,8 @@ $formAddWord = [
 
     <x-layout.divider></x-layout.divider>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.major-nav')
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>

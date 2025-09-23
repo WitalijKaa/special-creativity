@@ -117,9 +117,7 @@ class PoetryWordCollection extends AbstractCollection
 
     private array $_names;
     public function isName(string $str): bool {
-        if (empty($this->_names)) {
-            $this->_names = Person::select('name')->pluck('name')->toArray();
-        }
+        $this->_names ??= Person::select('name')->pluck('name')->toArray();
         return in_array($this->cleanWord($str), $this->_names);
     }
 

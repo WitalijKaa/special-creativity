@@ -19,10 +19,10 @@ $formUpdateWord = [
                   btn="Update word"
                   :fields="$formUpdateWord"></x-form.basic>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.major-nav')
         <br><br>
         <a href="{{route('web.person.poetry-words')}}" type="button" class="btn btn-danger btn-lg">Poetry words</a>
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>

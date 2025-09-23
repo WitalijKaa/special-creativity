@@ -29,37 +29,38 @@ $basicEventType = [
     @if($planet->id)
 
         <x-layout.header-second>Life types</x-layout.header-second>
-        <x-form.container>
+        <x-layout.container>
             <span class="badge text-bg-light">Exists:</span>
             @foreach(\App\Models\World\Life::NAME as $lifeTypeName)
                 <span class="badge text-bg-success">{{ $lifeTypeName }}</span>
             @endforeach
-        </x-form.container>
+        </x-layout.container>
 
         <x-layout.header-second>Life roles</x-layout.header-second>
-        <x-form.container>
+        <x-layout.container>
             <span class="badge text-bg-light">Exists:</span>
             @foreach(\App\Models\World\Life::ROLE as $roleName)
                 <span class="badge text-bg-primary">{{ $roleName }}</span>
             @endforeach
-        </x-form.container>
+        </x-layout.container>
 
         @include('widgets.planet.works-simple')
 
         <x-layout.header-second>Events</x-layout.header-second>
-        <x-form.container>
+        <x-layout.container>
             <span class="badge text-bg-light">Exists:</span>
             @foreach(\App\Models\Person\EventType::selectOptions() as $eventOpt)
                 <span class="badge text-bg-{{$eventOpt['style']}}">{{ $eventOpt['lbl'] }}</span>
             @endforeach
-        </x-form.container>
+        </x-layout.container>
         <x-form.basic :route="route('web.basic.event-type')"
                       btn="add new Event Type"
                       :fields="$basicEventType"></x-form.basic>
 
         <x-layout.divider></x-layout.divider>
 
-        <x-form.container>
+        <x-layout.container>
+            <a href="{{route('web.logout')}}" type="button" class="btn btn-danger btn-lg">Exit</a>
             <a href="{{route('web.planet.export')}}" type="button" class="btn btn-danger btn-lg">Export</a>
             <a href="{{route('web.planet.import')}}" type="button" class="btn btn-danger btn-lg">Import</a>
             @include('components.pages.major-nav')
@@ -73,7 +74,7 @@ $basicEventType = [
             <a href="{{route('web.routine.create-persons')}}" type="button" class="btn btn-dark btn-lg">create S-LIFE</a>
             <a href="{{route('web.routine.allods-live-cycle')}}" type="button" class="btn btn-dark btn-lg">Cycle Allods</a>
             <a href="{{route('web.routine.planet-live-cycle')}}" type="button" class="btn btn-dark btn-lg">Cycle Planet</a>
-        </x-form.container>
+        </x-layout.container>
 
     @endif
 </x-layout.main>

@@ -52,9 +52,9 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
                   :btn-warn="$year > 0 ? ['lbl' => 'Back', 'href' => route('web.person.details', ['id' => $model->id])] : null"
                   :fields="[$fYear]"></x-form.basic>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.person-details-nav', ['$model' => $model])
-    </x-form.container>
+    </x-layout.container>
 
     <x-layout.container>
         <div class="list-group">
@@ -64,9 +64,9 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
         </div>
     </x-layout.container>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.person-details-nav', ['$model' => $model])
-    </x-form.container>
+    </x-layout.container>
 
     <x-layout.container>
         @include('widgets.person.events', ['events' => $events, 'person' => $model])
@@ -90,8 +90,8 @@ $titlePage .= $year > 0 ? ' ' . $year . 'Y' : '';
 
     <x-layout.divider></x-layout.divider>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.person-details-nav', ['$model' => $model])
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>

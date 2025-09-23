@@ -12,11 +12,11 @@ $basicWork = [
 
 ?>
 <x-layout.header-second>Work</x-layout.header-second>
-<x-form.container>
+<x-layout.container>
     @foreach(\App\Models\Work\Work::selectOptions() as $workOpt)
         <span class="badge text-bg-secondary">{{ $workOpt['lbl'] }}</span>
     @endforeach
-</x-form.container>
+</x-layout.container>
 <x-form.basic :route="route('web.basic.work')"
               btn="add new Work"
               :fields="$basicWork"></x-form.basic>

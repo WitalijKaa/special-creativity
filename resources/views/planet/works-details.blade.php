@@ -52,11 +52,11 @@ $basicWorkEdit = [
 
     <x-layout.divider></x-layout.divider>
 
-    <x-form.container>
+    <x-layout.container>
         <a href="{{route('web.planet.params')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
         <a href="{{route('web.planet.works-list')}}" type="button" class="btn btn-primary btn-lg">Work</a>
         <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
         <a href="{{route('web.basic.work-correct', ['id' => $model->id])}}" type="button" class="btn btn-danger btn-lg">Correct me</a>
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>

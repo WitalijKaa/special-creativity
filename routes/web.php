@@ -7,6 +7,12 @@ Route::post('/web-auth', [\App\Http\Controllers\AuthController::class, 'webAuth'
 
 Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authenticate::class, \App\Middleware\DbLoginMiddleware::class]], function() {
 
+    Route::get('escape', [\App\Http\Controllers\AuthController::class, 'escape'])->name('logout');
+
+    Route::group(['as' => 'space.', 'prefix' => 'space'], function() {
+        Route::get('basic', App\Http\Controllers\BasicAction::class)->name('basic');
+    });
+
     Route::group(['as' => 'planet.', 'prefix' => 'planet'], function() {
         Route::get('params', App\Http\Controllers\Planet\PlanetCreator\PlanetParamsAction::class)->name('params');
         Route::match(['get','post'], 'export', App\Http\Controllers\Planet\PlanetCreator\PlanetExportAction::class)->name('export');

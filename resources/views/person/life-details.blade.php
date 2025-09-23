@@ -33,9 +33,9 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-layout.header-second>Work 💪🏻 is {{ $model->lifeWork->workYears }}</x-layout.header-second>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.life-nav', ['model' => $model])
-    </x-form.container>
+    </x-layout.container>
 
     <x-layout.header-second>edit Events of this Life</x-layout.header-second>
 
@@ -45,8 +45,8 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-layout.divider></x-layout.divider>
 
-    <x-form.container>
+    <x-layout.container>
         @include('components.pages.life-nav', ['model' => $model])
-    </x-form.container>
+    </x-layout.container>
 
 </x-layout.main>
