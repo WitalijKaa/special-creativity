@@ -44,6 +44,7 @@ use Illuminate\Support\Collection;
  * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereBegin($value)
  * @method \Illuminate\Database\Eloquent\Builder<static>|Life whereEnd($value)
  *
+ * @property-read int $length_years
  * @property-read string $role_name
  * @property-read string $type_name
  * @property-read bool $is_man
@@ -52,8 +53,8 @@ use Illuminate\Support\Collection;
  * @property-read bool $is_allods
  * @property-read bool $is_dream
  * @property-read bool $is_virtual
+ * @property-read bool $ever_has_had_force_full
  * @property-read integer $current_type_no
- * @property-read bool $may_be_girl_easy
  * @property-read bool $is_holy
  * @property-read bool $is_deep_love
  * @property-read bool $is_slave
@@ -106,6 +107,15 @@ class Life extends \Eloquent implements JsonArchivableInterface
     public function getIsAllodsAttribute() { return self::ALLODS == $this->type; }
     public function getIsDreamAttribute() { return self::DREAM == $this->type; }
     public function getIsVirtualAttribute() { return self::VIRTUAL == $this->type; }
+    public function getEverHasHadForceFullAttribute() // ever_has_had_force_full
+    {
+        if (Person::ORIGINAL == $this->person_id) {
+            return true;
+        }
+        return Life::where('begin', '<', $this->end)
+            ->whereBeginForcePerson(Person::FORCE)
+            ->exists();
+    }
 
     private LifeWork $_lifeWork;
     public function getLifeWorkAttribute() {
@@ -113,6 +123,11 @@ class Life extends \Eloquent implements JsonArchivableInterface
             $this->_lifeWork = LifeWork::calculateLife($this->begin, $this->end, $this->work_events);
         }
         return $this->_lifeWork;
+    }
+
+    public function getLengthYearsAttribute() // length_years
+    {
+        return $this->end - $this->begin;
     }
 
     public function getCurrentTypeNoAttribute() // current_type_no
@@ -141,7 +156,7 @@ class Life extends \Eloquent implements JsonArchivableInterface
             ->first();
     }
 
-    public function getMayBeGirlEasyAttribute() // may_be_girl_easy
+    public function mayBeGirlEasy(Planet $planet)
     {
         $lives = $this->person->livesBeforeReversed($this->id ?? 0);
 
@@ -159,7 +174,7 @@ class Life extends \Eloquent implements JsonArchivableInterface
             if ($life->role != Life::MAN) {
                 return false;
             }
-            if (++$manLivesNonStop >= Life::PLANET_MAN_LIVES_TO_BE_GIRL_EASY) {
+            if (++$manLivesNonStop >= $planet->force_woman_man_allowed) {
                 return true;
             }
         }
@@ -236,13 +251,16 @@ class Life extends \Eloquent implements JsonArchivableInterface
             'end' => $this->end,
             'type' => $this->type,
             'role' => $this->role,
-            'begin_force_person' => $this->begin_force_person,
         ];
     }
 
     public static function fromArchive(array $archive): void
     {
         $archive['person_id'] = Person::whereName($archive['person'])->first()->id;
+        $archive['begin_force_person'] = 0;
+        if ($archive['type'] == Life::PLANET) {
+            $archive['planet_id'] = Planet::HOME_PLANET;
+        }
         static::create($archive);
     }
 

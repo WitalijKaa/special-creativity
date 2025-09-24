@@ -41,7 +41,11 @@
                     ['route' => route('web.routine.create-persons'), 'label' => 'in Allod-Creation do Creation'],
                     ['route' => route('web.routine.allods-live-cycle'), 'label' => 'Live at Allods'],
                     ['route' => route('web.routine.planet-live-cycle'), 'label' => 'Live at Planet'],
-                ]]]
+                ]]],
+                ['dropdown' => ['label' => 'Calculations', 'cc' => CC_DARK, 'items' => [
+                    ['route' => route('web.routine.check.force-vs-creation'), 'label' => 'check Force vs Creation'],
+                    ['route' => route('web.routine.re-write.force-vs-creation'), 'label' => 're-write to DB Force vs Creation'],
+                ]]],
             ]" />
         </x-layout.wrapper>
 

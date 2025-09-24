@@ -14,7 +14,7 @@ class PlanetCreateAction
         $planet->name = $request->name;
         $planet->days = $request->days;
         $planet->hours = $request->hours;
-        $planet->force = $request->force;
+        $planet->force_at_start = $request->force;
         $planet->force_create = $request->force_create;
         $planet->force_man_up = $request->force_man_up;
         $planet->force_woman_up = $request->force_woman_up;

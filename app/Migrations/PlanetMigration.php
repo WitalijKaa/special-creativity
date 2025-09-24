@@ -16,7 +16,7 @@ class PlanetMigration implements MigratorInterface
             $table->string('name', 32)->nullable(false);
             $table->unsignedSmallInteger('days')->nullable(false);
             $table->unsignedSmallInteger('hours')->nullable(false);
-            $table->unsignedTinyInteger('force')->nullable(false);
+            $table->unsignedTinyInteger('force_at_start')->nullable(false);
             $table->unsignedTinyInteger('force_create')->nullable(false);
             $table->unsignedTinyInteger('force_man_up')->nullable(false);
             $table->unsignedTinyInteger('force_woman_up')->nullable(false);

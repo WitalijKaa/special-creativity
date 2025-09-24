@@ -19,6 +19,7 @@ class CycleLifeAtPlanetAction
             ->withErrors([$field => [$msg]]);
 
         $persons = Person::all();
+        $planet = Planet::correctPlanet();
 
         $lives = new LifeCollection();
         foreach ($persons as $person) {
@@ -80,8 +81,8 @@ class CycleLifeAtPlanetAction
                 $addYears = mt_rand(62, 67);
             }
 
-            $isFirstGirl = $life->may_be_girl_easy;
-            $isSecondGirl = !$isFirstGirl && $vizavi->last_life?->may_be_girl_easy;
+            $isFirstGirl = $life->mayBeGirlEasy($planet);
+            $isSecondGirl = !$isFirstGirl && $vizavi->last_life?->mayBeGirlEasy($planet);
 
             $model = new Life();
             $model->begin = $life->end;
@@ -105,8 +106,8 @@ class CycleLifeAtPlanetAction
 
             $model->save();
             $modelVizavi->save();
-            ForceEvent::liveLife($life->person, $model);
-            ForceEvent::liveLife($vizavi, $modelVizavi);
+            ForceEvent::liveLife($life->person, $model, $planet, null, null)?->andSave();
+            ForceEvent::liveLife($vizavi, $modelVizavi, $planet, null, null)?->andSave();
 
             if ($needLove) {
                 $event = new PersonEvent();

@@ -16,7 +16,7 @@ class CreatePersonsAction
         $lives = new LifeCollection();
         foreach ($persons as $person) {
             $lastLife = $person->last_life;
-            if ($lastLife->is_allods && $lastLife->begin_force_person >= 100) {
+            if ($lastLife->is_allods && $lastLife->begin_force_person >= Person::FORCE) {
                 $lives->push($lastLife);
             }
         }
@@ -37,7 +37,7 @@ class CreatePersonsAction
             $model->begin = $life->end;
 
             $model->save();
-            ForceEvent::createPerson($author, $life->end);
+            ForceEvent::createPerson($author, $life->end)->andSave();
             $zvezdi++;
         }
 

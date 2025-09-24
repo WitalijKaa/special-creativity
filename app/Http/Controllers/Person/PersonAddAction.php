@@ -15,18 +15,18 @@ class PersonAddAction
             ->withInput($request->toArray());
 
         $author = Person::whereId($author_id)->first();
-        $prevAuthorLife = $author->lives->last();
-        /** @var \App\Models\World\Life $prevAuthorLife */
+        $lastAuthorLife = $author->lives->last();
+        /** @var \App\Models\World\Life $lastAuthorLife */
 
         // validation
 
-        if ($author->force_person < Person::FORCE) {
+        if (!ForceEvent::canHeCreatePerson($author)) {
             return $back('begin', 'Not enough Force amount');
         }
-        if (!$prevAuthorLife->is_allods) {
+        if (!$lastAuthorLife->is_allods) {
             return $back('begin', 'May create only during Allods life');
         }
-        if ($request->begin < $prevAuthorLife->begin || $request->begin > $prevAuthorLife->end) {
+        if ($request->begin < $lastAuthorLife->begin || $request->begin > $lastAuthorLife->end) {
             return $back('begin', 'Should create new Life during last Life');
         }
 
@@ -40,7 +40,7 @@ class PersonAddAction
         $model->begin = $request->begin;
         $model->save();
 
-        ForceEvent::createPerson($author, $request->begin);
+        ForceEvent::createPerson($author, $request->begin)->andSave();
 
         return redirect(route('web.person.details', ['id' => $author_id]));
     }

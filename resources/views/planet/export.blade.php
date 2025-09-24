@@ -23,7 +23,14 @@
     <x-layout.divider />
 
     <x-layout.container>
-        <a href="{{route('web.basic.space')}}" type="button" class="btn btn-secondary btn-lg">Planet</a>
-        <a href="{{route('web.person.list')}}" type="button" class="btn btn-primary btn-lg">Personas</a>
+        <x-pages.major-nav />
+
+        <x-layout.wrapper>
+            <x-button.links :items="[
+                ['cc' => CC_DANGER, 'route' => route('web.planet.export'), 'label' => 'Export'],
+                ['cc' => CC_DANGER, 'route' => route('web.planet.import'), 'label' => 'Import'],
+            ]" />
+        </x-layout.wrapper>
     </x-layout.container>
+
 </x-layout.main>

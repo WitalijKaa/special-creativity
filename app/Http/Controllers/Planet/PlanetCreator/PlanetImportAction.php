@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Planet\PlanetCreator;
 
 use App\Migrations\Migrator;
+use App\Models\World\ForceEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,6 +14,7 @@ class PlanetImportAction
         if ($request->isMethod('post') && $dir = $request->get('directory')) {
             try {
                 $this->importFromDirectory($dir);
+                ForceEvent::reWriteCreationsAndLives();
             } catch (\Throwable $ex) {
                 return redirect()->route('web.planet.import')
                     ->with(['status' => 'Error while import:' . $ex->getMessage()]);

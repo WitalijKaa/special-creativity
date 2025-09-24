@@ -9,7 +9,7 @@ use App\Models\Inteface\JsonArchivableInterface;
  * @property string $name
  * @property int $days
  * @property int $hours
- * @property int $force
+ * @property int $force_at_start
  * @property int $force_create
  * @property int $force_man_up
  * @property int $force_woman_up
@@ -35,12 +35,17 @@ class Planet extends \Eloquent implements JsonArchivableInterface
 
     protected $guarded = ['id'];
 
+    public static function correctPlanet(): static
+    {
+        return static::first();
+    }
+
     protected function casts(): array
     {
         return [
             'days' => 'integer',
             'hours' => 'integer',
-            'force' => 'integer',
+            'force_at_start' => 'integer',
             'force_create' => 'integer',
             'force_man_up' => 'integer',
             'force_woman_up' => 'integer',
@@ -59,7 +64,7 @@ class Planet extends \Eloquent implements JsonArchivableInterface
             'name' => $this->name,
             'days' => $this->days,
             'hours' => $this->hours,
-            'force' => $this->force,
+            'force_at_start' => $this->force_at_start,
             'force_create' => $this->force_create,
             'force_man_up' => $this->force_man_up,
             'force_woman_up' => $this->force_woman_up,

@@ -49,7 +49,7 @@ class LifeAddAction
         $model->begin_force_person = $person->force_person;
         $model->save();
 
-        ForceEvent::liveLife($person, $model);
+        ForceEvent::liveLife($person, $model, Planet::correctPlanet(), null, null)?->andSave();
 
         return redirect(route('web.person.details', ['id' => $id]));
     }

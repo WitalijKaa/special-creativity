@@ -2,6 +2,8 @@
 
 /** @var \App\Models\World\Life $model */
 
+$planet = \App\Models\World\Planet::correctPlanet();
+
 ?><a href="{{route('web.person.details-life', ['person_id' => $model->person_id, 'life_id' => $model->id])}}" class="list-group-item list-group-item-action list-group-item-{{$vPerson->lifeBack($model)}}">
 
     <div class="d-flex w-100 justify-content-between mb-1">
@@ -22,7 +24,7 @@
                 @if($model->begin_force_person == \App\Models\Person\Person::FORCE)
                     <span class="badge text-bg-success">Can create Life</span>
                 @endif
-                @if($model->may_be_girl_easy)
+                @if($model->mayBeGirlEasy($planet))
                     <span class="badge text-bg-warning">May be a Girl</span>
                 @endif
                 <span class="badge text-bg-secondary">{{$model->end - $model->begin}} years</span>

@@ -5,6 +5,7 @@ namespace App\Models\Person;
 use App\Models\Collection\PersonEventBuilder;
 use App\Models\Inteface\JsonArchivableInterface;
 use App\Models\World\Life;
+use App\Models\World\Planet;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -196,7 +197,7 @@ class Person extends \Eloquent implements JsonArchivableInterface
 
         return !$lastLife?->is_planet &&
             $lastLife?->role != Life::WOMAN &&
-            $lastLife?->may_be_girl_easy;
+            $lastLife?->mayBeGirlEasy(Planet::correctPlanet());
     }
 
     public function synthetic(int $type_id): PersonEventSynthetic
@@ -240,6 +241,7 @@ class Person extends \Eloquent implements JsonArchivableInterface
 
     public static function fromArchive(array $archive): void
     {
+        $archive['force_person'] = 0;
         static::create($archive);
     }
 }

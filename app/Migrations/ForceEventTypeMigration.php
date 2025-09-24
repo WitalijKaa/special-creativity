@@ -20,7 +20,7 @@ class ForceEventTypeMigration implements MigratorInterface
 
         $model = new ForceEventType();
         $model->id = ForceEventType::CREATE_PERSON;
-        $model->name = 'Stvorio';
+        $model->name = 'theCreation';
         $model->system = true;
         $model->save();
 
@@ -31,8 +31,8 @@ class ForceEventTypeMigration implements MigratorInterface
         $model->save();
 
         $model = new ForceEventType();
-        $model->id = ForceEventType::PLANET_LIFE_MAN_AT_BEGINNING;
-        $model->name = 'Young life';
+        $model->id = ForceEventType::PLANET_LIFE_YOUNG_MAN;
+        $model->name = 'Young man life';
         $model->system = true;
         $model->save();
 
@@ -44,7 +44,13 @@ class ForceEventTypeMigration implements MigratorInterface
 
         $model = new ForceEventType();
         $model->id = ForceEventType::PLANET_LIFE_WOMAN_RARE;
-        $model->name = 'Girl life';
+        $model->name = 'Nice-Girl life';
+        $model->system = true;
+        $model->save();
+
+        $model = new ForceEventType();
+        $model->id = ForceEventType::PLANET_LIFE_YOUNG_WOMAN;
+        $model->name = 'Young woman life';
         $model->system = true;
         $model->save();
     }

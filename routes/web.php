@@ -68,6 +68,9 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('create-persons', \App\Http\Controllers\Person\Routine\CreatePersonsAction::class)->name('create-persons');
         Route::get('allods-live-cycle', \App\Http\Controllers\Person\Routine\CycleLifeAtAllodsAction::class)->name('allods-live-cycle');
         Route::get('planet-live-cycle', \App\Http\Controllers\Person\Routine\CycleLifeAtPlanetAction::class)->name('planet-live-cycle');
+
+        Route::get('check/force-vs-creation', \App\Http\Controllers\Person\Routine\CheckForceVsRoutineAction::class)->name('check.force-vs-creation');
+        Route::get('re-write/force-vs-creation', \App\Http\Controllers\Person\Routine\ReWriteForceVsRoutineAction::class)->name('re-write.force-vs-creation');
     });
 
     Route::group(['as' => 'prediction.', 'prefix' => 'prediction'], function() {
