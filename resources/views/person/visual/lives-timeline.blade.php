@@ -78,7 +78,8 @@ $titlePage = $models->count() . ' Lives-T';
     <x-layout.divider />
 
     <x-layout.container>
-        @include('components.pages.persons-list-nav')
+        <x-pages.major-nav />
+        <x-pages.persons-list-nav />
     </x-layout.container>
 
 </x-layout.main>

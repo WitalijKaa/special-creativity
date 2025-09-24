@@ -4,6 +4,8 @@ namespace App\Models\Poetry;
 
 class PoetryWordParsedDto
 {
+    public PoetryWord $model;
+
     public bool $isDashed = false;
     public bool $isCouple = false;
 

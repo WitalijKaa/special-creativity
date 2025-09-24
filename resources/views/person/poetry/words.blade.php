@@ -31,7 +31,7 @@ $formAddWord = [
                 <td>{{ $word->word_eng }}</td>
                 <td>{{ $word->word_ai }}</td>
                 <td>{{ $word->definition }}</td>
-                <td>
+                <td style="width: 200px;">
                     <a href="{{ route('web.person.poetry-word-edit', ['id' => $word->id]) }}" class="btn btn-primary btn-sm">edit</a>
                     <x-form.submit-nano :route="route('web.person.poetry-word-translate', ['id' => $word->id])" btn="translate"></x-form.submit-nano>
                     <x-form.submit-nano :route="route('web.person.poetry-word-delete', ['id' => $word->id])" btn="del"></x-form.submit-nano>

@@ -21,18 +21,40 @@ $formTranslateChapter = [
 $vPerson = new \App\Models\View\PersonView();
 $isNextWordTip = false;
 
+$chapter = null;
+$part = null;
+$partName = $life->is_allods ? 'Аллоды' : 'Планета';
+$firstPartTitled = false;
+
+$vPerson = new \App\Models\View\PersonView();
+
 ?><x-layout.main :title="$vPerson->titleLife($life) . ' Poetry'">
     <x-pages.headers.life-header :model="$life"></x-pages.headers.life-header>
 
     @if($poetry->count())
 
-        <x-layout.header-second>poetry of Life...</x-layout.header-second>
-
-        <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null'])" method="get" btn="Edit paragraphs"></x-form.submit>
-
         <x-layout.container>
             @foreach($poetry as $paragraph)
                 @php($pList = explode(' ', $paragraph->text))
+
+                @if($chapter != $paragraph->chapter)
+                    @php($chapter = $paragraph->chapter)
+                    <h2 class="mb-4">ГЛАВА {{ $chapter }} @if($life->person_id != \App\Models\Person\Person::ORIGINAL) РАКУРС {{ $life->person_id }} {{ $life->person->name }} @endif</h2>
+                @endif
+
+                @if($part != $paragraph->part)
+                    @php($part = $paragraph->part)
+                    @php($aboutAllLife = $paragraph->begin == $life->begin && $paragraph->end == $life->end)
+                    @php($isPartPhilosophy = $paragraph->spectrum == \App\Models\Poetry\Poetry::SPECTRUM_PHILOSOPHY)
+                    @if(!$firstPartTitled || $aboutAllLife)
+                        <h4 class="mb-4">РАЗДЕЛ {{ $partName }} {{ $isPartPhilosophy ? '(размышления)' : $vPerson->rusYears($life) }}</h4>
+                    @endif
+                    @if(!$aboutAllLife)
+                        <h4 class="mb-4">ПОДРАЗДЕЛ {{ $partName }} {{ $vPerson->rusYears($paragraph) }}</h4>
+                    @endif
+                    @php($firstPartTitled = true)
+                @endif
+
                 <p>
                     @foreach($pList as $ixW => $word)
                         @if($isNextWordTip)
@@ -51,6 +73,12 @@ $isNextWordTip = false;
                 </p>
             @endforeach
         </x-layout.container>
+
+        <x-layout.divider />
+
+        <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null'])" method="get" btn="Edit paragraphs"></x-form.submit>
+
+        <x-layout.divider />
 
         <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
                       btn="Translate to Foreign language"
@@ -78,17 +106,25 @@ $isNextWordTip = false;
 
     @endif
 
+    @if($poetry->count())
+        <x-layout.header-second>delete all and Start with new Chapter...</x-layout.header-second>
+    @else
+        <x-layout.header-second>add Chapter and start Writing...</x-layout.header-second>
+    @endif
+
     <x-form.basic :route="route('web.person.chapter-add', ['life_id' => $life->id])"
                   btn="smart parse chapter"
                   :fields="$formAddChapter"></x-form.basic>
 
     <x-layout.divider />
 
-    <x-layout.container>
-        <x-pages.life-nav :model="$life" />
-    </x-layout.container>
+    @if($events->count())
+        <x-layout.container>
+            <x-pages.life-nav :model="$life" />
+        </x-layout.container>
 
-    <x-layout.divider />
+        <x-layout.divider />
+    @endif
 
     @if($life->lifeWork->workYears)
         <x-layout.header-second>Work 💪🏻 is {{ $life->lifeWork->workYears }}</x-layout.header-second>

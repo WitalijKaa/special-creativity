@@ -21,8 +21,20 @@ class ChapterAddAction
         $yearEnd = $life->end;
         $paragraphCreatedAtLastStep = false;
         $isCorrectPartType = false;
+        $spectrum = Poetry::SPECTRUM_MAIN;
         $paragraphs = collect(explode("\n", trim($request->chapter)))
-            ->map(function (string $paragraph) use ($request, $life, &$chapter, &$part, &$lastIX, &$yearBegin, &$yearEnd, &$paragraphCreatedAtLastStep, &$isCorrectPartType) {
+            ->map(function (string $paragraph)
+                use ($request,
+                    $life,
+                    &$chapter,
+                    &$part,
+                    &$lastIX,
+                    &$yearBegin,
+                    &$yearEnd,
+                    &$paragraphCreatedAtLastStep,
+                    &$isCorrectPartType,
+                    &$spectrum)
+            {
                 $model = new Poetry();
                 $model->text = trim($paragraph);
                 if (!$model->text) { return null; }
@@ -36,6 +48,10 @@ class ChapterAddAction
                 $isParagraph = $this->isParagraph($model->text);
                 $isCorrectPartType = $this->isPartAboutCurrentTypeOfLife($model->text, $life, $isCorrectPartType);
 
+                if (str_starts_with($model->text, 'РАЗДЕЛ ')) {
+                    $spectrum = str_contains($model->text, '(размышления)') ? Poetry::SPECTRUM_PHILOSOPHY : Poetry::SPECTRUM_MAIN;
+                }
+
                 if (!$isParagraph || !$isCorrectPartType) { return null; }
 
                 $model->life_id = $life->id;
@@ -44,6 +60,7 @@ class ChapterAddAction
                 $model->begin = $yearBegin;
                 $model->end = $yearEnd;
                 $model->ix_text = ++$lastIX;
+                $model->spectrum = $spectrum;
 
                 $paragraphCreatedAtLastStep = $isParagraph;
                 return $model;
@@ -110,7 +127,7 @@ class ChapterAddAction
         $parts = explode(' ', $paragraph);
         $lastPart = $parts[count($parts) - 1];
         $lastPart = str_replace(['(', ')'], '', $lastPart);
-        if (str_contains('-', $lastPart)) {
+        if (str_contains($lastPart, '-')) {
             $parts = explode('-', $lastPart);
             return [(int)$parts[0], (int)$parts[1]];
         } else {

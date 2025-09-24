@@ -5,6 +5,7 @@ namespace App\Models\View;
 use App\Models\Collection\LifeCollection;
 use App\Models\Collection\PoetryWordCollection;
 use App\Models\Person\Person;
+use App\Models\Poetry\Poetry;
 use App\Models\World\ForceEvent;
 use App\Models\World\Life;
 
@@ -220,5 +221,13 @@ class PersonView extends AbstractView
             return ['name-word', '', false];
         }
         return ['', '', false];
+    }
+
+    public function rusYears(Life|Poetry $item): string
+    {
+        if ($item->begin == $item->end) {
+            return "(год $item->begin)";
+        }
+        return "(годы $item->begin-$item->end)";
     }
 }
