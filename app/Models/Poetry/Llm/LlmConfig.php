@@ -8,7 +8,7 @@ class LlmConfig
 
     private const string MODE_STRICT = 'strict';
     private const string MODE_CREATIVELY = 'creatively';
-    private const array VS_MODE = [self::MODE_STRICT, self::MODE_CREATIVELY];
+    private const array VS_MODE = [self::MODE_CREATIVELY, self::MODE_STRICT];
 
     private const string MODE_QUALITY_OK = 'ok';
     private const string MODE_QUALITY_NICE = 'nice';

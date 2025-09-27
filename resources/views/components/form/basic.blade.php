@@ -4,10 +4,13 @@
             <form action="{{$route}}" method="{{empty($method) ? 'post' : $method}}">
                 @csrf
                 @foreach($fields as $field)
-                    @if ($field instanceof \App\Dto\Form\FormFieldInputDto && $field->type == 'textarea')
+                    @if ($field instanceof \App\Dto\Form\FormFieldInputDto && $field->type == 'hidden')
+                        <input type="hidden" id="{{$field->id}}" name="{{$field->id}}" value="{{$field->value}}" autocomplete="off">
+
+                    @elseif ($field instanceof \App\Dto\Form\FormFieldInputDto && $field->type == 'textarea')
                         <div class="mb-4">
                             <label for="{{$field->id}}" class="form-label">{{$field->label}}</label>
-                            <textarea rows="8" id="{{$field->id}}" name="{{$field->id}}" class="form-control" aria-describedby="{{$field->id}}Tip">{{ $field->value ?? old($field->id) }}</textarea>
+                            <textarea rows="8" id="{{$field->id}}" name="{{$field->id}}" class="form-control">{{ $field->value ?? old($field->id) }}</textarea>
                             @if(!empty($errors->get($field->id)[0]))
                                 <div id="{{$field->id}}Tip" class="form-text text-danger">{{$errors->get($field->id)[0]}}</div>
                             @elseif(!empty($field->nonErrorTip))
@@ -24,7 +27,7 @@
                     @elseif ($field instanceof \App\Dto\Form\FormFieldInputDto && is_null($field->options))
                         <div class="mb-4">
                             <label for="{{$field->id}}" class="form-label">{{$field->label}}</label>
-                            <input id="{{$field->id}}" name="{{$field->id}}" value="{{$field->value ?? old($field->id)}}" type="{{$field->type}}" class="form-control" aria-describedby="{{$field->id}}Tip">
+                            <input id="{{$field->id}}" name="{{$field->id}}" value="{{$field->value ?? old($field->id)}}" type="{{$field->type}}" class="form-control">
                             @if(!empty($errors->get($field->id)[0]))
                                 <div id="{{$field->id}}Tip" class="form-text text-danger">{{$errors->get($field->id)[0]}}</div>
                             @elseif(!empty($field->nonErrorTip))

@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property-read string $to_lang
+ * @property-read ?string $from_llm
+ * @property-read ?string $from_lang
  * @property-read string $llm
  * @property-read string $llm_mode
  * @property-read string $llm_quality
@@ -25,6 +27,8 @@ class ChapterTranslateRequest extends FormRequest
 
         return [
             'to_lang' => "required|string|in:$lang",
+            'from_llm' => "sometimes",
+            'from_lang' => "sometimes",
             'llm' => "required|string|in:$models",
             'llm_mode' => "required|string|in:$modes",
             'llm_quality' => "required|string|in:$quality",

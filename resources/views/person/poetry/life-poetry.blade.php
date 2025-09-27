@@ -6,6 +6,8 @@
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[][] $llmVariants */
 /** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $words */
 
+/** @var \App\Models\Poetry\Poetry $llmFirstParagraph */
+
 $factory = new \App\Dto\Form\FormInputFactory();
 
 $formAddChapter = [
@@ -13,8 +15,8 @@ $formAddChapter = [
     $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'),
 ];
 
+$toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions(LL_RUS), 'Into which language translate to?');
 $formTranslateChapter = [
-    $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectTranslateFromOriginalOptions(), 'Into which language translate to?'),
     $factory->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'),
     $factory->select('llm_mode', \App\Models\Poetry\Llm\LlmConfig::selectModeOptions(), 'What kind of methodology to use?'),
     $factory->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'),
@@ -47,20 +49,27 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
                       btn="Translate to Foreign language"
-                      :fields="$formTranslateChapter"></x-form.basic>
+                      :fields="array_merge([$toLang], $formTranslateChapter)"></x-form.basic>
 
-        @foreach($llmVariants as $variation)
-            @php($vModel = $variation->first())
+        @foreach($llmVariants as $llmVariant)
+            @php($llmFirstParagraph = $llmVariant->first())
             <x-layout.header-second>
-                {{ \App\Models\Poetry\LanguageHelper::label($vModel->lang) }}
+                {{ \App\Models\Poetry\LanguageHelper::label($llmFirstParagraph->lang) }}
                 vs LLM
-                <span class="badge bg-success">{{ $vModel->ai }}</span>
+                <span class="badge bg-success">{{ $llmFirstParagraph->ai }}</span>
             </x-layout.header-second>
 
-            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai])" method="get" btn="Edit paragraphs"></x-form.submit>
-            <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $vModel->lang, 'llm' => $vModel->ai])" method="get" btn="Kill paragraphs"></x-form.submit>
+            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->ai])" method="get" btn="Edit paragraphs"></x-form.submit>
+            <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->ai])" method="get" btn="Kill paragraphs"></x-form.submit>
 
-            <x-poetry.poetry :life="$life" :poetry="$variation" :words="$words" />
+            <x-poetry.poetry :life="$life" :poetry="$llmVariant" :words="$words" />
+
+            @php($toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($llmFirstParagraph->lang), 'Into which language translate to?'))
+            @php($fromLLM = $factory->hidden('from_llm', $factory->withValue($llmFirstParagraph->ai)))
+            @php($fromLang = $factory->hidden('from_lang', $factory->withValue($llmFirstParagraph->lang)))
+            <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
+                          btn="Translate again"
+                          :fields="array_merge([$fromLLM, $fromLang, $toLang], $formTranslateChapter)"></x-form.basic>
         @endforeach
 
         <x-layout.divider />

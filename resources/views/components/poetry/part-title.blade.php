@@ -24,13 +24,14 @@ $naming = [
         'subpart' => 'SUBPART',
     ],
 ];
+$lang = array_key_exists($paragraph->lang, $naming) ? $paragraph->lang : LL_RUS;
 /** @var \App\Models\Poetry\Poetry $paragraph */
-$nThinking = $naming[$paragraph->lang]['thinking'];
-$nChapter = $naming[$paragraph->lang]['chapter'];
-$nPointOfView = $naming[$paragraph->lang]['pointOfView'];
-$nPart = $naming[$paragraph->lang]['part'];
-$nSubPart = $naming[$paragraph->lang]['subpart'];
-$partName = $life->is_allods ? $naming[$paragraph->lang]['Allods'] : $naming[$paragraph->lang]['Planet'];
+$nThinking = $naming[$lang]['thinking'];
+$nChapter = $naming[$lang]['chapter'];
+$nPointOfView = $naming[$lang]['pointOfView'];
+$nPart = $naming[$lang]['part'];
+$nSubPart = $naming[$lang]['subpart'];
+$partName = $life->is_allods ? $naming[$lang]['Allods'] : $naming[$paragraph->lang]['Planet'];
 
 $vPerson = new \App\Models\View\PersonView();
 

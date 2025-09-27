@@ -26,7 +26,13 @@ class TranslateWithLlm extends AiAbstractRequest
         return $this->withTimeout(600.0)->sendPost($this->toArray())['response'];
     }
 
-    public function translatePoetryMass(Collection $poetry, string $toLang = LL_ENG): Collection
+    /**
+     * @param \Illuminate\Support\Collection $poetry
+     * @param string $toLang
+     *
+     * @return \Illuminate\Support\Collection|\App\Models\Poetry\Poetry[]
+     */
+    public function translatePoetryMass(Collection $poetry, string $toLang): Collection
     {
         $this->toLang = $toLang;
         $this->content = new PoetryLlm();
@@ -44,7 +50,7 @@ class TranslateWithLlm extends AiAbstractRequest
         $return = new Collection();
         foreach ($poetry as $ix => $paragraph) {
             /** @var $paragraph PoetryInterface|\App\Models\Poetry\Poetry */
-            $return->push($paragraph->translation($response[$ix], LL_ENG, $this->llm . '.' . $this->pipe));
+            $return->push($paragraph->translation($response[$ix], $toLang, $this->llm . '.' . $this->pipe));
         }
         return $return;
     }

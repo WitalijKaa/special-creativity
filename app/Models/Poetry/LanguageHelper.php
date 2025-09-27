@@ -12,9 +12,9 @@ class LanguageHelper
         return 'rus';
     }
 
-    public static function selectOptions(): array
+    public static function selectOptions(?string $exceptLang = null): array
     {
-        return [
+        $return = [
             [
                 'opt' => 'rus',
                 'lbl' => 'Russian',
@@ -31,11 +31,8 @@ class LanguageHelper
                 'opt' => 'srb',
                 'lbl' => 'Serbian',
             ],
-            [
-                'opt' => 'fra',
-                'lbl' => 'French',
-            ],
         ];
+        return $exceptLang ? array_values(array_filter($return, fn ($item) => $exceptLang != $item['opt'])) : $return;
     }
 
     public static function label(string $lang): string
@@ -46,23 +43,5 @@ class LanguageHelper
             }
         }
         return $lang;
-    }
-
-    public static function selectTranslateFromOriginalOptions(): array
-    {
-        return [
-            [
-                'opt' => 'eng',
-                'lbl' => 'English',
-            ],
-            [
-                'opt' => 'ukr',
-                'lbl' => 'Ukrainian',
-            ],
-            [
-                'opt' => 'srb',
-                'lbl' => 'Serbian',
-            ],
-        ];
     }
 }

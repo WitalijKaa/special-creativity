@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\AiRequest\TranslateWithLlm;
-use App\Models\Poetry\LanguageHelper;
 use App\Models\Poetry\Llm\LlmConfig;
 use App\Models\Poetry\Poetry;
 use App\Models\World\Life;
@@ -17,22 +16,23 @@ class ChapterTranslateAction
             return redirect(route('web.person.list'));
         }
 
-        $poetry = $life->poetrySpecific(LanguageHelper::oppositeLang($request->to_lang), null);
+        $poetry = !$request->from_llm ? $life->poetry : $life->poetrySpecific($request->from_lang, $request->from_llm);
 
-        if ($poetry->count() && LL_ENG == $request->to_lang) {
-            $config = new LlmConfig($request->llm);
-            $config->applyPipeParam($request->llm_mode);
-            $config->applyPipeParam($request->llm_quality);
-            $config->applyPipeParam($request->llm_rise_creativity);
+        $config = new LlmConfig($request->llm);
+        $config->applyPipeParam($request->llm_mode);
+        $config->applyPipeParam($request->llm_quality);
+        $config->applyPipeParam($request->llm_rise_creativity);
 
-            $translate = new TranslateWithLlm();
-            $translate->useConfig($config);
-            $response = $translate->translatePoetryMass($poetry);
+        $translate = new TranslateWithLlm();
+        $translate->useConfig($config);
+        $response = $translate->translatePoetryMass($poetry, $request->to_lang);
 
-            Poetry::whereLifeId($life->id)->whereAi($request->llm)->delete();
-            foreach ($response as $model) {
-                $model->save();
-            }
+        $nextLlm = !$request->from_llm ? $response->first()->ai : explode('.', $request->from_llm)[0] . '_' . $response->first()->ai;
+
+        Poetry::whereLifeId($life->id)->whereAi($nextLlm)->whereLang($request->to_lang)->delete();
+        foreach ($response as $model) {
+            $model->ai = $nextLlm;
+            $model->save();
         }
 
         return redirect(route('web.person.poetry-life', ['life_id' => $life->id]));

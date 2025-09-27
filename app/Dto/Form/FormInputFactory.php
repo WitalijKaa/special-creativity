@@ -42,6 +42,13 @@ class FormInputFactory
         return $dto;
     }
 
+    public function hidden(string $id, null|string|self $label = null, null|self $preDefined = null): FormFieldInputDto
+    {
+        $dto = $this->input($id, $label, $preDefined);
+        $dto->type = 'hidden';
+        return $dto;
+    }
+
     public function textarea(string $id, null|string|self $label = null, null|self $preDefined = null): FormFieldInputDto
     {
         $dto = $this->input($id, $label, $preDefined);
