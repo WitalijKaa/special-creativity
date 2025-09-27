@@ -24,6 +24,7 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::match(['get','post'], 'life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]+')->name('details');
 
         Route::get('poetry/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life');
+        Route::get('poetry/compare/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareParagraphsAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs');
         Route::get('poetry-edit/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\ParagraphsEditAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-edit');
         Route::get('poetry-delete/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\ParagraphsDeleteAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-delete');
         Route::post('poetry-paragraph-change/{id}', \App\Http\Controllers\Person\Poetry\ParagraphChangeAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-change');

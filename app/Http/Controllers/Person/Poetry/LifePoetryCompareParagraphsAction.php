@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Person\Poetry;
 
-use App\Models\Collection\PersonEventCollection;
 use App\Models\Poetry\Poetry;
 use App\Models\Poetry\PoetryWord;
 use App\Models\World\Life;
 
-class LifePoetryAction
+class LifePoetryCompareParagraphsAction
 {
     public function __invoke(int $life_id)
     {
@@ -16,10 +15,6 @@ class LifePoetryAction
         }
 
         $poetry = $life->poetry;
-
-        $events = PersonEventCollection::byLifeID($life->id)
-            ->sortNice()
-            ->addSyntheticBirthDeath($life);
 
         $llmVariants = Poetry::whereLifeId($life->id)
             ->whereNotNull('ai')
@@ -31,6 +26,6 @@ class LifePoetryAction
 
         $words = PoetryWord::byLang(LL_RUS);
 
-        return view('person.poetry.life-poetry', compact('poetry', 'llmVariants', 'life', 'events', 'words'));
+        return view('person.poetry.life-poetry-compare-paragraphs', compact('poetry', 'llmVariants', 'life', 'words'));
     }
 }

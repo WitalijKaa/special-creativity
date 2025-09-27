@@ -5,17 +5,19 @@ namespace App\Models\AiRequest;
 use App\Models\Collection\PoetryWordCollection;
 use App\Models\Inteface\PoetryInterface;
 use App\Models\Poetry\LanguageHelper;
+use App\Models\Poetry\Llm\LlmConfig;
 use App\Models\Poetry\Llm\PoetryLlm;
 use App\Models\Poetry\PoetryWord;
 use Illuminate\Support\Collection;
 
-class TranslateWithAi extends AiAbstractRequest
+class TranslateWithLlm extends AiAbstractRequest
 {
     public function apiEndPoint(): string { return 'translate_' . $this->toLang; }
     public function forcedQuery(): array { return []; }
 
     public PoetryLlm $content;
-    public string $ai;
+    public string $llm;
+    public string $pipe;
 
     private string $toLang;
 
@@ -42,8 +44,14 @@ class TranslateWithAi extends AiAbstractRequest
         $return = new Collection();
         foreach ($poetry as $ix => $paragraph) {
             /** @var $paragraph PoetryInterface|\App\Models\Poetry\Poetry */
-            $return->push($paragraph->translation($response[$ix], LL_ENG, $this->ai));
+            $return->push($paragraph->translation($response[$ix], LL_ENG, $this->llm . '.' . $this->pipe));
         }
         return $return;
+    }
+
+    public function useConfig(LlmConfig $config): void
+    {
+        $this->llm = $config->llm();
+        $this->pipe = $config->pipeMode();
     }
 }

@@ -56,21 +56,13 @@ class LanguageHelper
                 'lbl' => 'English',
             ],
             [
-                'opt' => 'fra',
-                'lbl' => 'French',
+                'opt' => 'ukr',
+                'lbl' => 'Ukrainian',
+            ],
+            [
+                'opt' => 'srb',
+                'lbl' => 'Serbian',
             ],
         ];
-    }
-
-    public static function selectAiOptions(): array
-    {
-        $return = [];
-        foreach (config('basic.llm_models') as $model) {
-            $return[] = [
-                'opt' => $model,
-                'lbl' => ucfirst($model),
-            ];
-        }
-        return $return;
     }
 }
