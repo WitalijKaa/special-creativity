@@ -79,7 +79,7 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
 
     public function text(): string { return $this->text; }
 
-    public function translation(string $text, string $lang, string $llm): static
+    public function llmModification(string $text, string $lang, string $llm): static
     {
         $model = new static();
         $model->chapter = $this->chapter;

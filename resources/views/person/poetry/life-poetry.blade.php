@@ -16,7 +16,7 @@ $formAddChapter = [
 ];
 
 $toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions(LL_RUS), 'Into which language translate to?');
-$formTranslateChapter = [
+$formLlmConfiguration = [
     $factory->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'),
     $factory->select('llm_mode', \App\Models\Poetry\Llm\LlmConfig::selectModeOptions(), 'What kind of methodology to use?'),
     $factory->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'),
@@ -49,7 +49,7 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
                       btn="Translate to Foreign language"
-                      :fields="array_merge([$toLang], $formTranslateChapter)"></x-form.basic>
+                      :fields="array_merge([$toLang], $formLlmConfiguration)"></x-form.basic>
 
         @foreach($llmVariants as $llmVariant)
             @php($llmFirstParagraph = $llmVariant->first())
@@ -67,9 +67,18 @@ $vPerson = new \App\Models\View\PersonView();
             @php($toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($llmFirstParagraph->lang), 'Into which language translate to?'))
             @php($fromLLM = $factory->hidden('from_llm', $factory->withValue($llmFirstParagraph->llm)))
             @php($fromLang = $factory->hidden('from_lang', $factory->withValue($llmFirstParagraph->lang)))
+
+            @if(LL_ENG == $llmFirstParagraph->lang)
+                <x-layout.divider />
+                <x-form.basic :route="route('web.person.poetry-life-improve', ['life_id' => $life->id, 'llm' => $llmFirstParagraph->llm])"
+                              btn="Improve text"
+                              :fields="array_merge([$fromLLM], $formLlmConfiguration)"></x-form.basic>
+                <x-layout.divider />
+            @endif
+
             <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
                           btn="Translate again"
-                          :fields="array_merge([$fromLLM, $fromLang, $toLang], $formTranslateChapter)"></x-form.basic>
+                          :fields="array_merge([$fromLLM, $fromLang, $toLang], $formLlmConfiguration)"></x-form.basic>
         @endforeach
 
         <x-layout.divider />

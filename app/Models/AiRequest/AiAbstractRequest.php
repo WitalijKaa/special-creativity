@@ -3,11 +3,17 @@
 namespace App\Models\AiRequest;
 
 use App\Models\ApiModel\BaseApiModel;
+use App\Models\Collection\PoetryWordCollection;
+use App\Models\Inteface\PoetryInterface;
+use App\Models\Poetry\Llm\LlmConfig;
+use App\Models\Poetry\Llm\PoetryLlm;
+use App\Models\Poetry\PoetryWord;
+use Illuminate\Support\Collection;
 
 abstract class AiAbstractRequest extends BaseApiModel
 {
-    public const AI_LLAMA = 'llama';
-    public const AI_GOOGLE = 'google';
+    protected const string DEFAULT_SEPARATOR = "\n";
+    protected const float TIMEOUT = 4000.0;
 
     public function apiServer(): string
     {
@@ -17,5 +23,43 @@ abstract class AiAbstractRequest extends BaseApiModel
     public function logErrorsStack(): array
     {
         return ['errors_temp'];
+    }
+
+    public PoetryLlm $content;
+    public string $llm;
+    public string $pipe;
+
+    protected function useLlm(string $separator = self::DEFAULT_SEPARATOR): array
+    {
+        return explode($separator, $this->withTimeout(self::TIMEOUT)->sendPost($this->toArray())['response']);
+    }
+
+    protected function prepareContent(Collection $poetry, string $lang): void
+    {
+        $this->content = new PoetryLlm();
+        $this->content->special_words = PoetryWord::byLang($lang)->filterByParagraphs($poetry)->toLlm();
+        $this->content->names = PoetryWordCollection::findAllNames($poetry);
+        $this->content->text = trim($poetry->implode(fn (PoetryInterface $paragraph) => $paragraph->text(), self::DEFAULT_SEPARATOR));
+    }
+
+    protected static function prepareResponse(array $response, Collection $poetry, string $lang, string $llmName): Collection
+    {
+        if ($poetry->count() != count($response)) {
+            \Log::channel('ai_weird')->notice(implode('####', $response));
+            throw new \Exception('Ai response has ' . count($response) . ' while original text has ' . $poetry->count());
+        }
+
+        $return = new Collection();
+        foreach ($poetry as $ix => $paragraph) {
+            /** @var $paragraph PoetryInterface|\App\Models\Poetry\Poetry */
+            $return->push($paragraph->llmModification($response[$ix], $lang, $llmName));
+        }
+        return $return;
+    }
+
+    public function useConfig(LlmConfig $config): void
+    {
+        $this->llm = $config->llm();
+        $this->pipe = $config->pipeMode();
     }
 }
