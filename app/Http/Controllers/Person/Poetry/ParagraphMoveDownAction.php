@@ -12,7 +12,7 @@ class ParagraphMoveDownAction
         $model = Poetry::findOrFail($id);
 
         $others = Poetry::where('lang', '!=', $model->lang)
-            ->where('ai', '!=', $model->ai)
+            ->where('llm', '!=', $model->llm)
             ->whereLifeId($model->life_id)
             ->whereIxText($model->ix_text)
             ->get();
@@ -26,7 +26,7 @@ class ParagraphMoveDownAction
         return redirect()->route('web.person.poetry-life-edit', [
             'life_id' => $model->life_id,
             'lang' => $model->lang,
-            'llm' => $model->ai ?? 'null',
+            'llm' => $model->llm ?? 'null',
         ]);
     }
 
@@ -34,7 +34,7 @@ class ParagraphMoveDownAction
     {
         if (!$next = Poetry::whereLifeId($model->life_id)
             ->whereLang($model->lang)
-            ->whereAi($model->ai)
+            ->whereLlm($model->llm)
             ->whereIxText($model->ix_text + 1)
             ->first())
         {

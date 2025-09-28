@@ -17,7 +17,7 @@ class PoetryMigration implements MigratorInterface
             $table->unsignedBigInteger('person_id')->nullable(false);
             $table->unsignedBigInteger('life_id')->nullable(false);
             $table->smallInteger('chapter')->nullable(false)->unsigned();
-            $table->string('ai', 32)->nullable(true);
+            $table->string('llm', 256)->nullable(true);
             $table->text('text')->nullable(false);
             $table->smallInteger('ix_text')->nullable(false)->unsigned();
             $table->integer('begin')->nullable(false)->unsigned(); // year
@@ -29,7 +29,7 @@ class PoetryMigration implements MigratorInterface
             // lp => life poetry (p == Person)
             $table->foreign('person_id', DB . '_lp_person')->references('id')->on(PersonMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('life_id', DB . '_lp_life')->references('id')->on(LifeMigration::tableName())->onDelete('cascade')->onUpdate('cascade');
-            $table->index('lang', DB . '_lp_ai');
+            $table->index('lang', DB . '_lp_llm');
         });
     }
 }

@@ -56,16 +56,16 @@ $vPerson = new \App\Models\View\PersonView();
             <x-layout.header-second>
                 {{ \App\Models\Poetry\LanguageHelper::label($llmFirstParagraph->lang) }}
                 vs LLM
-                <span class="badge bg-success">{{ $llmFirstParagraph->ai }}</span>
+                <span class="badge bg-success">{{ $llmFirstParagraph->llm }}</span>
             </x-layout.header-second>
 
-            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->ai])" method="get" btn="Edit paragraphs"></x-form.submit>
-            <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->ai])" method="get" btn="Kill paragraphs"></x-form.submit>
+            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Edit paragraphs"></x-form.submit>
+            <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Kill paragraphs"></x-form.submit>
 
             <x-poetry.poetry :life="$life" :poetry="$llmVariant" :words="$words" />
 
             @php($toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($llmFirstParagraph->lang), 'Into which language translate to?'))
-            @php($fromLLM = $factory->hidden('from_llm', $factory->withValue($llmFirstParagraph->ai)))
+            @php($fromLLM = $factory->hidden('from_llm', $factory->withValue($llmFirstParagraph->llm)))
             @php($fromLang = $factory->hidden('from_lang', $factory->withValue($llmFirstParagraph->lang)))
             <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
                           btn="Translate again"

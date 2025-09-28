@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $person_id
  * @property int $life_id
  * @property int $chapter
- * @property ?string $ai
+ * @property ?string $llm
  * @property string $text
  * @property int $ix_text
  * @property int $begin
@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry wherePersonId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereLifeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereChapter($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereAi($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereLlm($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereBegin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereEnd($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Poetry whereIxText($value)
@@ -60,7 +60,7 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
             'ix_text' => $this->ix_text,
             'text' => $this->text,
             'lang' => $this->lang,
-            'ai' => $this->ai,
+            'llm' => $this->llm,
             'part' => $this->part,
             'spectrum' => $this->spectrum,
             'begin' => $this->begin,
@@ -79,7 +79,7 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
 
     public function text(): string { return $this->text; }
 
-    public function translation(string $text, string $lang, string $ai): static
+    public function translation(string $text, string $lang, string $llm): static
     {
         $model = new static();
         $model->chapter = $this->chapter;
@@ -87,7 +87,7 @@ class Poetry extends \Eloquent implements JsonArchivableInterface, PoetryInterfa
         $model->spectrum = $this->spectrum;
         $model->text = trim($text);
         $model->lang = $lang;
-        $model->ai = $ai;
+        $model->llm = $llm;
         $model->life_id = $this->life_id;
         $model->person_id = $this->person_id;
         $model->ix_text = $this->ix_text;

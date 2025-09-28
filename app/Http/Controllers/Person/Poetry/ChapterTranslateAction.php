@@ -27,11 +27,11 @@ class ChapterTranslateAction
         $translate->useConfig($config);
         $response = $translate->translatePoetryMass($poetry, $request->to_lang);
 
-        $nextLlm = !$request->from_llm ? $response->first()->ai : explode('.', $request->from_llm)[0] . '_' . $response->first()->ai;
+        $nextLlm = !$request->from_llm ? $response->first()->llm : explode('.', $request->from_llm)[0] . '_' . $response->first()->llm;
 
-        Poetry::whereLifeId($life->id)->whereAi($nextLlm)->whereLang($request->to_lang)->delete();
+        Poetry::whereLifeId($life->id)->whereLlm($nextLlm)->whereLang($request->to_lang)->delete();
         foreach ($response as $model) {
-            $model->ai = $nextLlm;
+            $model->llm = $nextLlm;
             $model->save();
         }
 

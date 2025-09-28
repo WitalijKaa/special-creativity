@@ -10,7 +10,7 @@ class ParagraphsDeleteAction
     public function __invoke(int $life_id, string $lang, string $llm)
     {
         $llm = 'null' == $llm ? null : $llm;
-        Poetry::whereLifeId($life_id)->whereLang($lang)->whereAi($llm)->delete();
+        Poetry::whereLifeId($life_id)->whereLang($lang)->whereLlm($llm)->delete();
 
         if (!$life = Life::whereId($life_id)->first()) {
             return redirect(route('web.person.list'));

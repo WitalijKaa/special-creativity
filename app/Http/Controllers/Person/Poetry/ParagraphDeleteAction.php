@@ -12,7 +12,7 @@ class ParagraphDeleteAction
         Poetry::whereId($id)->delete();
 
         $others = Poetry::where('lang', '!=', $model->lang)
-            ->where('ai', '!=', $model->ai)
+            ->where('llm', '!=', $model->llm)
             ->whereLifeId($model->life_id)
             ->whereIxText($model->ix_text)
             ->get();
@@ -23,12 +23,12 @@ class ParagraphDeleteAction
             $this->updateIxAfterDelete($other);
         }
 
-        return redirect()->route('web.person.poetry-life-edit', ['life_id' => $model->life_id, 'lang' => $model->lang, 'llm' => $model->ai ?? 'null']);
+        return redirect()->route('web.person.poetry-life-edit', ['life_id' => $model->life_id, 'lang' => $model->lang, 'llm' => $model->llm ?? 'null']);
     }
 
     private function updateIxAfterDelete(Poetry $model): void
     {
-        Poetry::query()->whereLang($model->lang)->whereAi($model->ai)->whereLifeId($model->life_id)
+        Poetry::query()->whereLang($model->lang)->whereLlm($model->llm)->whereLifeId($model->life_id)
             ->orderBy('ix_text')
             ->get()
             ->each(function (Poetry $poetry, int $index): void {

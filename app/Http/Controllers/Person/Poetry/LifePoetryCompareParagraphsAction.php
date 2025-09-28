@@ -19,19 +19,19 @@ class LifePoetryCompareParagraphsAction
 
         $llmVariants = new Collection();
         Poetry::whereLifeId($life->id)
-            ->whereNotNull('ai')
+            ->whereNotNull('llm')
             ->select('lang')
             ->distinct()
             ->get()
             ->pluck('lang')
             ->each(function (string $lang) use ($llmVariants, $life) {
                 Poetry::whereLifeId($life->id)
-                    ->whereNotNull('ai')
+                    ->whereNotNull('llm')
                     ->whereLang($lang)
-                    ->select('ai')
+                    ->select('llm')
                     ->distinct()
                     ->get()
-                    ->pluck('ai')
+                    ->pluck('llm')
                     ->each(fn (string $llm) => $llmVariants->push($life->poetrySpecific($lang, $llm)));
             });
 

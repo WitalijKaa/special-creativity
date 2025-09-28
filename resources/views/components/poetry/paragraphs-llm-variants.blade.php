@@ -9,7 +9,7 @@
     @foreach($variation as $paragraphVariant)
         @if($paragraphVariant->part == $paragraph->part && $paragraphVariant->ix_text == $paragraph->ix_text)
             <x-poetry.paragraph :paragraph="$paragraphVariant" :life="$life" :words="$words">
-                <span class="llm-text-title-label">&nbsp;&nbsp;{{ $paragraphVariant->ai }}:&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="llm-text-title-label">&nbsp;&nbsp;{{ $paragraphVariant->llm }}:&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;
             </x-poetry.paragraph>
         @endif
     @endforeach

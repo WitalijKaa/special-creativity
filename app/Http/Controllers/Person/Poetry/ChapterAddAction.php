@@ -68,7 +68,7 @@ class ChapterAddAction
             ->filter();
 
         if ($paragraphs->isNotEmpty()) {
-            Poetry::whereLifeId($life->id)->whereNull('ai')->delete();
+            Poetry::whereLifeId($life->id)->whereNull('llm')->delete();
             $paragraphs->each(function (Poetry $model) {
                 $model->save();
             });

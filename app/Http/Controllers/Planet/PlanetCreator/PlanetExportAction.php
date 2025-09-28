@@ -37,7 +37,7 @@ class PlanetExportAction
             'persons' => Person::orderBy('id'),
             'lives' => Life::orderBy('begin')->orderBy('person_id'),
             'events' => PersonEvent::with(['connections.person', 'person', 'life']),
-            'poetry' => Poetry::orderBy('life_id')->orderBy('lang')->orderBy('ai')->orderBy('ix_text'),
+            'poetry' => Poetry::orderBy('life_id')->orderBy('lang')->orderBy('llm')->orderBy('ix_text'),
             'poetryWords' => PoetryWord::orderBy('word'),
         ];
     }
