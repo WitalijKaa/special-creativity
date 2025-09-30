@@ -25,9 +25,14 @@ abstract class AiAbstractRequest extends BaseApiModel
         return ['errors_temp'];
     }
 
+    public function apiHeaders(): array
+    {
+        return ['Llm-Nick' => $this->llm, 'Llm-Pipe' => $this->pipe];
+    }
+
     public PoetryLlm $content;
-    public string $llm;
-    public string $pipe;
+    private string $llm;
+    private string $pipe;
 
     protected function useLlm(string $separator = self::DEFAULT_SEPARATOR): array
     {
