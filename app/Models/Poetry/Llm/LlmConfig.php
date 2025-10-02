@@ -66,7 +66,16 @@ class LlmConfig
 
     public static function selectLlmOptions(): array
     {
-        return static::simpleSelectOptions(config('basic.llm_models'));
+        return array_map(function (array $option) {
+            if (!str_contains($option['lbl'], '_')) {
+                return $option;
+            }
+            $llm = explode('_', $option['lbl']);
+            $llm[0] = strtoupper($llm[0]);
+            $option['lbl'] = implode(' ', $llm);
+            return $option;
+
+        }, static::simpleSelectOptions(config('basic.llm_models')));
     }
 
     public static function selectModeOptions(): array

@@ -31,8 +31,8 @@ abstract class AiAbstractRequest extends BaseApiModel
     }
 
     public PoetryLlm $content;
-    private string $llm;
-    private string $pipe;
+    protected string $llm;
+    protected string $pipe;
 
     protected function useLlm(string $separator = self::DEFAULT_SEPARATOR): array
     {
