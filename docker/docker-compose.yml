@@ -5,16 +5,22 @@
     build:
       context: ..
       dockerfile: ./docker/Dockerfile
-    env_file:
-        - .env.docker
     ports:
       - "8042:80"
       - "8043:443"
     volumes:
-      - ../:/var/www/html/sc
+      #- php_dir:/var/www/html/sc
+      - python_dir:/var/www/html/ai
+      - hugging_face_cache:/hugging_face_cache
     depends_on:
-      - php_database
-      - php_cache
+      php_database:
+        condition: service_healthy
+      php_cache:
+          condition: service_healthy
+    command:
+      sh -c "php artisan migrate --force && apache2-foreground"
+    environment:
+      HF_HOME: /hugging_face_cache
 
   php_database:
     image: mysql:8.4.4
@@ -58,3 +64,6 @@
 volumes:
   php_database_volume:
   php_cache_volume:
+  php_dir:
+  python_dir:
+  hugging_face_cache:

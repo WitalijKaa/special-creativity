@@ -7,14 +7,6 @@ ENV TZ=Europe/Kiev
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-COPY --from=python:3.13.7-slim /usr/local/lib/python3.13 /usr/local/lib/
-COPY --from=python:3.13.7-slim /usr/local/bin/python3.13 /usr/local/bin/
-COPY --from=python:3.13.7-slim /usr/local/bin/pip3.13 /usr/local/bin/
-
-RUN ln -s /usr/local/bin/python3.13 /usr/local/bin/python \
- && ln -s /usr/local/bin/python3.13 /usr/local/bin/py \
- && ln -s /usr/local/bin/pip3.13 /usr/local/bin/pip
-
 COPY --from=node:24.8.0-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node:24.8.0-slim /usr/local/bin/node /usr/local/bin/
 COPY --from=node:24.8.0-slim /usr/local/bin/npm  /usr/local/bin/
@@ -47,6 +39,10 @@ RUN cp /var/www/html/sc/docker/.env.docker /var/www/html/sc/.env
 RUN composer install
 RUN npm ci && npm run build && rm -rf node_modules ~/.npm
 
-EXPOSE 80 443
+RUN php artisan key:generate \
+    && php artisan config:clear \
+    && php artisan config:cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 777 storage bootstrap/cache
 
-CMD ["apache2-foreground"]
+EXPOSE 80 443

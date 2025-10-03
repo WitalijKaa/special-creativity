@@ -7,8 +7,11 @@ vendor
 node_modules
 _ide_helper.php
 
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
 /storage/*.key
 /storage/logs
-/storage/framework/cache
-/storage/framework/sessions
-/storage/framework/views
+!/storage/logs/.gitignore
+/storage/framework
+/storage/app
