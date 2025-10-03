@@ -38,7 +38,7 @@ COPY linux/php.ini /usr/local/etc/php/conf.d/basic.ini
 WORKDIR /var/www/html/sc
 
 RUN git clone --depth=1 --branch main https://github.com/WitalijKaa/special-creativity /var/www/html/sc
-COPY linux/.env.docker.install /var/www/html/sc/.env
+COPY .env.docker /var/www/html/sc/.env
 RUN composer install
 RUN npm ci && npm run build && rm -rf node_modules ~/.npm
 
