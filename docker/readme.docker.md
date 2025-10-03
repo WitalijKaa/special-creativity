@@ -6,6 +6,5 @@
 
 ----
 
-#### docker compose build service-name
-#### docker compose up -d
+#### docker compose -f ./docker/docker-compose.yml up -d
 #### docker compose watch

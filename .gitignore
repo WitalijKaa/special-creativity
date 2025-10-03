@@ -2,7 +2,6 @@
 /.idea
 /.vscode
 .env
-/docker/.env.docker
 _ide_helper.php
 
 

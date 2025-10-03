@@ -1,0 +1,59 @@
+﻿services:
+  php:
+    image: special-creativity
+    container_name: sc_php
+    build:
+      context: .
+    env_file:
+        - .env.docker
+    ports:
+      - "8042:80"
+      - "8043:443"
+    volumes:
+      - ../:/var/www/html/sc
+    depends_on:
+      - php_database
+      - php_cache
+
+  php_database:
+    image: mysql:8.4.4
+    container_name: sc_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: php_creativity
+      MYSQL_USER: basic
+      MYSQL_PASSWORD: basic
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "33060:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - php_database_volume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-proot"]
+      interval: 22s
+      timeout: 11s
+      retries: 7
+      start_period: 80s
+
+  php_cache:
+    image: redis:7-alpine
+    container_name: sc_redis
+    restart: unless-stopped
+    ports:
+      - "63790:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - php_cache_volume:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 22s
+      timeout: 11s
+      retries: 7
+      start_period: 42s
+
+volumes:
+  php_database_volume:
+  php_cache_volume:
