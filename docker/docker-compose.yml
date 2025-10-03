@@ -3,7 +3,8 @@
     image: special-creativity
     container_name: sc_php
     build:
-      context: .
+      context: ..
+      dockerfile: ./docker/Dockerfile
     env_file:
         - .env.docker
     ports:

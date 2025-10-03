@@ -1,0 +1,14 @@
+.env
+.osp
+.git
+.idea
+.vscode
+vendor
+node_modules
+_ide_helper.php
+
+/storage/*.key
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views

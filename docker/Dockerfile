@@ -22,27 +22,31 @@ COPY --from=node:24.8.0-slim /usr/local/bin/npm  /usr/local/bin/
 RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 RUN apt-get update && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends curl ca-certificates zip unzip git supervisor nano  \
+    && apt-get install -y --no-install-recommends curl openssl ca-certificates zip unzip git supervisor nano  \
         libonig-dev libzip-dev libicu-dev libxml2-dev libcurl4-openssl-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql curl soap zip intl mbstring bcmath exif pcntl gd \
     && pecl install redis \
     && docker-php-ext-enable redis \
-    && a2enmod rewrite \
+    && a2enmod rewrite ssl headers http2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY linux/vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY linux/php.ini /usr/local/etc/php/conf.d/basic.ini
+RUN mkdir -p /etc/apache2/ssl
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/localhost.key -out /etc/apache2/ssl/localhost.crt -subj "/C=US/ST=Local/L=Local/O=Local/OU=Dev/CN=localhost"
 
 WORKDIR /var/www/html/sc
 
+#COPY . .
 RUN git clone --depth=1 --branch main https://github.com/WitalijKaa/special-creativity /var/www/html/sc
-COPY .env.docker /var/www/html/sc/.env
+
+RUN cp /var/www/html/sc/docker/linux/vhost.conf /etc/apache2/sites-available/000-default.conf
+RUN cp /var/www/html/sc/docker/linux/php.ini /usr/local/etc/php/conf.d/basic.ini
+RUN cp /var/www/html/sc/docker/.env.docker /var/www/html/sc/.env
+
 RUN composer install
 RUN npm ci && npm run build && rm -rf node_modules ~/.npm
 
 EXPOSE 80 443
 
 CMD ["apache2-foreground"]
-
