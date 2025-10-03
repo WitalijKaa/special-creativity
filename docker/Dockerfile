@@ -2,25 +2,45 @@
 
 FROM php:8.4.1-apache
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git unzip \
+ENV TZ=Europe/Kiev
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=python:3.13.7-slim /usr/local/lib/python3.13 /usr/local/lib/
+COPY --from=python:3.13.7-slim /usr/local/bin/python3.13 /usr/local/bin/
+COPY --from=python:3.13.7-slim /usr/local/bin/pip3.13 /usr/local/bin/
+
+RUN ln -s /usr/local/bin/python3.13 /usr/local/bin/python \
+ && ln -s /usr/local/bin/python3.13 /usr/local/bin/py \
+ && ln -s /usr/local/bin/pip3.13 /usr/local/bin/pip
+
+COPY --from=node:24.8.0-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=node:24.8.0-slim /usr/local/bin/node /usr/local/bin/
+COPY --from=node:24.8.0-slim /usr/local/bin/npm  /usr/local/bin/
+
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
+
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends curl ca-certificates zip unzip git supervisor nano  \
         libonig-dev libzip-dev libicu-dev libxml2-dev libcurl4-openssl-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql curl zip intl mbstring bcmath exif pcntl gd \
+    && docker-php-ext-install pdo_mysql curl soap zip intl mbstring bcmath exif pcntl gd \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && a2enmod rewrite \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY ./apache/vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY ./php/php.ini /usr/local/etc/php/conf.d/projects.ini
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY linux/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY linux/php.ini /usr/local/etc/php/conf.d/basic.ini
 
-# COPY ./.env.docker /var/www/html/.env
-# VOLUME ["/var/www/html"]
+WORKDIR /var/www/html/sc
 
-WORKDIR /var/www/html
+RUN git clone --depth=1 --branch main https://github.com/WitalijKaa/special-creativity /var/www/html/sc
+COPY linux/.env.docker.install /var/www/html/sc/.env
+RUN composer install
+RUN npm ci && npm run build && rm -rf node_modules ~/.npm
 
 EXPOSE 80 443
 
