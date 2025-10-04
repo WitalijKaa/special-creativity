@@ -8,8 +8,9 @@
     ports:
       - "8042:80"
       - "8043:443"
+      - "8048:8000"
     volumes:
-      #- php_dir:/var/www/html/sc
+      - php_dir:/var/www/html/sc
       - python_dir:/var/www/html/ai
       - hugging_face_cache:/hugging_face_cache
     depends_on:
@@ -17,10 +18,23 @@
         condition: service_healthy
       php_cache:
           condition: service_healthy
-    command:
-      sh -c "php artisan migrate --force && apache2-foreground"
+    command: >
+        sh -c "
+          php artisan migrate --force &&
+          (cd /var/www/html/ai && fastapi dev main.py --host 0.0.0.0 --port 8000 &) &&
+          apache2-foreground
+        "
     environment:
       HF_HOME: /hugging_face_cache
+      HF_TOKEN:
+      OA_TOKEN:
+    deploy:
+        resources:
+            reservations:
+                devices:
+                    - driver: nvidia
+                      count: all
+                      capabilities: [gpu]
 
   php_database:
     image: mysql:8.4.4
