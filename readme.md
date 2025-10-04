@@ -1,3 +1,16 @@
+# SPECIAL CREATIVITY docker
+
+- see ./docker/readme.docker.md
+
+#### or just
+### docker compose -f ./docker/docker-compose.yml up -d
+
+----
+
+and wait long long long time... :)
+
+----
+
 # SPECIAL CREATIVITY helper
 
 ----

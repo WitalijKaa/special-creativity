@@ -3,6 +3,7 @@
 return [
     'lang' => env('BASIC_LANG', 'rus'),
 
+    'llm_host' => env('LLM_HOST'),
     //'llm_models' => ['meta','france','russia','slavic','britain','europa','china','google','microsoft'],
     //'llm_models' => ['meta','france','russia','slavic','china','google','microsoft'],
     'llm_models' => ['gpt_nano','gpt_best','gpt_mini','meta','france','russia','slavic','china','google','microsoft'],

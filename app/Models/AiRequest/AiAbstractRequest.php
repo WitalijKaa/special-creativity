@@ -17,7 +17,7 @@ abstract class AiAbstractRequest extends BaseApiModel
 
     public function apiServer(): string
     {
-        return 'http://127.0.0.1:8000/';
+        return config('basic.llm_host');
     }
 
     public function logErrorsStack(): array

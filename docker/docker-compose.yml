@@ -1,40 +1,57 @@
 ﻿services:
-  php:
+  engine:
     image: special-creativity
     container_name: sc_php
     build:
       context: ..
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/Dockerfile_php
     ports:
       - "8042:80"
       - "8043:443"
-      - "8048:8000"
     volumes:
       - php_dir:/var/www/html/sc
+    depends_on:
+      php_database:
+        condition: service_healthy
+      php_cache:
+        condition: service_healthy
+      llm:
+        condition: service_healthy
+    command: sh -c "php artisan migrate --force && apache2-foreground"
+
+  llm:
+    image: special-creativity-llm
+    container_name: sc_llm
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile_python
+    ports:
+      - "8048:8000"
+    volumes:
       - python_dir:/var/www/html/ai
       - hugging_face_cache:/hugging_face_cache
     depends_on:
       php_database:
         condition: service_healthy
       php_cache:
-          condition: service_healthy
-    command: >
-        sh -c "
-          php artisan migrate --force &&
-          (cd /var/www/html/ai && fastapi dev main.py --host 0.0.0.0 --port 8000 &) &&
-          apache2-foreground
-        "
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "--version"]
+      interval: 31s
+      timeout: 8s
+      retries: 4
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     environment:
       HF_HOME: /hugging_face_cache
-      HF_TOKEN:
-      OA_TOKEN:
-    deploy:
-        resources:
-            reservations:
-                devices:
-                    - driver: nvidia
-                      count: all
-                      capabilities: [gpu]
+      HF_TOKEN: ${HF_TOKEN}
+      OA_TOKEN: ${OA_TOKEN}
+    command: sh -c "fastapi dev main.py --host 0.0.0.0 --port 8000"
 
   php_database:
     image: mysql:8.4.4
@@ -77,7 +94,12 @@
 
 volumes:
   php_database_volume:
+    name: cs_mysql_database
   php_cache_volume:
+    name: cs_redis_web_cache
   php_dir:
+    name: cs_php_dir
   python_dir:
+    name: cs_python_dir
   hugging_face_cache:
+    name: cs_hugging_face_cache
