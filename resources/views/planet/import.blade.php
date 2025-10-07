@@ -10,8 +10,6 @@ $importForm = [
 <x-layout.main title="Import">
     <x-layout.header-main>Planet import</x-layout.header-main>
 
-    <x-session.success></x-session.success>
-
     <x-layout.container>
         <x-form.basic :route="route('web.planet.import')"
                       btn="Import"

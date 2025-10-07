@@ -11,8 +11,6 @@ $vPerson = new \App\Models\View\PersonView();
 
     <x-layout.header-second>Edit paragraph (only a single one)</x-layout.header-second>
 
-    <x-session.success></x-session.success>
-
     @foreach($poetry as $paragraph)
         @php($fText = $factory->textarea('text', 'Paragraph #' . $paragraph->ix_text, $factory->withValue($paragraph->text)))
 

@@ -8,8 +8,9 @@ class PoetryWordsAction
 {
     public function __invoke()
     {
-        $models = PoetryWord::whereLang(LL_RUS)->orderBy('word')->get();
+        $slavic = PoetryWord::whereLang(LL_RUS)->orderBy('word')->get();
+        $english = PoetryWord::whereLang(LL_ENG)->orderBy('word')->get();
 
-        return view('person.poetry.words', compact('models'));
+        return view('person.poetry.words', compact('slavic', 'english'));
     }
 }

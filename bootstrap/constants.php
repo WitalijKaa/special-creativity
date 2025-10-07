@@ -38,3 +38,6 @@ const MM_LIME = '#cddc39';
 
 const MM_ORANGE_L2 = '#ffb74d';
 const MM_ORANGE_D1 = '#fb8c00';
+
+const APP_MSG = 'appmsg';
+const APP_ERR = 'apperr';

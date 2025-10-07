@@ -17,6 +17,7 @@ class PoetryWordAddAction
             'lang' => $request->lang,
         ]);
 
-        return redirect()->route('web.person.poetry-words');
+        return redirect()->route('web.person.poetry-words')
+            ->with(APP_MSG, 'Word added - ' . $request->word_ai);
     }
 }

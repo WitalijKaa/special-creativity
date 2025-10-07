@@ -6,6 +6,8 @@ class FormInputFactory
 {
     private ?FormFieldInputDto $preDefined;
 
+    public const string T_TEXTAREA = 'textarea';
+
     public function input(string $id, null|string|self $label = null, null|self $preDefined = null): FormFieldInputDto
     {
         if ($label instanceof FormInputFactory) {
@@ -52,7 +54,7 @@ class FormInputFactory
     public function textarea(string $id, null|string|self $label = null, null|self $preDefined = null): FormFieldInputDto
     {
         $dto = $this->input($id, $label, $preDefined);
-        $dto->type = 'textarea';
+        $dto->type = self::T_TEXTAREA;
         return $dto;
     }
 

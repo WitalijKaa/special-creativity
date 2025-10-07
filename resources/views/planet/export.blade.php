@@ -6,7 +6,6 @@
 <x-layout.main title="Export">
     <x-layout.header-main>Planet export</x-layout.header-main>
 
-    <x-session.success></x-session.success>
     <x-form.submit :route="route('web.planet.export')" btn="Export to files"></x-form.submit>
 
     <x-layout.divider />

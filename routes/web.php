@@ -37,7 +37,6 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('poetry-word-edit/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordEditAction::class)->where('id', '[0-9]+')->name('poetry-word-edit');
         Route::post('poetry-word-add', \App\Http\Controllers\Person\Poetry\PoetryWordAddAction::class)->name('poetry-word-add');
         Route::post('poetry-word-change/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordChangeAction::class)->where('id', '[0-9]+')->name('poetry-word-change');
-        Route::post('poetry-word-translate/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordTranslateAction::class)->where('id', '[0-9]+')->name('poetry-word-translate');
         Route::post('poetry-word-delete/{id}', \App\Http\Controllers\Person\Poetry\PoetryWordDeleteAction::class)->where('id', '[0-9]+')->name('poetry-word-delete');
 
         Route::get('{person_id}/{life_id}', \App\Http\Controllers\Person\LifeDetailsAction::class)->where(['person_id', 'life_id'], '[0-9]+')->name('details-life');
