@@ -63,6 +63,8 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\Work\LifeWork $lifeWork
  * @property-read \App\Models\World\Life|null $prev_vs_type
  * @property-read \App\Models\World\Life|null $next_vs_type
+ * @property-read \App\Models\World\Life|null $prev_life
+ * * @property-read \App\Models\World\Life|null $next_life
  * @property-read \App\Models\Person\Person $person
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $events
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $work_events
@@ -136,6 +138,16 @@ class Life extends \Eloquent implements JsonArchivableInterface
             ->whereType($this->type)
             ->where('id', '<=', $this->id ?? 0)
             ->count();
+    }
+
+    public function getPrevLifeAttribute() // prev_life
+    {
+        return Life::wherePersonId($this->person_id)->where('id', '<', $this->id)->orderByDesc('id')->first();
+    }
+
+    public function getNextLifeAttribute() // next_life
+    {
+        return Life::wherePersonId($this->person_id)->where('id', '>', $this->id)->orderBy('id')->first();
     }
 
     public function getPrevVsTypeAttribute() // prev_vs_type
@@ -287,10 +299,12 @@ class Life extends \Eloquent implements JsonArchivableInterface
     protected $guarded = ['id'];
     public function person(): HasOne { return $this->hasOne(Person::class, 'id', 'person_id'); }
     public function forceEvents(): HasMany { return $this->hasMany(ForceEvent::class, 'life_id', 'id')->orderBy('id'); }
-    public function poetry(): HasMany { return $this->hasMany(Poetry::class, 'life_id', 'id')
-        ->where('lang', config('basic.lang'))
-        ->whereNull('llm')
-        ->orderBy('ix_text'); }
+    public function poetry(): HasMany {
+        return $this->hasMany(Poetry::class, 'life_id', 'id')
+            ->whereNull('llm')
+            ->orderBy('ix_text');
+    }
+
     protected function casts(): array
     {
         return [

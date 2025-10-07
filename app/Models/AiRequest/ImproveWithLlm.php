@@ -19,7 +19,7 @@ class ImproveWithLlm extends AiAbstractRequest
      */
     public function improveChapter(Collection $poetry): Collection
     {
-        $this->prepareContent($poetry, LL_ENG);
+        $this->prepareContent($poetry, $poetry->first()->lang);
         $response = $this->useLlm($this->separator);
         return static::prepareResponse($response, $poetry, LL_ENG, $this->llm . '.' . $this->pipe);
     }

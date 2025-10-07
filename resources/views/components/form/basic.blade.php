@@ -8,7 +8,7 @@
             <form action="{{$route}}" method="{{empty($method) ? 'post' : $method}}">
                 @csrf
                 @foreach($fields as $field)
-                    <x-form.form-input :field="$field" />
+                    <x-form.elements.input :field="$field" />
                 @endforeach
                 @if(!empty($bottomInfo))
                     <div class="d-grid col-xl-4">

@@ -8,30 +8,36 @@ use App\Requests\Poetry\ChapterAddRequest;
 
 class ChapterAddAction
 {
+    private const array CHAPTER = ['ГЛАВА ', 'CHAPTER '];
+    private const array PART = ['РАЗДЕЛ ', 'PART '];
+    private const array SUBPART = ['ПОДРАЗДЕЛ ', 'SUBPART '];
+    private const array ALLODS = ['Аллоды', 'Allods'];
+    private const array THINKING = ['(размышления)', '(philosophy)'];
+
     public function __invoke(int $life_id, ChapterAddRequest $request)
     {
         if (!$life = Life::whereId($life_id)->with(['person'])->first()) {
             return redirect(route('web.person.list'));
         }
 
+        $simpleFlowInitiated = false;
         $chapter = null;
         $part = 0;
         $lastIX = 0;
         $yearBegin = $life->begin;
         $yearEnd = $life->end;
-        $paragraphCreatedAtLastStep = false;
         $isCorrectPartType = false;
         $spectrum = Poetry::SPECTRUM_MAIN;
         $paragraphs = collect(explode("\n", trim($request->chapter)))
             ->map(function (string $paragraph)
                 use ($request,
                     $life,
+                    &$simpleFlowInitiated,
                     &$chapter,
                     &$part,
                     &$lastIX,
                     &$yearBegin,
                     &$yearEnd,
-                    &$paragraphCreatedAtLastStep,
                     &$isCorrectPartType,
                     &$spectrum)
             {
@@ -39,8 +45,18 @@ class ChapterAddAction
                 $model->text = trim($paragraph);
                 if (!$model->text) { return null; }
 
+                if (!$simpleFlowInitiated && !$chapter && !$part && $this->isParagraph($model->text)) {
+                    $chapter = 1;
+                    $part = 1;
+                    $isCorrectPartType = true;
+                    $simpleFlowInitiated = true;
+                }
+                if (!$simpleFlowInitiated) {
+                    $simpleFlowInitiated = true;
+                }
+
                 $chapter = $chapter ?? $this->findChapter($model->text);
-                $part = $this->findPart($model->text, $paragraphCreatedAtLastStep, $part);
+                $part = $this->findPart($model->text, $part);
 
                 $model->chapter = $chapter;
                 $model->part = $part;
@@ -48,8 +64,8 @@ class ChapterAddAction
                 $isParagraph = $this->isParagraph($model->text);
                 $isCorrectPartType = $this->isPartAboutCurrentTypeOfLife($model->text, $life, $isCorrectPartType);
 
-                if (str_starts_with($model->text, 'РАЗДЕЛ ')) {
-                    $spectrum = str_contains($model->text, '(размышления)') ? Poetry::SPECTRUM_PHILOSOPHY : Poetry::SPECTRUM_MAIN;
+                if ($this->isChapter($model->text)) {
+                    $spectrum = $this->itContains($model->text, self::THINKING) ? Poetry::SPECTRUM_PHILOSOPHY : Poetry::SPECTRUM_MAIN;
                 }
 
                 if (!$isParagraph || !$isCorrectPartType) { return null; }
@@ -61,8 +77,6 @@ class ChapterAddAction
                 $model->end = $yearEnd;
                 $model->ix_text = ++$lastIX;
                 $model->spectrum = $spectrum;
-
-                $paragraphCreatedAtLastStep = $isParagraph;
                 return $model;
             })
             ->filter();
@@ -79,18 +93,16 @@ class ChapterAddAction
 
     private function findChapter(string $paragraph): int
     {
-        $paragraph = explode(" ", $paragraph);
-        if ('ГЛАВА' != $paragraph[0] || !is_numeric($paragraph[1])) {
+        if (!$this->isChapter($paragraph)) {
             throw new \Exception('Wrong chapter text format!');
         }
-        return (int)$paragraph[1];
+        return (int)explode(" ", trim($paragraph))[1];
     }
 
-    private function findPart(string $paragraph, bool $paragraphCreatedAtLastStep, int $currentPart): int
+    private function findPart(string $paragraph, int $currentPart): int
     {
-        if (str_starts_with($paragraph, 'РАЗДЕЛ ') || str_starts_with($paragraph, 'ПОДРАЗДЕЛ ')) {
-            $currentPart = (int)$currentPart;
-            return $paragraphCreatedAtLastStep || !$currentPart ? $currentPart + 1 : $currentPart;
+        if ($this->isPart($paragraph)) {
+            return (int)$currentPart + 1;
         }
 
         if (!$currentPart && $this->isParagraph($paragraph)) {
@@ -99,20 +111,29 @@ class ChapterAddAction
         return $currentPart;
     }
 
+    private function isChapter(string $paragraph): bool
+    {
+        $words = explode(" ", trim($paragraph));
+        return $this->startsWith($paragraph, self::CHAPTER) &&
+            count($words) < 11 &&
+            is_numeric($words[1]);
+    }
+
     private function isPart(string $paragraph): bool
     {
-        return str_starts_with($paragraph, 'РАЗДЕЛ ') || str_starts_with($paragraph, 'ПОДРАЗДЕЛ ');
+        return $this->startsWith($paragraph, self::PART) || $this->startsWith($paragraph, self::SUBPART);
     }
 
     private function isParagraph(string $paragraph): bool
     {
-        return !$this->isPart($paragraph) && !str_starts_with($paragraph, 'ГЛАВА ');
+        return !$this->isPart($paragraph) && !$this->isChapter($paragraph);
     }
 
     private function isPartAboutCurrentTypeOfLife(string $paragraph, Life $life, bool $currentIs): bool
     {
         if ($this->isPart($paragraph)) {
-            return in_array('Аллоды', explode(' ', $paragraph)) ?
+            $isAllodsTitle = !!array_intersect(self::ALLODS, explode(' ', $paragraph));
+            return $isAllodsTitle ?
                 $life->type == Life::ALLODS :
                 $life->type == Life::PLANET;
         }
@@ -133,5 +154,15 @@ class ChapterAddAction
         } else {
             return [(int)$lastPart, (int)$lastPart];
         }
+    }
+
+    private function startsWith(string $haystack, array $needle): bool
+    {
+        return array_any($needle, fn($n) => str_starts_with($haystack, $n));
+    }
+
+    private function itContains(string $haystack, array $needle): bool
+    {
+        return array_any($needle, fn($n) => str_contains($haystack, $n));
     }
 }

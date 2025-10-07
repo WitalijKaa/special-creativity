@@ -22,7 +22,7 @@ class ChapterTranslateAction
         $translate->useConfig($config);
         $response = $translate->translateChapter($poetry, $request->to_lang);
 
-        $nextLlm = !$request->from_llm ? $response->first()->llm : $request->from_llm . '_' . $response->first()->llm;
+        $nextLlm = ($request->from_llm ? $request->from_llm . '_' : '') . $response->first()->llm;
         $nextLlm .= '.' . $request->to_lang;
 
         Poetry::whereLifeId($life->id)->whereLlm($nextLlm)->whereLang($request->to_lang)->delete();

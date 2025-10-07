@@ -1,27 +1,40 @@
 <?php
 
 /** @var \App\Models\World\Life $life */
-/** @var \Illuminate\Support\Collection|\App\Models\Person\PersonEvent[] $events */
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $poetry */
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[][] $llmVariants */
-/** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $words */
+/** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $wordsSlavic */
+/** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $wordsEnglish */
+
+$words = [
+    LL_RUS => $wordsSlavic,
+    LL_ENG => $wordsEnglish,
+];
 
 /** @var \App\Models\Poetry\Poetry $llmFirstParagraph */
 
+$originalLang = $poetry->first()?->lang == LL_RUS ? LL_RUS : LL_ENG;
 $factory = new \App\Dto\Form\FormInputFactory();
+$el = new \App\Dto\Form\FormInputFactory();
 
-$formAddChapter = [
-    $factory->textarea('chapter'),
-    $factory->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'),
-];
+$formChapter = new \App\Models\View\FormBasicBuilder()
+    ->route(route('web.person.chapter-add', ['life_id' => $life->id]), 'smart parse Chapter')
+    ->add($el->textarea('chapter'))
+    ->add($el->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'));
 
-$toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions(LL_RUS), 'Into which language translate to?');
+$toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($originalLang), 'Into which language translate to?');
 $formLlmConfiguration = [
     $factory->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'),
     $factory->select('llm_mode', \App\Models\Poetry\Llm\LlmConfig::selectModeOptions(), 'What kind of methodology to use?'),
     $factory->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'),
     $factory->select('llm_rise_creativity', \App\Models\Poetry\Llm\LlmConfig::selectRiseCreativityOptions(), 'Should we rise creativity of llm?'),
 ];
+
+$formLlm = new \App\Models\View\FormBasicBuilder()
+    ->add($el->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'))
+    ->secondColumn($el->select('llm_mode', \App\Models\Poetry\Llm\LlmConfig::selectModeOptions(), 'What kind of methodology to use?'))
+    ->add($el->select('llm_rise_creativity', \App\Models\Poetry\Llm\LlmConfig::selectRiseCreativityOptions(), 'Should we rise creativity of llm?'))
+    ->thirdColumn($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
 
 $vPerson = new \App\Models\View\PersonView();
 
@@ -34,7 +47,7 @@ $vPerson = new \App\Models\View\PersonView();
             <x-layout.wrapper>
                 <x-button.link :cc="CC_SUCCESS" :route="route('web.person.poetry-life-compare-paragraphs', ['life_id' => $life->id])" label="Paragraph by paragraph analysis" />
             </x-layout.wrapper>
-            <x-pages.life-nav :model="$life" />
+            <x-pages.life-nav :model="$life" :very-previous="true" />
         </x-layout.container>
 
         <x-layout.divider />
@@ -47,9 +60,14 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-layout.divider />
 
-        <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
-                      btn="Translate to Foreign language"
-                      :fields="array_merge([$toLang], $formLlmConfiguration)"></x-form.basic>
+        <x-form.basic :form="$formLlm->formPrepend($toLang)
+                                     ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'do Translation')" />
+
+        @if($poetry->count() && LL_ENG == $originalLang)
+            <x-layout.divider />
+
+            <x-form.basic :form="$formLlm->route(route('web.person.poetry-life-improve', ['life_id' => $life->id]), 'Improve Original text')" />
+        @endif
 
         @foreach($llmVariants as $llmVariant)
             @php($llmFirstParagraph = $llmVariant->first())
@@ -70,15 +88,13 @@ $vPerson = new \App\Models\View\PersonView();
 
             @if(LL_ENG == $llmFirstParagraph->lang)
                 <x-layout.divider />
-                <x-form.basic :route="route('web.person.poetry-life-improve', ['life_id' => $life->id, 'llm' => $llmFirstParagraph->llm])"
-                              btn="Improve text"
-                              :fields="array_merge([$fromLLM], $formLlmConfiguration)"></x-form.basic>
+                <x-form.basic :form="$formLlm->formPrepend($fromLLM)
+                                             ->route(route('web.person.poetry-life-improve', ['life_id' => $life->id]), 'Improve text')" />
                 <x-layout.divider />
             @endif
 
-            <x-form.basic :route="route('web.person.chapter-translate', ['life_id' => $life->id])"
-                          btn="Translate again"
-                          :fields="array_merge([$fromLLM, $fromLang, $toLang], $formLlmConfiguration)"></x-form.basic>
+            <x-form.basic :form="$formLlm->formPrepend([$fromLLM, $fromLang, $toLang])
+                                         ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'Translate again')" />
         @endforeach
 
         <x-layout.divider />
@@ -88,39 +104,18 @@ $vPerson = new \App\Models\View\PersonView();
     @if($poetry->count())
         <x-layout.header-second>delete all and Start with new Chapter...</x-layout.header-second>
     @else
-        <x-layout.header-second>add Chapter and start Writing...</x-layout.header-second>
+        <x-layout.header-second>add Chapter to begin...</x-layout.header-second>
     @endif
 
-    <x-form.basic :route="route('web.person.chapter-add', ['life_id' => $life->id])"
-                  btn="smart parse chapter"
-                  :fields="$formAddChapter"></x-form.basic>
+    <x-form.basic :form="$formChapter" />
 
     <x-layout.divider />
-
-    @if($events->count())
-        <x-layout.container>
-            <x-pages.life-nav :model="$life" />
-        </x-layout.container>
-
-        <x-layout.divider />
-    @endif
-
-    @if($life->lifeWork->workYears)
-        <x-layout.header-second>Work 💪🏻 is {{ $life->lifeWork->workYears }}</x-layout.header-second>
-    @endif
-
-    @if($events->count())
-        <x-layout.header-second>Events of this Life</x-layout.header-second>
-        <x-layout.container>
-            @include('widgets.person.events', ['events' => $events, 'person' => $life->person, 'lifeWork' => $life->lifeWork])
-        </x-layout.container>
-    @endif
 
     <x-layout.container>
         <x-layout.wrapper>
             <x-button.link :cc="CC_SUCCESS" :route="route('web.person.poetry-life-compare-paragraphs', ['life_id' => $life->id])" label="Paragraph by paragraph analysis" />
         </x-layout.wrapper>
-        <x-pages.life-nav :model="$life" />
+        <x-pages.life-nav :model="$life" :very-previous="true" />
     </x-layout.container>
 
 </x-layout.main>

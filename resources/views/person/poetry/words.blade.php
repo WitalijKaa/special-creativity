@@ -4,9 +4,9 @@
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\PoetryWord[] $english */
 
 $el = new \App\Dto\Form\FormInputFactory();
-$form = new \App\Models\View\FormBasicBuilder();
 
-$form->route(route('web.person.poetry-word-add'), 'Save word')
+$form = new \App\Models\View\FormBasicBuilder()
+    ->route(route('web.person.poetry-word-add'), 'Save word')
     ->add($el->input('word'))
     ->add($el->input('word_eng', 'English'))
     ->add($el->input('word_ai', 'AI'))

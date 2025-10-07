@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Person\Poetry;
 
-use App\Models\Collection\PersonEventCollection;
 use App\Models\Poetry\Poetry;
 use App\Models\Poetry\PoetryWord;
 use App\Models\World\Life;
@@ -17,10 +16,6 @@ class LifePoetryAction
         }
 
         $poetry = $life->poetry;
-
-        $events = PersonEventCollection::byLifeID($life->id)
-            ->sortNice()
-            ->addSyntheticBirthDeath($life);
 
         $llmVariants = new Collection();
         Poetry::whereLifeId($life->id)
@@ -40,8 +35,14 @@ class LifePoetryAction
                     ->each(fn (string $llm) => $llmVariants->push($life->poetrySpecific($lang, $llm)));
             });
 
-        $words = PoetryWord::byLang(LL_RUS);
+        $wordsSlavic = PoetryWord::byLang(LL_RUS);
+        $wordsEnglish = PoetryWord::byLang(LL_ENG);
 
-        return view('person.poetry.life-poetry', compact('poetry', 'llmVariants', 'life', 'events', 'words'));
+        return $this->view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish);
+    }
+
+    protected function view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish)
+    {
+        return view('person.poetry.life-poetry', compact('poetry', 'llmVariants', 'life', 'wordsSlavic', 'wordsEnglish'));
     }
 }
