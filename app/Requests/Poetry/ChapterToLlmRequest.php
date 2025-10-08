@@ -34,9 +34,9 @@ class ChapterToLlmRequest extends FormRequest
     public function llmConfig(): LlmConfig
     {
         $config = new LlmConfig($this->llm);
-        $config->applyPipeParam($this->llm_mode);
         $config->applyPipeParam($this->llm_quality);
-        $config->applyPipeParam($this->llm_rise_creativity);
+        $config->applyPipeParam($this->llm_mode ?? '');
+        $config->applyPipeParam($this->llm_rise_creativity ?? '');
         return $config;
     }
 }

@@ -225,9 +225,15 @@ class PersonView extends AbstractView
 
     public function rusYears(Life|Poetry $item): string
     {
-        if ($item->begin == $item->end) {
-            return "(год $item->begin)";
+        $lang = LL_RUS;
+        if ($item instanceof Poetry && $item->lang == LL_ENG) {
+            $lang = LL_ENG;
         }
-        return "(годы $item->begin-$item->end)";
+        if ($item->begin == $item->end) {
+            $y = [ LL_RUS => 'год', LL_ENG => 'year' ][$lang];
+            return "($y $item->begin)";
+        }
+        $y = [ LL_RUS => 'годы', LL_ENG => 'years' ][$lang];
+        return "($y $item->begin-$item->end)";
     }
 }

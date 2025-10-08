@@ -10,7 +10,6 @@ class PoetryWordEditAction
     {
         $model = PoetryWord::query()->findOrFail($id);
 
-        return view('person.poetry.word-edit', compact('model'))
-            ->with('status', "Word $model->word edited");
+        return view('person.poetry.word-edit', compact('model'));
     }
 }

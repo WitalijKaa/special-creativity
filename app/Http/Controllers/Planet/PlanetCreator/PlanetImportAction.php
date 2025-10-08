@@ -17,11 +17,11 @@ class PlanetImportAction
                 ForceEvent::reWriteCreationsAndLives();
             } catch (\Throwable $ex) {
                 return redirect()->route('web.planet.import')
-                    ->with(['status' => 'Error while import:' . $ex->getMessage()]);
+                    ->with(APP_ERR, 'Error while import:' . $ex->getMessage());
             }
 
             return redirect()->route('web.planet.import')
-                ->with('status', 'Import SUCCESS!');
+                ->with(APP_MSG, 'Import done - ' . $request->get('directory'));
         }
 
         return view('planet.import');

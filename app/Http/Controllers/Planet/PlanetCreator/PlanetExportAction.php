@@ -19,10 +19,13 @@ class PlanetExportAction
 {
     private const CHUNK = 500;
 
+    private string $exportName = '';
+
     public function __invoke(Request $request)
     {
         if ($request->isMethod('post') && $this->jsonArchive(self::exportQueries())) {
-            return redirect()->route('web.planet.export')->with('status', "Export SUCCESS!");
+            return redirect()->route('web.planet.export')
+                ->with(APP_MSG, 'Export done - ' . $this->exportName);
         }
 
         return view('planet.export', ['json' => $this->jsonSummary(self::exportQueries())]);
@@ -52,7 +55,7 @@ class PlanetExportAction
 
     private function jsonArchive(array $queries): bool
     {
-        $dirName = 'sc_export_' . now()->format('Md_H-i');
+        $this->exportName = $dirName = 'sc_export_' . now()->format('Md_H-i');
         $disk = Storage::disk('public');
 
         if ($disk->directoryExists($dirName)) {

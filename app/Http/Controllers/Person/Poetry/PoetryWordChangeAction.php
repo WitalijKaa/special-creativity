@@ -17,7 +17,6 @@ class PoetryWordChangeAction
         $model->lang = $request->lang;
         $model->save();
 
-        return redirect()->route('web.person.poetry-words')
-            ->with('status', "Word $model->word changed");
+        return redirect()->route('web.person.poetry-words');
     }
 }

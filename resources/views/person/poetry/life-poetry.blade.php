@@ -23,18 +23,15 @@ $formChapter = new \App\Models\View\FormBasicBuilder()
     ->add($el->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'));
 
 $toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($originalLang), 'Into which language translate to?');
-$formLlmConfiguration = [
-    $factory->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'),
-    $factory->select('llm_mode', \App\Models\Poetry\Llm\LlmConfig::selectModeOptions(), 'What kind of methodology to use?'),
-    $factory->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'),
-    $factory->select('llm_rise_creativity', \App\Models\Poetry\Llm\LlmConfig::selectRiseCreativityOptions(), 'Should we rise creativity of llm?'),
-];
+$formLlmTranslate = new \App\Models\View\FormBasicBuilder()
+    ->secondColumn($el->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'))
+    ->add($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
 
 $formLlm = new \App\Models\View\FormBasicBuilder()
     ->add($el->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'))
-    ->secondColumn($el->select('llm_mode', \App\Models\Poetry\Llm\LlmConfig::selectModeOptions(), 'What kind of methodology to use?'))
-    ->add($el->select('llm_rise_creativity', \App\Models\Poetry\Llm\LlmConfig::selectRiseCreativityOptions(), 'Should we rise creativity of llm?'))
-    ->thirdColumn($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
+    ->add($el->select('llm_mode', \App\Models\Poetry\Llm\LlmConfig::selectModeOptions(), 'What kind of methodology to use?'))
+    ->secondColumn($el->select('llm_rise_creativity', \App\Models\Poetry\Llm\LlmConfig::selectRiseCreativityOptions(), 'Should we rise creativity of llm?'))
+    ->add($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
 
 $vPerson = new \App\Models\View\PersonView();
 
@@ -60,8 +57,8 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-layout.divider />
 
-        <x-form.basic :form="$formLlm->formPrepend($toLang)
-                                     ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'do Translation')" />
+        <x-form.basic :form="$formLlmTranslate->formPrepend($toLang)
+                                              ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'do Translation')" />
 
         @if($poetry->count() && LL_ENG == $originalLang)
             <x-layout.divider />
@@ -93,8 +90,8 @@ $vPerson = new \App\Models\View\PersonView();
                 <x-layout.divider />
             @endif
 
-            <x-form.basic :form="$formLlm->formPrepend([$fromLLM, $fromLang, $toLang])
-                                         ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'Translate again')" />
+            <x-form.basic :form="$formLlmTranslate->formPrepend([$fromLLM, $fromLang, $toLang])
+                                                  ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'Translate again')" />
         @endforeach
 
         <x-layout.divider />

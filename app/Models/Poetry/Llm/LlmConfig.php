@@ -20,7 +20,7 @@ class LlmConfig
     private const array VS_RISE_CREATIVITY = [self::MODE_CREATIVELY_MORE, self::MODE_CREATIVELY_INSANE];
 
     private string $llm;
-    private array $mode = [self::VS_MODE[0], self::VS_QUALITY[0]];
+    private array $mode = [self::MODE_STRICT, self::MODE_QUALITY_OK];
 
     public function __construct(string $llm)
     {

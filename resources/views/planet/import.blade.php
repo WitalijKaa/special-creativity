@@ -16,6 +16,8 @@ $importForm = [
                       :fields="$importForm"></x-form.basic>
     </x-layout.container>
 
+    <x-session.app-msg />
+
     <x-layout.divider />
 
     <x-layout.container>

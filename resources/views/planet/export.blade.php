@@ -8,6 +8,8 @@
 
     <x-form.submit :route="route('web.planet.export')" btn="Export to files"></x-form.submit>
 
+    <x-session.app-msg />
+
     <x-layout.divider />
 
     <x-table.basic name="Export statistics" :columns="['Items name', 'Items count']">
