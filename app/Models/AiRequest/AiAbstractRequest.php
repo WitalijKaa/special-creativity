@@ -30,7 +30,8 @@ abstract class AiAbstractRequest extends BaseApiModel
         return ['Llm-Nick' => $this->llm, 'Llm-Pipe' => $this->pipe];
     }
 
-    public PoetryLlm $content;
+    /** @var \App\Models\Poetry\Llm\PoetryLlm|\App\Models\Poetry\Llm\PoetryPartsLlm */
+    public $content;
     protected string $llm;
     protected string $pipe;
 
@@ -42,9 +43,14 @@ abstract class AiAbstractRequest extends BaseApiModel
     protected function prepareContent(Collection $poetry, string $lang): void
     {
         $this->content = new PoetryLlm();
+        $this->prepareSpecialWords($poetry, $lang);
+        $this->content->text = trim($poetry->implode(fn (PoetryInterface $paragraph) => $paragraph->text(), self::DEFAULT_SEPARATOR));
+    }
+
+    protected function prepareSpecialWords(Collection $poetry, string $lang): void
+    {
         $this->content->special_words = PoetryWord::byLang($lang)->filterByParagraphs($poetry)->toLlm();
         $this->content->names = PoetryWordCollection::findAllNames($poetry);
-        $this->content->text = trim($poetry->implode(fn (PoetryInterface $paragraph) => $paragraph->text(), self::DEFAULT_SEPARATOR));
     }
 
     protected static function prepareResponse(array $response, Collection $poetry, string $lang, string $llmName): Collection

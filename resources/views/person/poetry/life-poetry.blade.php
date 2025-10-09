@@ -22,9 +22,24 @@ $formChapter = new \App\Models\View\FormBasicBuilder()
     ->add($el->textarea('chapter'))
     ->add($el->select('lang', \App\Models\Poetry\LanguageHelper::selectOptions(), 'Which language?'));
 
+$formLlmFinal = null;
+if ($life->finalSlavicPoetry()) {
+    $formLlmFinal = new \App\Models\View\FormBasicBuilder()
+        ->route(route('web.person.poetry-life-finale', ['life_id' => $life->id]), 'Create final Script')
+        ->add($el->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(config('basic.llm_models_final')), 'Which llm to use?'))
+        ->secondColumn($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
+    if ($life->finalSlavicPoetry(true)) {
+        $formLlmFinal->add($el->checkbox('emotions', 'Should it be more emotional?'));
+    }
+}
+
 $toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($originalLang), 'Into which language translate to?');
 $formLlmTranslate = new \App\Models\View\FormBasicBuilder()
     ->secondColumn($el->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'))
+    ->add($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
+
+$formLlmTranslateToSlavic = new \App\Models\View\FormBasicBuilder()
+    ->secondColumn($el->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(config('basic.llm_models_to_slavic')), 'Which llm to use?'))
     ->add($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
 
 $formLlm = new \App\Models\View\FormBasicBuilder()
@@ -47,7 +62,13 @@ $vPerson = new \App\Models\View\PersonView();
             <x-pages.life-nav :model="$life" :very-previous="true" />
         </x-layout.container>
 
-        <x-layout.divider />
+        @if($formLlmFinal)
+            <x-layout.header-second>Now the Final Script may be created!</x-layout.header-second>
+            <x-form.basic :form="$formLlmFinal" />
+            <x-layout.divider />
+        @else
+            <x-layout.divider />
+        @endif
 
         <x-poetry.poetry :life="$life" :poetry="$poetry" :words="$words" />
 
@@ -88,10 +109,14 @@ $vPerson = new \App\Models\View\PersonView();
                 <x-form.basic :form="$formLlm->formPrepend($fromLLM)
                                              ->route(route('web.person.poetry-life-improve', ['life_id' => $life->id]), 'Improve text')" />
                 <x-layout.divider />
+
+                <x-form.basic :form="$formLlmTranslateToSlavic->formPrepend([$fromLLM, $fromLang, $toLang])
+                                                              ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'Translate again')" />
+            @else
+                <x-form.basic :form="$formLlmTranslate->formPrepend([$fromLLM, $fromLang, $toLang])
+                                                      ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'Translate again')" />
             @endif
 
-            <x-form.basic :form="$formLlmTranslate->formPrepend([$fromLLM, $fromLang, $toLang])
-                                                  ->route(route('web.person.chapter-translate', ['life_id' => $life->id]), 'Translate again')" />
         @endforeach
 
         <x-layout.divider />

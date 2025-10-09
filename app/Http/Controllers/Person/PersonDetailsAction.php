@@ -6,8 +6,11 @@ use App\Models\Collection\PersonEventBuilder;
 use App\Models\Collection\PersonEventCollection;
 use App\Models\Person\Person;
 use App\Models\Person\PersonEvent;
+use App\Models\Poetry\Poetry;
+use App\Models\World\Life;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class PersonDetailsAction
 {
@@ -21,6 +24,15 @@ class PersonDetailsAction
         if (!$model = Person::whereId($id)->with(['lives'])->first()) {
             return redirect(route('web.person.list'));
         }
+
+        $poetryCount = DB::query()->selectRaw('tt.life_id, COUNT(tt.life_id) AS count')
+            ->groupBy('tt.life_id')
+            ->from(Poetry::wherePersonId($model->id)->groupBy(['life_id', 'llm'])->select(['life_id', 'llm']), 'tt')
+            ->pluck('count', 'life_id');
+
+        $model->lives->each(function (Life $life) use ($poetryCount) {
+            $life->cachedPoetryCount = (int)$poetryCount->get($life->id, 0);
+        });
 
         if ($year > 0) {
             $events = $this->eventsQueryToCollection(

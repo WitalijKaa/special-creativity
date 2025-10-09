@@ -35,9 +35,14 @@ class Planet extends \Eloquent implements JsonArchivableInterface
 
     protected $guarded = ['id'];
 
+    /** @var bool|\App\Models\World\Planet */
+    private static $_correctPlanet = false;
     public static function correctPlanet(): static
     {
-        return static::first();
+        if (false === static::$_correctPlanet) {
+            static::$_correctPlanet = static::first();
+        }
+        return static::$_correctPlanet;
     }
 
     protected function casts(): array

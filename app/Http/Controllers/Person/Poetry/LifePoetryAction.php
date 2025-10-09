@@ -38,6 +38,12 @@ class LifePoetryAction
         $wordsSlavic = PoetryWord::byLang(LL_RUS);
         $wordsEnglish = PoetryWord::byLang(LL_ENG);
 
+        $canFinalize = true;
+        Poetry::whereLifeId($life->id)
+            ->whereIn('llm', array_values(config('basic.final_flow')))
+            ->distinct('llm')
+            ->count();
+
         return $this->view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish);
     }
 

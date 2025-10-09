@@ -2,8 +2,6 @@
 
 namespace App\Requests\Poetry;
 
-use App\Models\Poetry\Llm\LlmConfig;
-
 /**
  * @property-read string $to_lang
  * @property-read ?string $from_llm

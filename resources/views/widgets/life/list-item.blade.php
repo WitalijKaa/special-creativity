@@ -21,6 +21,9 @@ $planet = \App\Models\World\Planet::correctPlanet();
         <div class="d-flex w-50 justify-content-between">
             <div></div>
             <p>
+                @if($model->cachedPoetryCount)
+                    📖 {{$model->cachedPoetryCount}} 📖&nbsp;&nbsp;
+                @endif
                 @if($model->begin_force_person == \App\Models\Person\Person::FORCE)
                     <span class="badge text-bg-success">Can create Life</span>
                 @endif

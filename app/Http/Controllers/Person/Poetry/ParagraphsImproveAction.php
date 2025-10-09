@@ -11,7 +11,7 @@ class ParagraphsImproveAction
 {
     public function __invoke(int $life_id, ChapterToLlmRequest $request)
     {
-        if (!$life = Life::whereId($life_id)->with(['person', 'poetry'])->first()) {
+        if (!$life = Life::whereId($life_id)->with(['person'])->first()) {
             return redirect(route('web.person.list'));
         }
         $poetry = $life->poetrySpecific(LL_ENG, $request->from_llm);

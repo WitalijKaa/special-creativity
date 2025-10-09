@@ -5,8 +5,20 @@ return [
 
     'llm_host' => env('LLM_HOST'),
     //'llm_models' => ['meta','france','russia','slavic','britain','europa','china','google','microsoft'],
-    //'llm_models' => ['meta','france','russia','slavic','china','google','microsoft'],
-    'llm_models' => ['gpt_nano','gpt_best','gpt_mini','meta','france','russia','slavic','china','google','microsoft'],
+    'llm_models' => ['meta','russia','france','gpt_best','gpt_mini','gpt_nano','china','google','microsoft'],
+    'llm_models_to_slavic' => ['russia','france','gpt_mini','gpt_nano'],
+    'llm_models_final' => ['gpt_mini','gpt_nano','gpt_best','russia'],
+
+    'final_flow' => [
+        'alpha' => 'meta.strict.nice.eng_meta.creatively.ok.more.improve_russia.strict.ok.rus',
+        'beta' => 'meta.strict.nice.eng_russia.creatively.ok.improve_russia.strict.ok.rus',
+        'emotion' => 'meta.strict.nice.eng_france.creatively.ok.insane.improve_russia.strict.ok.rus',
+    ],
+    'final_result_names' => [
+        'gpt_mini' => ['ok' => '', 'nice' => '', 'mega' => ''],
+        'beta' => 'meta.strict.nice.eng_russia.creatively.ok.improve_russia.strict.ok.rus',
+        'emotion' => 'meta.strict.nice.eng_france.creatively.ok.insane.improve_russia.strict.ok.rus',
+    ],
 
     'standardSupplyWorkerYears' => (int) env('WORK_STANDARD_SUPPLY_YEARS'),
     'workArmy' => [

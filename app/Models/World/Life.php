@@ -93,6 +93,8 @@ class Life extends \Eloquent implements JsonArchivableInterface
     public const string TABLE_NAME = DB . '_life';
     protected $table = self::TABLE_NAME;
 
+    public int $cachedPoetryCount = 0;
+
     public function getRoleNameAttribute() // role_name
     {
         return self::ROLE[$this->role];
@@ -293,6 +295,18 @@ class Life extends \Eloquent implements JsonArchivableInterface
             ->whereLlm($llm)
             ->orderBy('ix_text')
             ->get();
+    }
+
+    public function finalSlavicPoetry(bool $emotional = false): bool
+    {
+        $llmFinals = [config('basic.final_flow.alpha'), config('basic.final_flow.beta')];
+        if ($emotional) {
+            $llmFinals[] = config('basic.final_flow.emotion');
+        }
+        return count($llmFinals) == Poetry::whereLifeId($this->id)
+            ->whereIn('llm', $llmFinals)
+            ->distinct('llm')
+            ->count();
     }
 
     public $timestamps = false;
