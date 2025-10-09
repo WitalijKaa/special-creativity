@@ -14,11 +14,6 @@ return [
         'beta' => 'meta.strict.nice.eng_russia.creatively.ok.improve_russia.strict.ok.rus',
         'emotion' => 'meta.strict.nice.eng_france.creatively.ok.insane.improve_russia.strict.ok.rus',
     ],
-    'final_result_names' => [
-        'gpt_mini' => ['ok' => '', 'nice' => '', 'mega' => ''],
-        'beta' => 'meta.strict.nice.eng_russia.creatively.ok.improve_russia.strict.ok.rus',
-        'emotion' => 'meta.strict.nice.eng_france.creatively.ok.insane.improve_russia.strict.ok.rus',
-    ],
 
     'standardSupplyWorkerYears' => (int) env('WORK_STANDARD_SUPPLY_YEARS'),
     'workArmy' => [

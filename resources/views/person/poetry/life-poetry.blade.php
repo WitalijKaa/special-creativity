@@ -5,16 +5,32 @@
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[][] $llmVariants */
 /** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $wordsSlavic */
 /** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $wordsEnglish */
+/** @var \Illuminate\Support\Collection<string> $llmAllNames */
 
 $words = [
     LL_RUS => $wordsSlavic,
     LL_ENG => $wordsEnglish,
 ];
 
+if ($life->has_final_poetry) {
+    $analysis[] = ['cc' => CC_SUCCESS, 'route' => route('web.person.poetry-life-compare-paragraphs', ['life_id' => $life->id]), 'label' => 'Final analysis'];
+}
+if ($life->has_alpha_poetry) {
+    $analysis[] = ['cc' => CC_SUCCESS, 'route' => route('web.person.poetry-life-compare-paragraphs-alpha', ['life_id' => $life->id]), 'label' => 'ALPHA BETA analysis'];
+}
+$analysis[] = ['cc' => CC_DANGER, 'route' => route('web.person.poetry-life-compare-paragraphs-tech', ['life_id' => $life->id]), 'label' => 'Paragraph by paragraph analysis'];
+
+foreach (config('basic.final_flow') as $llmRole => $llmName) {
+    if ($llmAllNames->contains($llmName)) {
+        $analysis[] = ['cc' => CC_PRIMARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => $llmName]), 'label' => 'Edit ' . $llmRole];
+    }
+}
+
+
+
 /** @var \App\Models\Poetry\Poetry $llmFirstParagraph */
 
 $originalLang = $poetry->first()?->lang == LL_RUS ? LL_RUS : LL_ENG;
-$factory = new \App\Dto\Form\FormInputFactory();
 $el = new \App\Dto\Form\FormInputFactory();
 
 $formChapter = new \App\Models\View\FormBasicBuilder()
@@ -33,7 +49,7 @@ if ($life->finalSlavicPoetry()) {
     }
 }
 
-$toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($originalLang), 'Into which language translate to?');
+$toLang = $el->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($originalLang), 'Into which language translate to?');
 $formLlmTranslate = new \App\Models\View\FormBasicBuilder()
     ->secondColumn($el->select('llm', \App\Models\Poetry\Llm\LlmConfig::selectLlmOptions(), 'Which llm to use?'))
     ->add($el->select('llm_quality', \App\Models\Poetry\Llm\LlmConfig::selectQualityOptions(), 'Quality of llm calculations?'));
@@ -57,10 +73,22 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-layout.container>
             <x-layout.wrapper>
-                <x-button.link :cc="CC_SUCCESS" :route="route('web.person.poetry-life-compare-paragraphs', ['life_id' => $life->id])" label="Paragraph by paragraph analysis" />
+                <x-button.links :items="$analysis" />
             </x-layout.wrapper>
             <x-pages.life-nav :model="$life" :very-previous="true" />
         </x-layout.container>
+
+        @foreach($llmVariants as $llmVariant)
+            @php($llmFirstParagraph = $llmVariant->first())
+            @continue(!str_contains($llmFirstParagraph->llm, 'final'))
+            <x-layout.header-second><span class="badge bg-success">{{ $llmFirstParagraph->llm }}</span></x-layout.header-second>
+
+            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Edit paragraphs"></x-form.submit>
+            <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Kill paragraphs"></x-form.submit>
+
+            <x-poetry.poetry :life="$life" :poetry="$llmVariant" :words="$words" />
+
+        @endforeach
 
         @if($formLlmFinal)
             <x-layout.header-second>Now the Final Script may be created!</x-layout.header-second>
@@ -89,10 +117,11 @@ $vPerson = new \App\Models\View\PersonView();
 
         @foreach($llmVariants as $llmVariant)
             @php($llmFirstParagraph = $llmVariant->first())
+            @continue(str_contains($llmFirstParagraph->llm, 'final'))
             <x-layout.header-second>
                 {{ \App\Models\Poetry\LanguageHelper::label($llmFirstParagraph->lang) }}
                 vs LLM
-                <span class="badge bg-success">{{ $llmFirstParagraph->llm }}</span>
+                <span class="badge bg-danger">{{ $llmFirstParagraph->llm }}</span>
             </x-layout.header-second>
 
             <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Edit paragraphs"></x-form.submit>
@@ -100,9 +129,9 @@ $vPerson = new \App\Models\View\PersonView();
 
             <x-poetry.poetry :life="$life" :poetry="$llmVariant" :words="$words" />
 
-            @php($toLang = $factory->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($llmFirstParagraph->lang), 'Into which language translate to?'))
-            @php($fromLLM = $factory->hidden('from_llm', $factory->withValue($llmFirstParagraph->llm)))
-            @php($fromLang = $factory->hidden('from_lang', $factory->withValue($llmFirstParagraph->lang)))
+            @php($toLang = $el->select('to_lang', \App\Models\Poetry\LanguageHelper::selectOptions($llmFirstParagraph->lang), 'Into which language translate to?'))
+            @php($fromLLM = $el->hidden('from_llm', $el->withValue($llmFirstParagraph->llm)))
+            @php($fromLang = $el->hidden('from_lang', $el->withValue($llmFirstParagraph->lang)))
 
             @if(LL_ENG == $llmFirstParagraph->lang)
                 <x-layout.divider />
@@ -134,9 +163,6 @@ $vPerson = new \App\Models\View\PersonView();
     <x-layout.divider />
 
     <x-layout.container>
-        <x-layout.wrapper>
-            <x-button.link :cc="CC_SUCCESS" :route="route('web.person.poetry-life-compare-paragraphs', ['life_id' => $life->id])" label="Paragraph by paragraph analysis" />
-        </x-layout.wrapper>
         <x-pages.life-nav :model="$life" :very-previous="true" />
     </x-layout.container>
 

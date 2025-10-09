@@ -59,6 +59,8 @@ use Illuminate\Support\Collection;
  * @property-read bool $is_deep_love
  * @property-read bool $is_slave
  * @property-read bool $is_worker
+ * @property-read bool $has_final_poetry
+ * @property-read bool $has_alpha_poetry
  *
  * @property-read \App\Models\Work\LifeWork $lifeWork
  * @property-read \App\Models\World\Life|null $prev_vs_type
@@ -307,6 +309,20 @@ class Life extends \Eloquent implements JsonArchivableInterface
             ->whereIn('llm', $llmFinals)
             ->distinct('llm')
             ->count();
+    }
+
+    public function getHasFinalPoetryAttribute() // has_final_poetry
+    {
+        return Poetry::whereLifeId($this->id)
+                ->whereLike('llm', '%final%')
+                ->exists();
+    }
+
+    public function getHasAlphaPoetryAttribute() // has_alpha_poetry
+    {
+        return Poetry::whereLifeId($this->id)
+            ->whereIn('llm', array_values(config('basic.final_flow')))
+            ->exists();
     }
 
     public $timestamps = false;

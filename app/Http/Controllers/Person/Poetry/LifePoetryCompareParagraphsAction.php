@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Person\Poetry;
 
-class LifePoetryCompareParagraphsAction extends LifePoetryAction
+class LifePoetryCompareParagraphsAction extends LifePoetryCompareParagraphsTechAction
 {
-    protected function view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish)
+    protected function filterLlmVariants(string $llmName)
     {
-        return view('person.poetry.life-poetry-compare-paragraphs', compact('poetry', 'llmVariants', 'life', 'wordsSlavic', 'wordsEnglish'));
+        return str_contains($llmName, 'final');
     }
 }

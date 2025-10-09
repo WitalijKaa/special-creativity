@@ -32,23 +32,31 @@ class LifePoetryAction
                     ->distinct()
                     ->get()
                     ->pluck('llm')
-                    ->each(fn (string $llm) => $llmVariants->push($life->poetrySpecific($lang, $llm)));
+                    ->each(function (string $llm) use ($life, $llmVariants, $lang) {
+                        if ($this->filterLlmVariants($llm)) {
+                            $llmVariants->push($life->poetrySpecific($lang, $llm)); }
+                        }
+                    );
             });
 
         $wordsSlavic = PoetryWord::byLang(LL_RUS);
         $wordsEnglish = PoetryWord::byLang(LL_ENG);
 
-        $canFinalize = true;
-        Poetry::whereLifeId($life->id)
-            ->whereIn('llm', array_values(config('basic.final_flow')))
+        $llmAllNames = Poetry::whereLifeId($life->id)
+            ->whereNotNull('llm')
             ->distinct('llm')
-            ->count();
+            ->pluck('llm');
 
-        return $this->view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish);
+        return $this->view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish, $llmAllNames);
     }
 
-    protected function view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish)
+    protected function view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish, $llmAllNames = [])
     {
-        return view('person.poetry.life-poetry', compact('poetry', 'llmVariants', 'life', 'wordsSlavic', 'wordsEnglish'));
+        return view('person.poetry.life-poetry', compact('poetry', 'llmVariants', 'life', 'wordsSlavic', 'wordsEnglish', 'llmAllNames'));
+    }
+
+    protected function filterLlmVariants(string $llmName)
+    {
+        return true;
     }
 }

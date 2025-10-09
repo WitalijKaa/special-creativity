@@ -32,10 +32,10 @@ class ParagraphsFinalAction
         $previous = Poetry::whereLifeId($life->id)
             ->whereLlm($finalLlm)
             ->whereLang(LL_RUS)
-            ->count();
+            ->pluck('ix_text');
 
         foreach ($poetryOriginal as $ix => $paragraph) {
-            if ($previous && $ix + 1 <= $previous) {
+            if ($previous->count() < $poetryOriginal->count() && $previous->contains($paragraph->ix_text)) {
                 continue;
             }
 

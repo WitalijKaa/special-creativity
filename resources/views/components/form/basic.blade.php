@@ -1,14 +1,20 @@
-@if (!empty($form) && $form instanceof \App\Models\View\FormBasicBuilder)
+<?php
+
+/** @var int $textareaRows */
+
+$textareaRows ??= 8;
+
+?>@if (!empty($form) && $form instanceof \App\Models\View\FormBasicBuilder)
     <x-form.basic-smart :form="$form" />
 @else
 
 <div class="container mb-4">
     <div class="row justify-content-center">
-        <div class="col-10 col-md-8 col-lg-6">
+        <div class="@if(!empty($bottomInfo)) col-12 @else col-10 col-md-8 col-lg-6 @endif">
             <form action="{{$route}}" method="{{empty($method) ? 'post' : $method}}">
                 @csrf
                 @foreach($fields as $field)
-                    <x-form.elements.input :field="$field" />
+                    <x-form.elements.input :field="$field" :textarea-rows="$textareaRows" />
                 @endforeach
                 @if(!empty($bottomInfo))
                     <div class="d-grid col-xl-4">
