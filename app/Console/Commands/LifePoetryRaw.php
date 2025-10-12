@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Person\Poetry\LifePoetryTranslateAction;
+use App\Http\Controllers\Person\Poetry\LifePoetryTranslateAgainAction;
+use App\Http\Controllers\Person\Poetry\LifePoetryVersionsAction;
 use App\Models\AiRequest\ImproveWithLlm;
 use App\Models\AiRequest\TranslateWithLlm;
 use App\Models\Poetry\Llm\LlmConfig;
@@ -23,6 +26,11 @@ class LifePoetryRaw extends Command
         $life = $this->argument('life');
         $life = Life::whereId($life)->firstOrFail();
 
+        new LifePoetryTranslateAction()($life->id);
+        new LifePoetryVersionsAction()($life->id);
+        new LifePoetryTranslateAgainAction()($life->id);
+
+        /*
         $plan = array_values(config('basic.final_flow'));
         $planRaw = array_map(fn (string $stage) => explode('_', $stage), $plan);
         $fistStage = explode('.', $planRaw[0][0]);
@@ -55,7 +63,7 @@ class LifePoetryRaw extends Command
                 $life->poetrySpecific($firstStageLang, $specific),
                 $life->id
             );
-        }
+        */
     }
 
     private function translate(array $stage, string $saveLlmName, Collection $poetry, int $lifeID)

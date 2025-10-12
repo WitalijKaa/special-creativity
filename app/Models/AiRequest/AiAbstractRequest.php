@@ -27,13 +27,14 @@ abstract class AiAbstractRequest extends BaseApiModel
 
     public function apiHeaders(): array
     {
-        return ['Llm-Nick' => $this->llm, 'Llm-Pipe' => $this->pipe];
+        return ['Llm-Nick' => $this->llm, 'Llm-Pipe' => $this->pipe, 'Llm-Sub-Mode' => $this->subMode];
     }
 
     /** @var \App\Models\Poetry\Llm\PoetryLlm|\App\Models\Poetry\Llm\PoetryPartsLlm */
     public $content;
     protected string $llm;
     protected string $pipe;
+    protected string $subMode = 'no';
 
     protected function useLlm(string $separator = self::DEFAULT_SEPARATOR): array
     {

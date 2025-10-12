@@ -170,6 +170,7 @@ $vPerson = new \App\Models\View\PersonView();
             ]" />
         </x-layout.container>
 
+
         <x-poetry.poetry :life="$life" :poetry="$poetry" :words="$words" />
 
 

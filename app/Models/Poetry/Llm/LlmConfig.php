@@ -22,6 +22,8 @@ class LlmConfig
     private string $llm;
     private array $mode = [self::MODE_STRICT, self::MODE_QUALITY_OK];
 
+    public string $subMode = 'no';
+
     public function __construct(string $llm)
     {
         $this->llm = $llm;
@@ -30,6 +32,11 @@ class LlmConfig
     public function llm(): string
     {
         return $this->llm;
+    }
+
+    public function pipeMode(): string
+    {
+        return implode('.', $this->mode);
     }
 
     public function configMode(): ?string
@@ -45,11 +52,6 @@ class LlmConfig
     public function configRiseCreativity(): ?string
     {
         return array_find($this->mode, fn($mode) => in_array($mode, self::VS_RISE_CREATIVITY));
-    }
-
-    public function pipeMode(): string
-    {
-        return implode('.', $this->mode);
     }
 
     public function applyPipeParam(string $param): void

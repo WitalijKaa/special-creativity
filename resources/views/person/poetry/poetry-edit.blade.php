@@ -4,6 +4,11 @@
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $poetry */
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[][] $llmVariants */
 
+$viewMemory = new stdClass();
+$viewMemory->chapter = null;
+$viewMemory->part = null;
+$viewMemory->firstPartTitled = null;
+
 $factory = new \App\Dto\Form\FormInputFactory();
 $vPerson = new \App\Models\View\PersonView();
 
@@ -17,6 +22,10 @@ $llmName = $poetry->first()?->llm ?: 'Original text';
     <x-layout.header-second>Edit {{$llmName}}</x-layout.header-second>
 
     @foreach($poetry as $paragraph)
+        <x-layout.container>
+            <x-poetry.part-title :memory="$viewMemory" :paragraph="$paragraph" :life="$life" :show-division="false"/>
+        </x-layout.container>
+
         @if($llmVariants->count())
             <x-layout.container>
                 <x-poetry.paragraphs-llm-variants :paragraph="$paragraph" :life="$life" :words="[]" :llm-variants="$llmVariants"/>
