@@ -23,6 +23,12 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'sql_dev' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sql_queries.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),

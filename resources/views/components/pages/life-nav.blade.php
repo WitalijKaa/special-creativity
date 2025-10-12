@@ -27,11 +27,13 @@ if ($next = $model->next_vs_type) {
 <x-pages.person-details-nav :model="$model->person" />
 @if(!Route::is('web.person.poetry-life'))
     <x-layout.wrapper>
-        <x-button.links :items="[
-                    ['cc' => CC_SUCCESS, 'route' => route('web.person.poetry-life', ['life_id' => $model->id]), 'label' => 'Poetry'],
-                    ['dropdown' => ['label' => 'Automations', 'cc' => CC_DARK, 'items' => [
+        @php($masterPoetry = $model->master_poetry ? [['cc' => CC_PRIMARY, 'route' => route('web.person.master-poetry', ['life_id' => $model->id]), 'label' => 'MASTER Poetry']] : [])
+        <x-button.links :items="array_merge(
+                    $masterPoetry,
+                    [['cc' => CC_SUCCESS, 'route' => route('web.person.poetry-life', ['life_id' => $model->id]), 'label' => 'Poetry']],
+                    [['dropdown' => ['label' => 'Automations', 'cc' => CC_DARK, 'items' => [
                         ['route' => route('web.routine.life-work-army', ['id' => $model->id]), 'label' => 'make WorkArmyLife'],
-                    ]]]
-                ]" />
+                    ]]]],
+                )" />
     </x-layout.wrapper>
 @endif

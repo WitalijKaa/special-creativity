@@ -71,6 +71,7 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $events
  * @property-read \App\Models\Collection\PersonEventCollection|\App\Models\Person\PersonEvent[] $work_events
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\World\ForceEvent[] $forceEvents
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $master_poetry
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[] $poetry
  *
  * @mixin \Eloquent
@@ -323,6 +324,25 @@ class Life extends \Eloquent implements JsonArchivableInterface
         return Poetry::whereLifeId($this->id)
             ->whereIn('llm', array_values(config('basic.final_flow')))
             ->exists();
+    }
+
+    public function getMasterPoetryAttribute() // master_poetry
+    {
+        $masterIX = 0;
+        Poetry::whereLifeId($this->id)
+            ->whereLike('llm', '%' . MASTER . '_%')
+            ->distinct('llm')
+            ->pluck('llm')
+            ->each(function (string $llm) use (&$masterIX) {
+                $ix = (int)explode('_', $llm)[1];
+                $masterIX = max($ix, $masterIX);
+            });
+
+        $master = Poetry::whereLifeId($this->id)
+            ->whereLlm($masterIX ? MASTER . '_' . $masterIX : 'master')
+            ->get();
+
+        return $master->count() ? $master : null;
     }
 
     public $timestamps = false;

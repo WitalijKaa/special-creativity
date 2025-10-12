@@ -5,28 +5,51 @@
 /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Poetry\Poetry[][] $llmVariants */
 /** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $wordsSlavic */
 /** @var \App\Models\Collection\PoetryWordCollection|\App\Models\Poetry\PoetryWord[] $wordsEnglish */
-/** @var \Illuminate\Support\Collection<string> $llmAllNames */
+/** @var \Illuminate\Support\Collection<\App\Models\Poetry\Poetry> $llmAllNames */
 
 $words = [
     LL_RUS => $wordsSlavic,
     LL_ENG => $wordsEnglish,
 ];
 
+if ($life->master_poetry) {
+    $analysis[] = ['cc' => CC_PRIMARY, 'route' => route('web.person.master-poetry', ['life_id' => $life->id]), 'label' => 'MASTER Poetry'];
+}
 if ($life->has_final_poetry) {
-    $analysis[] = ['cc' => CC_SUCCESS, 'route' => route('web.person.poetry-life-compare-paragraphs', ['life_id' => $life->id]), 'label' => 'Final analysis'];
+    $analysis[] = ['cc' => CC_SECONDARY, 'route' => route('web.person.poetry-life-compare-paragraphs', ['life_id' => $life->id]), 'label' => 'Final analysis'];
 }
 if ($life->has_alpha_poetry) {
-    $analysis[] = ['cc' => CC_SUCCESS, 'route' => route('web.person.poetry-life-compare-paragraphs-alpha', ['life_id' => $life->id]), 'label' => 'ALPHA BETA analysis'];
+    $analysis[] = ['cc' => CC_SECONDARY, 'route' => route('web.person.poetry-life-compare-paragraphs-alpha', ['life_id' => $life->id]), 'label' => 'ALPHA BETA analysis'];
 }
 $analysis[] = ['cc' => CC_DANGER, 'route' => route('web.person.poetry-life-compare-paragraphs-tech', ['life_id' => $life->id]), 'label' => 'Paragraph by paragraph analysis'];
+$analysis[] = ['cc' => CC_WARNING, 'route' => route('web.person.poetry-life-tech', ['life_id' => $life->id]), 'label' => 'View all texts'];
 
-foreach (config('basic.final_flow') as $llmRole => $llmName) {
-    if ($llmAllNames->contains($llmName)) {
-        $analysis[] = ['cc' => CC_PRIMARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => $llmName]), 'label' => 'Edit ' . $llmRole];
+$editAlpha = [];
+if ($poetry->count()) {
+    $editAlpha[] = ['cc' => CC_SECONDARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null']), 'label' => 'Edit original'];
+}
+$editFinals = [];
+$editMaster = [];
+foreach ($llmAllNames as $variantPoetry) {
+    foreach (config('basic.final_flow') as $llmRole => $llmName) {
+        if ($llmName == $variantPoetry->llm) {
+            $editAlpha[] = ['cc' => CC_INFO, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => 'Edit ' . $llmRole];
+        }
+    }
+
+    if (str_starts_with($variantPoetry->llm, 'final_')) {
+        $editFinals[] = ['route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => $variantPoetry->llm];
+    }
+    if (str_starts_with($variantPoetry->llm, MASTER)) {
+        $editMaster[] = ['route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => $variantPoetry->llm];
     }
 }
-
-
+if ($editFinals) {
+    $editFinals = [['dropdown' => ['label' => 'Edit finals', 'cc' => CC_SUCCESS, 'items' => $editFinals]]];
+}
+if ($editMaster) {
+    $editMaster = [['dropdown' => ['label' => 'Edit master', 'cc' => CC_SUCCESS, 'items' => $editMaster]]];
+}
 
 /** @var \App\Models\Poetry\Poetry $llmFirstParagraph */
 
@@ -75,6 +98,9 @@ $vPerson = new \App\Models\View\PersonView();
             <x-layout.wrapper>
                 <x-button.links :items="$analysis" />
             </x-layout.wrapper>
+            <x-layout.wrapper>
+                <x-button.links :items="array_merge($editAlpha, $editFinals, $editMaster)" />
+            </x-layout.wrapper>
             <x-pages.life-nav :model="$life" :very-previous="true" />
         </x-layout.container>
 
@@ -83,8 +109,13 @@ $vPerson = new \App\Models\View\PersonView();
             @continue(!str_contains($llmFirstParagraph->llm, 'final'))
             <x-layout.header-second><span class="badge bg-success">{{ $llmFirstParagraph->llm }}</span></x-layout.header-second>
 
-            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Edit paragraphs"></x-form.submit>
-            <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Kill paragraphs"></x-form.submit>
+            <x-layout.container>
+                <x-button.links :items="[
+                    ['cc' => CC_PRIMARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm]), 'label' => 'Edit paragraphs'],
+                    ['cc' => CC_DANGER, 'form' => true, 'route' => route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm]), 'label' => 'Kill paragraphs'],
+                    ['cc' => CC_SUCCESS, 'form' => true, 'route' => route('web.person.poetry-life-master', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm]), 'label' => 'Create master version'],
+                ]" />
+            </x-layout.container>
 
             <x-poetry.poetry :life="$life" :poetry="$llmVariant" :words="$words" />
 
@@ -98,11 +129,15 @@ $vPerson = new \App\Models\View\PersonView();
             <x-layout.divider />
         @endif
 
+        <x-layout.container>
+            <x-button.links :items="[
+                ['cc' => CC_PRIMARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null']), 'label' => 'Edit original'],
+                ['cc' => CC_SUCCESS, 'form' => true, 'route' => route('web.person.poetry-life-master', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null']), 'label' => 'Create master version'],
+            ]" />
+        </x-layout.container>
+
         <x-poetry.poetry :life="$life" :poetry="$poetry" :words="$words" />
 
-        <x-layout.divider />
-
-        <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null'])" method="get" btn="Edit paragraphs"></x-form.submit>
 
         <x-layout.divider />
 
@@ -150,9 +185,6 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-layout.divider />
 
-    @endif
-
-    @if($poetry->count())
         <x-layout.header-second>delete all and Start with new Chapter...</x-layout.header-second>
     @else
         <x-layout.header-second>add Chapter to begin...</x-layout.header-second>

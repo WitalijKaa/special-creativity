@@ -12,7 +12,7 @@ return [
     'final_flow' => [
         'alpha' => 'meta.strict.nice.eng_meta.creatively.ok.more.improve_russia.strict.ok.rus',
         'beta' => 'meta.strict.nice.eng_russia.creatively.ok.improve_russia.strict.ok.rus',
-        'emotion' => 'meta.strict.nice.eng_france.creatively.ok.insane.improve_russia.strict.ok.rus',
+        'emotion' => 'meta.strict.nice.eng_france.creatively.ok.more.improve_russia.strict.ok.rus',
     ],
 
     'standardSupplyWorkerYears' => (int) env('WORK_STANDARD_SUPPLY_YEARS'),

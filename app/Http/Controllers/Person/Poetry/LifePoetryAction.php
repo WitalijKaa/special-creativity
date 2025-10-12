@@ -17,35 +17,15 @@ class LifePoetryAction
 
         $poetry = $life->poetry;
 
-        $llmVariants = new Collection();
-        Poetry::whereLifeId($life->id)
-            ->whereNotNull('llm')
-            ->select('lang')
-            ->distinct()
-            ->get()
-            ->pluck('lang')
-            ->each(function (string $lang) use ($llmVariants, $life) {
-                Poetry::whereLifeId($life->id)
-                    ->whereNotNull('llm')
-                    ->whereLang($lang)
-                    ->select('llm')
-                    ->distinct()
-                    ->get()
-                    ->pluck('llm')
-                    ->each(function (string $llm) use ($life, $llmVariants, $lang) {
-                        if ($this->filterLlmVariants($llm)) {
-                            $llmVariants->push($life->poetrySpecific($lang, $llm)); }
-                        }
-                    );
-            });
+        $llmVariants = static::searchLlmVariants($life, [$this, 'filterLlmVariants']);
 
         $wordsSlavic = PoetryWord::byLang(LL_RUS);
         $wordsEnglish = PoetryWord::byLang(LL_ENG);
 
         $llmAllNames = Poetry::whereLifeId($life->id)
             ->whereNotNull('llm')
-            ->distinct('llm')
-            ->pluck('llm');
+            ->selectRaw('distinct `llm`, `lang`')
+            ->get();
 
         return $this->view($poetry, $llmVariants, $life, $wordsSlavic, $wordsEnglish, $llmAllNames);
     }
@@ -57,6 +37,32 @@ class LifePoetryAction
 
     protected function filterLlmVariants(string $llmName)
     {
-        return true;
+        return str_contains($llmName, 'final');
+    }
+
+    public static function searchLlmVariants(Life $life, callable $filterLlmVariants): Collection
+    {
+        $llmVariants = new Collection();
+        Poetry::whereLifeId($life->id)
+            ->whereNotNull('llm')
+            ->select('lang')
+            ->distinct()
+            ->get()
+            ->pluck('lang')
+            ->each(function (string $lang) use ($llmVariants, $life, $filterLlmVariants) {
+                Poetry::whereLifeId($life->id)
+                    ->whereNotNull('llm')
+                    ->whereLang($lang)
+                    ->select('llm')
+                    ->distinct()
+                    ->get()
+                    ->pluck('llm')
+                    ->each(function (string $llm) use ($life, $llmVariants, $lang, $filterLlmVariants) {
+                            if ($filterLlmVariants($llm)) {
+                                $llmVariants->push($life->poetrySpecific($lang, $llm)); }
+                        }
+                    );
+            });
+        return $llmVariants;
     }
 }

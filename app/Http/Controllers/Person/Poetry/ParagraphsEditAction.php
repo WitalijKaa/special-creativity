@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Person\Poetry;
 
 use App\Models\World\Life;
+use Illuminate\Database\Eloquent\Collection;
 
 class ParagraphsEditAction
 {
@@ -15,6 +16,12 @@ class ParagraphsEditAction
         }
         $poetry = $life->poetrySpecific($lang, $llm);
 
-        return view('person.poetry.poetry-edit', compact('poetry', 'life'));
+        $llmVariants = new Collection();
+        if (str_contains($llm, MASTER)) {
+            $llmVariants = LifePoetryAction::searchLlmVariants($life, fn (string $llmName) => str_contains($llmName, 'final'));
+            $llmVariants->unshift($life->poetry);
+        }
+
+        return view('person.poetry.poetry-edit', compact('poetry', 'life', 'llmVariants'));
     }
 }

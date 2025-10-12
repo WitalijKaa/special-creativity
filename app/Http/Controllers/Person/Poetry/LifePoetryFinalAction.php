@@ -8,7 +8,7 @@ use App\Models\World\Life;
 use App\Requests\Poetry\PoetryFinalRequest;
 use Illuminate\Support\Collection;
 
-class ParagraphsFinalAction
+class LifePoetryFinalAction
 {
     private const FINAL_RANK = ['ok' => '', 'nice' => '_nice', 'mega' => '_gold'];
 

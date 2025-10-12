@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Person\Poetry;
 use App\Models\Poetry\Poetry;
 use App\Models\World\Life;
 
-class ParagraphsDeleteAction
+class LifePoetryDeleteAction
 {
     public function __invoke(int $life_id, string $lang, string $llm)
     {

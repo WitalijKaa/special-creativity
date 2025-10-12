@@ -8,13 +8,13 @@
 ?>@foreach($llmVariants as $variation)
     @foreach($variation as $paragraphVariant)
         @if($paragraphVariant->part == $paragraph->part && $paragraphVariant->ix_text == $paragraph->ix_text)
-            @php($pWords = $words[$paragraphVariant->lang] ?? new \Illuminate\Support\Collection())
+            @php($pWords = $words[$paragraphVariant->lang] ?? new \App\Models\Collection\PoetryWordCollection())
             <x-poetry.paragraph :paragraph="$paragraphVariant" :life="$life" :words="$pWords">
                 @if(in_array($paragraphVariant->llm, config('basic.final_flow')))
                     <span class="llm-text-title-label">&nbsp;&nbsp;{{ array_search($paragraphVariant->llm, config('basic.final_flow')) }}:&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;
                     <br>
                 @endif
-                <span class="llm-text-title-label">&nbsp;&nbsp;{{ $paragraphVariant->llm }}:&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="llm-text-title-label">&nbsp;&nbsp;{{ $paragraphVariant->llm ?? 'Original' }}:&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;
             </x-poetry.paragraph>
         @endif
     @endforeach

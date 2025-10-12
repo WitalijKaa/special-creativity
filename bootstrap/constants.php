@@ -6,6 +6,9 @@ const WORK_HOURS = 8;
 const LL_RUS = 'rus';
 const LL_ENG = 'eng';
 
+const MASTER = 'master';
+const FINAL_LLM = 'final';
+
 const AI_GOOGLE = 'google';
 const AI_META = 'meta';
 const AI_MICROSOFT = 'microsoft';

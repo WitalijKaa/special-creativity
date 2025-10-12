@@ -23,15 +23,18 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::match(['get','post'], 'personas', \App\Http\Controllers\Person\PersonListAction::class)->name('list');
         Route::match(['get','post'], 'life-path/{id}', \App\Http\Controllers\Person\PersonDetailsAction::class)->where('id', '[0-9]+')->name('details');
 
+        Route::get('master-poetry/{life_id}', \App\Http\Controllers\Person\Poetry\LifeMasterPoetryAction::class)->where(['life_id'], '[0-9]+')->name('master-poetry');
         Route::get('poetry/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life');
-        Route::get('poetry/compare/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareParagraphsAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs');
-        Route::get('poetry/compare-alpha/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareParagraphsAlphaAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs-alpha');
-        Route::get('poetry/compare-tech/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareParagraphsTechAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs-tech');
+        Route::get('poetry-tech/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryViewTechAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-tech');
+        Route::get('poetry/compare/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs');
+        Route::get('poetry/compare-alpha/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareAlphaAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs-alpha');
+        Route::get('poetry/compare-tech/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareTechAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs-tech');
 
         Route::get('poetry-edit/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\ParagraphsEditAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-edit');
-        Route::post('poetry-improve/{life_id}', \App\Http\Controllers\Person\Poetry\ParagraphsImproveAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-improve');
-        Route::post('poetry-finale/{life_id}', \App\Http\Controllers\Person\Poetry\ParagraphsFinalAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-finale');
-        Route::get('poetry-delete/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\ParagraphsDeleteAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-delete');
+        Route::post('poetry-improve/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryImproveAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-improve');
+        Route::post('poetry-finale/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryFinalAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-finale');
+        Route::post('poetry-master/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\LifePoetryMasterAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-master');
+        Route::post('poetry-delete/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\LifePoetryDeleteAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-delete');
         Route::post('poetry-paragraph-change/{id}', \App\Http\Controllers\Person\Poetry\ParagraphChangeAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-change');
         Route::post('poetry-paragraph-delete/{id}', \App\Http\Controllers\Person\Poetry\ParagraphDeleteAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-delete');
         Route::post('poetry-paragraph-move-down/{id}', \App\Http\Controllers\Person\Poetry\ParagraphMoveDownAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-move-down');

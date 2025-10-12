@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Person\Poetry;
 
-class LifePoetryCompareParagraphsAction extends LifePoetryCompareParagraphsTechAction
+class LifePoetryCompareAction extends LifePoetryCompareTechAction
 {
     protected function filterLlmVariants(string $llmName)
     {
