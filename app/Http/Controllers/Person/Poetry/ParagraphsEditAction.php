@@ -18,7 +18,7 @@ class ParagraphsEditAction
 
         $llmVariants = new Collection();
         if (str_contains($llm, MASTER)) {
-            $llmVariants = LifePoetryAction::searchLlmVariants($life, fn (string $llmName) => str_contains($llmName, 'final'));
+            $llmVariants = LifePoetryAction::searchLlmVariants($life, fn (string $llmName, string $lang) => LL_RUS == $lang && str_contains($llmName, FINAL_LLM));
             $llmVariants->unshift($life->poetry);
         }
 

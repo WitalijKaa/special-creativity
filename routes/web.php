@@ -31,9 +31,12 @@ Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authe
         Route::get('poetry/compare-tech/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryCompareTechAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-compare-paragraphs-tech');
 
         Route::get('poetry-edit/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\ParagraphsEditAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-edit');
-        Route::post('poetry-improve/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryImproveAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-improve');
-        Route::post('poetry-finale/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryFinalAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-finale');
+        Route::post('poetry-improve/{life_id}', \App\Http\Controllers\Person\Poetry\ChapterImproveAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-improve');
+        Route::post('poetry-finale/{life_id}', \App\Http\Controllers\Person\Poetry\ChapterFinalAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-finale');
         Route::post('poetry-master/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\LifePoetryMasterAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-master');
+        Route::post('poetry/translate-simple/{life_id}', \App\Http\Controllers\Person\Poetry\LifePoetryTranslateAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-translate');
+        Route::post('poetry/versions/{life_id}/{specific?}', \App\Http\Controllers\Person\Poetry\LifePoetryVersionsAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-versions');
+        Route::post('poetry/translate-simple-again/{life_id}/{specific?}', \App\Http\Controllers\Person\Poetry\LifePoetryTranslateAgainAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-translate-again');
         Route::post('poetry-delete/{life_id}/{lang}/{llm}', \App\Http\Controllers\Person\Poetry\LifePoetryDeleteAction::class)->where(['life_id'], '[0-9]+')->name('poetry-life-delete');
         Route::post('poetry-paragraph-change/{id}', \App\Http\Controllers\Person\Poetry\ParagraphChangeAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-change');
         Route::post('poetry-paragraph-delete/{id}', \App\Http\Controllers\Person\Poetry\ParagraphDeleteAction::class)->where('id', '[0-9]+')->name('poetry-paragraph-delete');

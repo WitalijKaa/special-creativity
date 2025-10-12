@@ -4,13 +4,8 @@ namespace App\Http\Controllers\Person\Poetry;
 
 class LifePoetryCompareAlphaAction extends LifePoetryCompareTechAction
 {
-    protected function filterLlmVariants(string $llmName)
+    protected function filterLlmVariants(string $llmName, string $lang)
     {
-        foreach (config('basic.final_flow') as $llm) {
-            if ($llm == $llmName) {
-                return true;
-            }
-        }
-        return false;
+        return LL_RUS == $lang && array_any(V_MAIN, fn($specific) => $specific == $llmName);
     }
 }

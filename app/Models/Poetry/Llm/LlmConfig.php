@@ -32,6 +32,21 @@ class LlmConfig
         return $this->llm;
     }
 
+    public function configMode(): ?string
+    {
+        return array_find($this->mode, fn($mode) => in_array($mode, self::VS_MODE));
+    }
+
+    public function configQuality(): ?string
+    {
+        return array_find($this->mode, fn($mode) => in_array($mode, self::VS_QUALITY));
+    }
+
+    public function configRiseCreativity(): ?string
+    {
+        return array_find($this->mode, fn($mode) => in_array($mode, self::VS_RISE_CREATIVITY));
+    }
+
     public function pipeMode(): string
     {
         return implode('.', $this->mode);
@@ -104,5 +119,14 @@ class LlmConfig
             ];
         }
         return $return;
+    }
+
+    public static function configByExplode(array $arrExplode): LlmConfig
+    {
+        $config = new static($arrExplode[0]);
+        foreach ($arrExplode as $param) {
+            $config->applyPipeParam($param);
+        }
+        return $config;
     }
 }

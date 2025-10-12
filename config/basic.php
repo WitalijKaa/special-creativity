@@ -10,9 +10,9 @@ return [
     'llm_models_final' => ['gpt_mini','gpt_nano','gpt_best','russia'],
 
     'final_flow' => [
-        'alpha' => 'meta.strict.nice.eng_meta.creatively.ok.more.improve_russia.strict.ok.rus',
-        'beta' => 'meta.strict.nice.eng_russia.creatively.ok.improve_russia.strict.ok.rus',
-        'emotion' => 'meta.strict.nice.eng_france.creatively.ok.more.improve_russia.strict.ok.rus',
+        V_ALPHA => 'meta.strict.nice.eng_meta.creatively.ok.more.improve_russia.strict.ok.rus',
+        V_BETA => 'meta.strict.nice.eng_russia.creatively.ok.improve_russia.strict.ok.rus',
+        V_EMO => 'meta.strict.nice.eng_france.creatively.ok.more.improve_russia.strict.ok.rus',
     ],
 
     'standardSupplyWorkerYears' => (int) env('WORK_STANDARD_SUPPLY_YEARS'),

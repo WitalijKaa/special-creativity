@@ -9,7 +9,7 @@ class LifePoetryCompareTechAction extends LifePoetryAction
         return view('person.poetry.life-poetry-compare-paragraphs', compact('poetry', 'llmVariants', 'life', 'wordsSlavic', 'wordsEnglish'));
     }
 
-    protected function filterLlmVariants(string $llmName)
+    protected function filterLlmVariants(string $llmName, string $lang)
     {
         return true;
     }

@@ -61,6 +61,7 @@ use Illuminate\Support\Collection;
  * @property-read bool $is_worker
  * @property-read bool $has_final_poetry
  * @property-read bool $has_alpha_poetry
+ * @property-read bool $has_translated_poetry
  *
  * @property-read \App\Models\Work\LifeWork $lifeWork
  * @property-read \App\Models\World\Life|null $prev_vs_type
@@ -302,12 +303,10 @@ class Life extends \Eloquent implements JsonArchivableInterface
 
     public function finalSlavicPoetry(bool $emotional = false): bool
     {
-        $llmFinals = [config('basic.final_flow.alpha'), config('basic.final_flow.beta')];
-        if ($emotional) {
-            $llmFinals[] = config('basic.final_flow.emotion');
-        }
+        $llmFinals = !$emotional ? [V_ALPHA, V_BETA] : V_MAIN;
         return count($llmFinals) == Poetry::whereLifeId($this->id)
             ->whereIn('llm', $llmFinals)
+            ->whereLang(LL_RUS)
             ->distinct('llm')
             ->count();
     }
@@ -315,14 +314,22 @@ class Life extends \Eloquent implements JsonArchivableInterface
     public function getHasFinalPoetryAttribute() // has_final_poetry
     {
         return Poetry::whereLifeId($this->id)
-                ->whereLike('llm', '%final%')
+                ->whereLike('llm', '%' . FINAL_LLM . '%')
                 ->exists();
     }
 
     public function getHasAlphaPoetryAttribute() // has_alpha_poetry
     {
         return Poetry::whereLifeId($this->id)
-            ->whereIn('llm', array_values(config('basic.final_flow')))
+            ->whereIn('llm', V_MAIN)
+            ->whereLang(LL_RUS)
+            ->exists();
+    }
+
+    public function getHasTranslatedPoetryAttribute() // has_translated_poetry
+    {
+        return Poetry::whereLifeId($this->id)
+            ->whereLlm(V_TRANSLATION)
             ->exists();
     }
 

@@ -24,6 +24,27 @@ if ($life->has_alpha_poetry) {
 $analysis[] = ['cc' => CC_DANGER, 'route' => route('web.person.poetry-life-compare-paragraphs-tech', ['life_id' => $life->id]), 'label' => 'Paragraph by paragraph analysis'];
 $analysis[] = ['cc' => CC_WARNING, 'route' => route('web.person.poetry-life-tech', ['life_id' => $life->id]), 'label' => 'View all texts'];
 
+$making = [];
+if (!$life->has_translated_poetry) {
+    $making[] = ['cc' => CC_DARK, 'form' => true, 'route' => route('web.person.poetry-life-translate', ['life_id' => $life->id]), 'label' => 'Translate to ENG'];
+}
+if ($life->has_translated_poetry) {
+    $making[] = ['cc' => CC_DARK, 'form' => true, 'route' => route('web.person.poetry-life-versions', ['life_id' => $life->id]), 'label' => 'reMake VER.s'];
+    foreach (V_MAIN as $specific) {
+        $making[] = ['cc' => CC_DARK, 'form' => true, 'route' => route('web.person.poetry-life-versions', ['life_id' => $life->id, 'specific' => $specific]), 'label' => 'reMake ' . $specific];
+    }
+}
+$makingTranslate = [];
+foreach (V_MAIN as $specific) {
+    if ($llmAllNames->filter(fn (\App\Models\Poetry\Poetry $vPoetry) => $vPoetry->llm == $specific)->count()) {
+        $makingTranslate[] = ['cc' => CC_SECONDARY, 'form' => true, 'route' => route('web.person.poetry-life-translate-again', ['life_id' => $life->id, 'specific' => $specific]), 'label' => 'make.Slavic ' . $specific];
+    }
+}
+if (count($makingTranslate) == count(V_MAIN)) {
+    $making[] = ['cc' => CC_SECONDARY, 'form' => true, 'route' => route('web.person.poetry-life-translate-again', ['life_id' => $life->id]), 'label' => 'Slavic VER.s'];
+}
+$making = array_merge($making, $makingTranslate);
+
 $editAlpha = [];
 if ($poetry->count()) {
     $editAlpha[] = ['cc' => CC_SECONDARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null']), 'label' => 'Edit original'];
@@ -31,13 +52,21 @@ if ($poetry->count()) {
 $editFinals = [];
 $editMaster = [];
 foreach ($llmAllNames as $variantPoetry) {
-    foreach (config('basic.final_flow') as $llmRole => $llmName) {
-        if ($llmName == $variantPoetry->llm) {
-            $editAlpha[] = ['cc' => CC_INFO, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => 'Edit ' . $llmRole];
+    if (V_TRANSLATION == $variantPoetry->llm) {
+        $editAlpha[] = ['cc' => CC_INFO, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => 'Edit ' . $variantPoetry->llm];
+    }
+    foreach (V_MAIN as $llmName) {
+        if ($llmName == $variantPoetry->llm && LL_ENG == $variantPoetry->lang) {
+            $editAlpha[] = ['cc' => CC_SECONDARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => 'Edit ' . $variantPoetry->llm];
+        }
+    }
+    foreach (V_MAIN as $llmName) {
+        if ($llmName == $variantPoetry->llm && LL_RUS == $variantPoetry->lang) {
+            $editAlpha[] = ['cc' => CC_INFO, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => 'Edit ' . $variantPoetry->llm];
         }
     }
 
-    if (str_starts_with($variantPoetry->llm, 'final_')) {
+    if (str_starts_with($variantPoetry->llm, FINAL_LLM . '_')) {
         $editFinals[] = ['route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $variantPoetry->lang, 'llm' => $variantPoetry->llm]), 'label' => $variantPoetry->llm];
     }
     if (str_starts_with($variantPoetry->llm, MASTER)) {
@@ -98,6 +127,11 @@ $vPerson = new \App\Models\View\PersonView();
             <x-layout.wrapper>
                 <x-button.links :items="$analysis" />
             </x-layout.wrapper>
+            @if($making)
+                <x-layout.wrapper>
+                    <x-button.links :items="$making" />
+                </x-layout.wrapper>
+            @endif
             <x-layout.wrapper>
                 <x-button.links :items="array_merge($editAlpha, $editFinals, $editMaster)" />
             </x-layout.wrapper>
@@ -106,7 +140,7 @@ $vPerson = new \App\Models\View\PersonView();
 
         @foreach($llmVariants as $llmVariant)
             @php($llmFirstParagraph = $llmVariant->first())
-            @continue(!str_contains($llmFirstParagraph->llm, 'final'))
+            @continue(!str_contains($llmFirstParagraph->llm, FINAL_LLM))
             <x-layout.header-second><span class="badge bg-success">{{ $llmFirstParagraph->llm }}</span></x-layout.header-second>
 
             <x-layout.container>
@@ -152,15 +186,19 @@ $vPerson = new \App\Models\View\PersonView();
 
         @foreach($llmVariants as $llmVariant)
             @php($llmFirstParagraph = $llmVariant->first())
-            @continue(str_contains($llmFirstParagraph->llm, 'final'))
+            @continue(str_contains($llmFirstParagraph->llm, FINAL_LLM))
             <x-layout.header-second>
                 {{ \App\Models\Poetry\LanguageHelper::label($llmFirstParagraph->lang) }}
                 vs LLM
                 <span class="badge bg-danger">{{ $llmFirstParagraph->llm }}</span>
             </x-layout.header-second>
 
-            <x-form.submit :route="route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Edit paragraphs"></x-form.submit>
-            <x-form.submit :color="CC_DANGER" :route="route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm])" method="get" btn="Kill paragraphs"></x-form.submit>
+            <x-layout.container>
+                <x-button.links :items="[
+                    ['cc' => CC_PRIMARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm]), 'label' => 'Edit paragraphs'],
+                    ['cc' => CC_DANGER, 'form' => true, 'route' => route('web.person.poetry-life-delete', ['life_id' => $life->id, 'lang' => $llmFirstParagraph->lang, 'llm' => $llmFirstParagraph->llm]), 'label' => 'Kill paragraphs'],
+                ]" />
+            </x-layout.container>
 
             <x-poetry.poetry :life="$life" :poetry="$llmVariant" :words="$words" />
 

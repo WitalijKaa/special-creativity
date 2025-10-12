@@ -35,9 +35,9 @@ class LifePoetryAction
         return view('person.poetry.life-poetry', compact('poetry', 'llmVariants', 'life', 'wordsSlavic', 'wordsEnglish', 'llmAllNames'));
     }
 
-    protected function filterLlmVariants(string $llmName)
+    protected function filterLlmVariants(string $llmName, string $lang)
     {
-        return str_contains($llmName, 'final');
+        return str_contains($llmName, FINAL_LLM);
     }
 
     public static function searchLlmVariants(Life $life, callable $filterLlmVariants): Collection
@@ -58,8 +58,8 @@ class LifePoetryAction
                     ->get()
                     ->pluck('llm')
                     ->each(function (string $llm) use ($life, $llmVariants, $lang, $filterLlmVariants) {
-                            if ($filterLlmVariants($llm)) {
-                                $llmVariants->push($life->poetrySpecific($lang, $llm)); }
+                        if ($filterLlmVariants($llm, $lang)) {
+                            $llmVariants->push($life->poetrySpecific($lang, $llm)); }
                         }
                     );
             });

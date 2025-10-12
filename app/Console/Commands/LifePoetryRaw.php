@@ -30,55 +30,39 @@ class LifePoetryRaw extends Command
         $lastStage = explode('.', $planRaw[0][2]);
 
         $firstStageLang = $fistStage[count($fistStage) - 1];
-        $firstStageLlmName = implode('.', $fistStage);
 
-        $this->translate($fistStage, $firstStageLlmName, $life->poetry, $life->id);
-        dump('fistStage');
+        $this->translate($fistStage, V_TRANSLATION, $life->poetry, $life->id);
 
         foreach ($improveStages as $stageImprove) {
-            $config = $this->llmConfig($stageImprove);
+            $config = LlmConfig::configByExplode($stageImprove);
             $improve = new ImproveWithLlm();
             $improve->useConfig($config);
-            $response = $improve->improveChapter($life->poetrySpecific($firstStageLang, $firstStageLlmName));
+            $response = $improve->improveChapter($life->poetrySpecific($firstStageLang, V_TRANSLATION));
 
-            $nextLlmName = $firstStageLlmName . '_' . implode('.', $stageImprove);
-            Poetry::whereLifeId($life->id)->whereLlm($nextLlmName)->whereLang($firstStageLang)->delete();
+            $specific = $this->specificKeyOfConfig(implode('.', $stageImprove));
+            Poetry::whereLifeId($life->id)->whereLlm($specific)->whereLang($firstStageLang)->delete();
             foreach ($response as $model) {
-                $model->llm = $nextLlmName;
+                $model->llm = $specific;
                 $model->save();
             }
-            dump('stageImprove ' . $nextLlmName);
         }
 
         foreach ($improveStages as $stageImprove) {
-
-            $prevStagesName = $firstStageLlmName . '_' . implode('.', $stageImprove);
-            $lastStageLlmName = implode('.', $lastStage);
-
+            $specific = $this->specificKeyOfConfig(implode('.', $stageImprove));
             $this->translate(
                 $lastStage,
-                $prevStagesName . '_' . $lastStageLlmName,
-                $life->poetrySpecific($firstStageLang, $prevStagesName),
+                $specific,
+                $life->poetrySpecific($firstStageLang, $specific),
                 $life->id
             );
-            dump('translate ' . $prevStagesName);
         }
-    }
-
-    private function llmConfig(array $stage): LlmConfig
-    {
-        $config = new LlmConfig($stage[0]);
-        foreach ($stage as $param) {
-            $config->applyPipeParam($param);
-        }
-        return $config;
     }
 
     private function translate(array $stage, string $saveLlmName, Collection $poetry, int $lifeID)
     {
         $toLang = $stage[count($stage) - 1];
 
-        $config = $this->llmConfig($stage);
+        $config = LlmConfig::configByExplode($stage);
         $translate = new TranslateWithLlm();
         $translate->useConfig($config);
         $response = $translate->translateChapter($poetry, $toLang);
@@ -87,5 +71,15 @@ class LifePoetryRaw extends Command
             $model->llm = $saveLlmName;
             $model->save();
         }
+    }
+
+    private function specificKeyOfConfig(string $llm): string
+    {
+        foreach (config('basic.final_flow') as $specific => $flow) {
+            if (str_contains($flow, $llm)) {
+                return $specific;
+            }
+        }
+        throw new \Exception('Unexpected boom!');
     }
 }

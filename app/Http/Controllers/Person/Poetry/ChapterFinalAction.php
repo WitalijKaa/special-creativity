@@ -8,7 +8,7 @@ use App\Models\World\Life;
 use App\Requests\Poetry\PoetryFinalRequest;
 use Illuminate\Support\Collection;
 
-class LifePoetryFinalAction
+class ChapterFinalAction
 {
     private const FINAL_RANK = ['ok' => '', 'nice' => '_nice', 'mega' => '_gold'];
 
@@ -21,13 +21,13 @@ class LifePoetryFinalAction
             return redirect(route('web.person.list'));
         }
         $poetryOriginal = $life->poetry;
-        $poetryAlpha = $life->poetrySpecific(LL_RUS, config('basic.final_flow.alpha'));
-        $poetryBeta = $life->poetrySpecific(LL_RUS, config('basic.final_flow.beta'));
-        $poetryEmotional = $request->emotions ? $life->poetrySpecific(LL_RUS, config('basic.final_flow.emotion')) : new Collection();
+        $poetryAlpha = $life->poetrySpecific(LL_RUS, V_ALPHA);
+        $poetryBeta = $life->poetrySpecific(LL_RUS, V_BETA);
+        $poetryEmotional = $request->emotions ? $life->poetrySpecific(LL_RUS, V_EMO) : new Collection();
 
         $config = $request->llmConfig();
         $finalName = explode('_', $request->llm);
-        $finalLlm = 'final_' . end($finalName) . self::FINAL_RANK[$request->llm_quality] . ($request->emotions ? '_emo' : '');
+        $finalLlm = FINAL_LLM . '_' . end($finalName) . self::FINAL_RANK[$request->llm_quality] . ($request->emotions ? '_emo' : '');
 
         $previous = Poetry::whereLifeId($life->id)
             ->whereLlm($finalLlm)

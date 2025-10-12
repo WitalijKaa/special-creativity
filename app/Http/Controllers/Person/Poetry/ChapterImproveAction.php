@@ -7,7 +7,7 @@ use App\Models\Poetry\Poetry;
 use App\Models\World\Life;
 use App\Requests\Poetry\ChapterToLlmRequest;
 
-class LifePoetryImproveAction
+class ChapterImproveAction
 {
     public function __invoke(int $life_id, ChapterToLlmRequest $request)
     {

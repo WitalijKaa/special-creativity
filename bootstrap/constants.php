@@ -6,6 +6,11 @@ const WORK_HOURS = 8;
 const LL_RUS = 'rus';
 const LL_ENG = 'eng';
 
+const V_TRANSLATION = 'translated';
+const V_ALPHA = 'alpha';
+const V_BETA = 'beta';
+const V_EMO = 'emotions';
+const V_MAIN = [V_ALPHA, V_BETA, V_EMO];
 const MASTER = 'master';
 const FINAL_LLM = 'final';
 

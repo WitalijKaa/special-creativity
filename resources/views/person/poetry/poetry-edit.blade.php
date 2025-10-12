@@ -35,7 +35,7 @@ $llmName = $poetry->first()?->llm ?: 'Original text';
         <x-layout.container>
             <x-button.links :items="[
                     ['cc' => CC_DARK, 'route' => route('web.person.poetry-life', ['life_id' => $life->id]), 'label' => 'back to Poetry'],
-                    ['cc' => CC_PRIMARY, 'form' => true, 'route' => route('web.person.poetry-paragraph-delete', ['id' => $paragraph->id]), 'label' => 'Delete'],
+               {{-- ['cc' => CC_PRIMARY, 'form' => true, 'route' => route('web.person.poetry-paragraph-delete', ['id' => $paragraph->id]), 'label' => 'Delete'], --}}
                     ['cc' => CC_DANGER, 'route' => route('web.person.poetry-paragraph-move-down', ['id' => $paragraph->id]), 'label' => 'Move down'],
                 ]" />
         </x-layout.container>
