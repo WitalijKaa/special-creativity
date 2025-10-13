@@ -12,10 +12,6 @@ class LifePoetryDeleteAction
         $llm = 'null' == $llm ? null : $llm;
         Poetry::whereLifeId($life_id)->whereLang($lang)->whereLlm($llm)->delete();
 
-        if (!$life = Life::whereId($life_id)->first()) {
-            return redirect(route('web.person.list'));
-        }
-
-        return redirect()->route('web.person.poetry-life', ['life_id' => $life->id]);
+        return redirect()->back();
     }
 }

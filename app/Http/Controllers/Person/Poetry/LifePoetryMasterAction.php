@@ -24,6 +24,6 @@ class LifePoetryMasterAction
                 $master->save();
             });
 
-        return redirect()->route('web.person.poetry-life', ['life_id' => $life_id]);
+        return redirect()->route('web.person.poetry-life-edit', ['life_id' => $life_id, 'lang' => $lang, 'llm' => $master]);
     }
 }
