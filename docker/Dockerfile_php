@@ -26,7 +26,7 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl
 WORKDIR /var/www/html/sc
 
 #COPY . .
-RUN git clone --depth=1 --branch d.0002 https://github.com/WitalijKaa/special-creativity /var/www/html/sc
+RUN git clone --depth=1 --branch docker https://github.com/WitalijKaa/special-creativity /var/www/html/sc
 
 RUN cp /var/www/html/sc/docker/linux/vhost.conf /etc/apache2/sites-available/000-default.conf
 RUN cp /var/www/html/sc/docker/linux/php.ini /usr/local/etc/php/conf.d/basic.ini

@@ -14,7 +14,7 @@ class LifePoetryMasterAction
             $master = MASTER . '_' . ++$ix;
         }
 
-        $llm = 'null' == $llm ? null : $llm;
+        $llm = 'a-null' == $llm ? null : $llm;
         Poetry::whereLifeId($life_id)
             ->whereLang($lang)
             ->whereLlm($llm)

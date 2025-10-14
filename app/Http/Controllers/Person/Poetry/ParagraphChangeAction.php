@@ -13,7 +13,7 @@ class ParagraphChangeAction
         $model->text = trim($request->text);
         $model->save();
 
-        return redirect(route('web.person.poetry-life-edit', ['life_id' => $model->life_id, 'lang' => $model->lang, 'llm' => $model->llm]) .
+        return redirect(route('web.person.poetry-life-edit', ['life_id' => $model->life_id, 'lang' => $model->lang, 'llm' => ($model->llm ?? 'a-null')]) .
             '#p_' . $model->ix_text);
     }
 }

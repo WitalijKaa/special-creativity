@@ -47,7 +47,7 @@ $making = array_merge($making, $makingTranslate);
 
 $editAlpha = [];
 if ($poetry->count()) {
-    $editAlpha[] = ['cc' => CC_SECONDARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null']), 'label' => 'Edit original'];
+    $editAlpha[] = ['cc' => CC_SECONDARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'a-null']), 'label' => 'Edit original'];
 }
 $editFinals = [];
 $editMaster = [];
@@ -165,8 +165,8 @@ $vPerson = new \App\Models\View\PersonView();
 
         <x-layout.container>
             <x-button.links :items="[
-                ['cc' => CC_PRIMARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null']), 'label' => 'Edit original'],
-                ['cc' => CC_SUCCESS, 'form' => true, 'route' => route('web.person.poetry-life-master', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'null']), 'label' => 'Create master version'],
+                ['cc' => CC_PRIMARY, 'route' => route('web.person.poetry-life-edit', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'a-null']), 'label' => 'Edit original'],
+                ['cc' => CC_SUCCESS, 'form' => true, 'route' => route('web.person.poetry-life-master', ['life_id' => $life->id, 'lang' => LL_RUS, 'llm' => 'a-null']), 'label' => 'Create master version'],
             ]" />
         </x-layout.container>
 

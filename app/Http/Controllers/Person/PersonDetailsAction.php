@@ -26,8 +26,8 @@ class PersonDetailsAction
         }
 
         $poetryCount = DB::query()->selectRaw('tt.life_id, COUNT(tt.life_id) AS count')
-            ->groupBy('tt.life_id')
-            ->from(Poetry::wherePersonId($model->id)->groupBy(['life_id', 'llm'])->select(['life_id', 'llm']), 'tt')
+            ->groupBy(['tt.life_id'])
+            ->from(Poetry::wherePersonId($model->id)->groupBy(['life_id', 'llm', 'lang'])->select(['life_id', 'llm']), 'tt')
             ->pluck('count', 'life_id');
 
         $model->lives->each(function (Life $life) use ($poetryCount) {

@@ -15,8 +15,9 @@ RUN apt-get update \
 
 RUN python3 -m pip install transformers
 RUN python3 -m pip install pydantic fastapi[standard] python-dotenv rich openai accelerate bitsandbytes==0.47.* sentencepiece==0.2.* protobuf==6.32.*
+RUN python3 -m pip install uvicorn[standard]
 
-RUN git clone --depth=1 --branch d.0002 https://github.com/WitalijKaa/special-creativity-ai /var/www/html/ai
+RUN git clone --depth=1 --branch docker https://github.com/WitalijKaa/special-creativity-ai /var/www/html/ai
 WORKDIR /var/www/html/ai
 
 RUN rm -rf /root/.cache/pip

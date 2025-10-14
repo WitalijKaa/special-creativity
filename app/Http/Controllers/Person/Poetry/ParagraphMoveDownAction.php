@@ -26,7 +26,7 @@ class ParagraphMoveDownAction
         return redirect()->route('web.person.poetry-life-edit', [
             'life_id' => $model->life_id,
             'lang' => $model->lang,
-            'llm' => $model->llm ?? 'null',
+            'llm' => $model->llm ?? 'a-null',
         ]);
     }
 

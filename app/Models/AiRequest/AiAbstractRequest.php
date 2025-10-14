@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 abstract class AiAbstractRequest extends BaseApiModel
 {
     protected const string DEFAULT_SEPARATOR = "\n";
-    protected const float TIMEOUT = 4000.0;
+    protected const float TIMEOUT = 42000.0;
 
     public function apiServer(): string
     {

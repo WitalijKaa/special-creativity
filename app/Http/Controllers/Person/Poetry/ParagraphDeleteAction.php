@@ -23,7 +23,7 @@ class ParagraphDeleteAction
             $this->updateIxAfterDelete($other);
         }
 
-        return redirect()->route('web.person.poetry-life-edit', ['life_id' => $model->life_id, 'lang' => $model->lang, 'llm' => $model->llm ?? 'null']);
+        return redirect()->route('web.person.poetry-life-edit', ['life_id' => $model->life_id, 'lang' => $model->lang, 'llm' => $model->llm ?? 'a-null']);
     }
 
     private function updateIxAfterDelete(Poetry $model): void

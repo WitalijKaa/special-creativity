@@ -17,7 +17,7 @@
         condition: service_healthy
       llm:
         condition: service_healthy
-    command: sh -c "php artisan migrate --force && apache2-foreground"
+    command: sh -c "git pull && composer install && php artisan cache:clear && php artisan config:cache && php artisan view:cache && php artisan migrate --force && apache2-foreground"
 
   llm:
     image: special-creativity-llm
@@ -51,7 +51,7 @@
       HF_HOME: /hugging_face_cache
       HF_TOKEN: ${HF_TOKEN}
       OA_TOKEN: ${OA_TOKEN}
-    command: sh -c "fastapi dev main.py --host 0.0.0.0 --port 8000"
+    command: sh -c "git pull && python3 -m pip install && uvicorn app:app --host 0.0.0.0 --port 8000 --workers 1"
 
   php_database:
     image: mysql:8.4.4

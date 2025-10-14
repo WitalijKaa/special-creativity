@@ -9,7 +9,7 @@ class LifePoetryDeleteAction
 {
     public function __invoke(int $life_id, string $lang, string $llm)
     {
-        $llm = 'null' == $llm ? null : $llm;
+        $llm = 'a-null' == $llm ? null : $llm;
         Poetry::whereLifeId($life_id)->whereLang($lang)->whereLlm($llm)->delete();
 
         return redirect()->back();
