@@ -51,7 +51,7 @@
       HF_HOME: /hugging_face_cache
       HF_TOKEN: ${HF_TOKEN}
       OA_TOKEN: ${OA_TOKEN}
-    command: sh -c "git pull && python3 -m pip install && uvicorn app:app --host 0.0.0.0 --port 8000 --workers 1"
+    command: sh -c "git pull && uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1"
 
   php_database:
     image: mysql:8.4.4

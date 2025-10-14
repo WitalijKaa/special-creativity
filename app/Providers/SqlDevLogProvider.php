@@ -10,6 +10,7 @@ class SqlDevLogProvider extends ServiceProvider
 {
     public function boot()
     {
+        return;
         if ('production' == app()->environment()) {
             return;
         }
