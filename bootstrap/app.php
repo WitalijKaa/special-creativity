@@ -13,7 +13,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->append(\App\Middleware\DbLoginMiddleware::class);
+        $middleware->appendToGroup('web-auth', [
+            \Illuminate\Auth\Middleware\Authenticate::class,
+            \App\Middleware\DbLoginMiddleware::class,
+        ]);
+
+        $middleware->priority([
+            \Illuminate\Auth\Middleware\Authenticate::class,
+            \App\Middleware\DbLoginMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

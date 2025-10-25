@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () { return view('login'); })->name('login');
 Route::post('/web-auth', [\App\Http\Controllers\AuthController::class, 'webAuth'])->name('web-auth');
 
-Route::group(['as' => 'web.', 'middleware' => [\Illuminate\Auth\Middleware\Authenticate::class, \App\Middleware\DbLoginMiddleware::class]], function() {
+Route::group(['as' => 'web.', 'middleware' => ['web-auth']], function() {
 
     Route::get('escape', [\App\Http\Controllers\AuthController::class, 'escape'])->name('logout');
 

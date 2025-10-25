@@ -10,7 +10,7 @@ class SqlDevLogProvider extends ServiceProvider
 {
     public function boot()
     {
-        if ('production' == app()->environment()) {
+        if (!$this->app->environment('local') || config('telescope.enabled')) {
             return;
         }
 
