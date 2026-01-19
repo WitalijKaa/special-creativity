@@ -3,7 +3,6 @@
 ARG PHP_IMAGE=php:8.5.1-fpm
 ARG COMPOSER_IMAGE=composer:2.9.3
 ARG NODE_IMAGE=node:24.12.0-bookworm-slim
-ARG TZ
 ARG APP_ENV
 
 # Composer
@@ -29,10 +28,7 @@ RUN npm run build
 # PHP
 FROM ${PHP_IMAGE} AS app
 
-ARG TZ
 ARG APP_ENV
-
-ENV TZ=${TZ}
 WORKDIR /app
 
 RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \

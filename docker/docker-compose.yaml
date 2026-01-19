@@ -5,14 +5,14 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       args:
-        TZ: ${TZ}
         APP_ENV: ${APP_ENV}
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: "${APP_DEBUG}"
+    env_file:
+      - .env
     depends_on:
-      - sc_mysql
-      - sc_redis
+      sc_mysql:
+        condition: service_healthy
+      sc_redis:
+        condition: service_healthy
 
   sc_nginx:
     image: special-c/sc_nginx:prod
@@ -36,11 +36,23 @@ services:
       MYSQL_USER: basic
       MYSQL_PASSWORD: basic
       MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-proot"]
+      interval: 22s
+      timeout: 11s
+      retries: 7
+      start_period: 80s
     volumes:
       - sc_db_mysql:/var/lib/mysql
 
   sc_redis:
     image: redis:7.4.1-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 22s
+      timeout: 11s
+      retries: 7
+      start_period: 42s
     volumes:
       - sc_cache_redis:/data
 
@@ -50,15 +62,16 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       args:
-        TZ: ${TZ}
         APP_ENV: ${APP_ENV}
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: "${APP_DEBUG}"
+    env_file:
+      - .env
     depends_on:
-      - sc_php
-      - sc_mysql
-      - sc_redis
+      sc_php:
+        condition: service_started
+      sc_mysql:
+        condition: service_healthy
+      sc_redis:
+        condition: service_healthy
     command: ["sh", "-lc", "while true; do php artisan schedule:run --verbose --no-interaction || true; sleep 60; done"]
     restart: unless-stopped
 

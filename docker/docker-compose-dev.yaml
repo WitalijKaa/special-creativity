@@ -1,27 +1,28 @@
 services:
   sc_php:
     image: special-c/sc_php:main
+    # container_name: sc_php
     build:
       context: ..
       dockerfile: docker/Dockerfile
       args:
-        TZ: ${TZ}
         APP_ENV: ${APP_ENV}
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: "${APP_DEBUG}"
+    env_file:
+      - .env
     volumes:
       - ../app:/app/app:delegated
       - ../bootstrap:/app/bootstrap:delegated
-      - sc_php_bootstrap_cache:/app/bootstrap/cache
+      - sc_php_bootstrap_cache_volume:/app/bootstrap/cache
       - ../config:/app/config:delegated
       - ../database:/app/database:delegated
       - ../public:/app/public:delegated
       - ../routes:/app/routes:delegated
       - ../tests:/app/tests:delegated
     depends_on:
-      - sc_mysql
-      - sc_redis
+      sc_mysql:
+        condition: service_healthy
+      sc_redis:
+        condition: service_healthy
 
   sc_nginx:
     image: nginx:1.27.3-alpine
@@ -47,15 +48,27 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "33060:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-proot"]
+      interval: 22s
+      timeout: 11s
+      retries: 7
+      start_period: 80s
     volumes:
-      - sc_db_mysql:/var/lib/mysql
+      - sc_db_mysql_volume:/var/lib/mysql
 
   sc_redis:
     image: redis:7.4.1-alpine
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 22s
+      timeout: 11s
+      retries: 7
+      start_period: 42s
     volumes:
-      - sc_cache_redis:/data
+      - sc_cache_redis_volume:/data
 
   sc_scheduler:
     image: special-c/sc_scheduler:main
@@ -63,11 +76,9 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       args:
-        TZ: ${TZ}
         APP_ENV: ${APP_ENV}
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: "${APP_DEBUG}"
+    env_file:
+      - .env
     volumes:
       - ../app:/app/app:delegated
       - ../bootstrap:/app/bootstrap:delegated
@@ -77,13 +88,19 @@ services:
       - ../routes:/app/routes:delegated
       - ../tests:/app/tests:delegated
     depends_on:
-      - sc_php
-      - sc_mysql
-      - sc_redis
+      sc_php:
+        condition: service_started
+      sc_mysql:
+        condition: service_healthy
+      sc_redis:
+        condition: service_healthy
     command: ["sh", "-lc", "while true; do php artisan schedule:run --verbose --no-interaction || true; sleep 60; done"]
     restart: unless-stopped
 
 volumes:
-  sc_db_mysql:
-  sc_cache_redis:
-  sc_php_bootstrap_cache:
+  sc_db_mysql_volume:
+    name: sc_db_mysql
+  sc_cache_redis_volume:
+    name: sc_cache_redis
+  sc_php_bootstrap_cache_volume:
+    name: sc_php_bootstrap_cache
