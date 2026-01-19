@@ -1,0 +1,89 @@
+services:
+  sc_php:
+    image: special-c/sc_php:main
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        TZ: ${TZ}
+        APP_ENV: ${APP_ENV}
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: "${APP_DEBUG}"
+    volumes:
+      - ../app:/app/app:delegated
+      - ../bootstrap:/app/bootstrap:delegated
+      - sc_php_bootstrap_cache:/app/bootstrap/cache
+      - ../config:/app/config:delegated
+      - ../database:/app/database:delegated
+      - ../public:/app/public:delegated
+      - ../routes:/app/routes:delegated
+      - ../tests:/app/tests:delegated
+    depends_on:
+      - sc_mysql
+      - sc_redis
+
+  sc_nginx:
+    image: nginx:1.27.3-alpine
+    ports:
+      - "22080:80"
+    volumes:
+      - ../public:/app/public:ro
+      - ../docker/linux/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - sc_php
+
+  sc_mysql:
+    image: mysql:8.4.4
+    restart: unless-stopped
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+    environment:
+      TZ: ${TZ}
+      MYSQL_DATABASE: php_creativity
+      MYSQL_USER: basic
+      MYSQL_PASSWORD: basic
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "33060:3306"
+    volumes:
+      - sc_db_mysql:/var/lib/mysql
+
+  sc_redis:
+    image: redis:7.4.1-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - sc_cache_redis:/data
+
+  sc_scheduler:
+    image: special-c/sc_scheduler:main
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        TZ: ${TZ}
+        APP_ENV: ${APP_ENV}
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: "${APP_DEBUG}"
+    volumes:
+      - ../app:/app/app:delegated
+      - ../bootstrap:/app/bootstrap:delegated
+      - ../config:/app/config:delegated
+      - ../database:/app/database:delegated
+      - ../public:/app/public:delegated
+      - ../routes:/app/routes:delegated
+      - ../tests:/app/tests:delegated
+    depends_on:
+      - sc_php
+      - sc_mysql
+      - sc_redis
+    command: ["sh", "-lc", "while true; do php artisan schedule:run --verbose --no-interaction || true; sleep 60; done"]
+    restart: unless-stopped
+
+volumes:
+  sc_db_mysql:
+  sc_cache_redis:
+  sc_php_bootstrap_cache:

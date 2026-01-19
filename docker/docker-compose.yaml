@@ -1,0 +1,67 @@
+services:
+  sc_php:
+    image: special-c/sc_php:prod
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        TZ: ${TZ}
+        APP_ENV: ${APP_ENV}
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: "${APP_DEBUG}"
+    depends_on:
+      - sc_mysql
+      - sc_redis
+
+  sc_nginx:
+    image: special-c/sc_nginx:prod
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - sc_php
+
+  sc_mysql:
+    image: mysql:8.4.4
+    restart: unless-stopped
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+    environment:
+      TZ: ${TZ}
+      MYSQL_DATABASE: php_creativity
+      MYSQL_USER: basic
+      MYSQL_PASSWORD: basic
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - sc_db_mysql:/var/lib/mysql
+
+  sc_redis:
+    image: redis:7.4.1-alpine
+    volumes:
+      - sc_cache_redis:/data
+
+  sc_scheduler:
+    image: special-c/sc_scheduler:prod
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        TZ: ${TZ}
+        APP_ENV: ${APP_ENV}
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: "${APP_DEBUG}"
+    depends_on:
+      - sc_php
+      - sc_mysql
+      - sc_redis
+    command: ["sh", "-lc", "while true; do php artisan schedule:run --verbose --no-interaction || true; sleep 60; done"]
+    restart: unless-stopped
+
+volumes:
+  sc_db_mysql:
+  sc_cache_redis:

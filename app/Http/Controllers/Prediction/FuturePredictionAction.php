@@ -8,8 +8,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class FuturePredictionAction
 {
-    private const FINAL_YEAR = 10000;
-    private const FINAL_PERSONS = 200000000;
+    private const FINAL_YEAR = 20000;
+    private const FINAL_PERSONS = 20000000000;
 
     public function __invoke(FormRequest $request)
     {
@@ -61,18 +61,22 @@ class FuturePredictionAction
         }
 
         $percent = 0.0;
-        foreach ($grow as $item) {
+        $growIXtoStartShow = 0;
+        foreach ($grow as $ix => $item) {
             $percent += $item->calculation;
+            if ($item->persons < 200) {
+                $growIXtoStartShow = $ix;
+            }
         }
         $percent = $percent / count($grow);
 
         $predictionYear = $grow[count($grow) - 1]->end;
         $persons = Person::where('begin', '<', $predictionYear)->count();
 
-        $growPredict = [];
+        $growPredict = array_slice($grow, $growIXtoStartShow);
 
         while ($predictionYear < self::FINAL_YEAR && $persons < self::FINAL_PERSONS) {
-            $created = (int)round($persons / 100 * $percent, 8);
+            $created = (int)round($persons / 100 * ($percent * ($persons > 2800 ? 0.55 : 1.0)), 8);
 
             $item = new PredictionPeriodPersonsDto(begin: $predictionYear, end: $predictionYear + $period);
             $item->persons = $persons;

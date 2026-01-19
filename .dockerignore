@@ -1,4 +1,6 @@
 .env
+.env.winda
+/docker/old_config/*
 /docker/.env
 .osp
 .git

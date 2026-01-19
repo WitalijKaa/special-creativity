@@ -44,7 +44,7 @@ class ChapterFinalAction
                 continue;
             }
 
-            $llmText = $this->paragraphFromLlm($ix, $request->emotions, $poetryOriginal, $poetryAlpha, $poetryBeta, $poetryEmotional);
+            $llmText = $this->paragraphFromLlm($ix, !!$request->emotions, $poetryOriginal, $poetryAlpha, $poetryBeta, $poetryEmotional);
             $finalModel = $paragraph->llmModification($llmText, LL_RUS, $finalLlm);
             Poetry::whereLifeId($life->id)
                 ->whereLlm($finalLlm)
