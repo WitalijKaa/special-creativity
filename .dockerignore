@@ -1,7 +1,5 @@
 .env
-.env.winda
 /docker/old_config/*
-/docker/.env
 .osp
 .git
 .gitattributes
@@ -11,6 +9,7 @@
 vendor
 node_modules
 _ide_helper.php
+.DS_Store
 
 /public/build
 
