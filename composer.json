@@ -7,9 +7,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.4.1",
-        "predis/predis": "^3.0.1",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "mateusjunges/laravel-kafka": "2.10.1",
+        "predis/predis": "^3.0.1",
+        "witalijkaa/models-alpha": "dev-main"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5",
@@ -22,6 +24,12 @@
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^11.5.3"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/WitalijKaa/models-alpha.git"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "App\\": "app/",

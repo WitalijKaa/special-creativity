@@ -12,7 +12,7 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN --mount=type=cache,target=/tmp/composer-cache \
     COMPOSER_CACHE_DIR=/tmp/composer-cache \
-    composer install --no-scripts --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+    composer install --no-scripts --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --ignore-platform-req=ext-rdkafka
 
 # NPM
 FROM ${NODE_IMAGE} AS npm
@@ -32,11 +32,14 @@ ARG APP_ENV
 WORKDIR /app
 
 RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
-    ca-certificates curl \
-    libbz2-dev libcurl4-openssl-dev libffi-dev libzip-dev zlib1g-dev libicu-dev libpq-dev libsqlite3-dev libxml2-dev libonig-dev libgmp-dev libsodium-dev libjpeg62-turbo-dev libpng-dev libfreetype6-dev; \
+      ca-certificates curl \
+      librdkafka-dev libbz2-dev libcurl4-openssl-dev libffi-dev libzip-dev zlib1g-dev libicu-dev libpq-dev libsqlite3-dev libxml2-dev libonig-dev libgmp-dev libsodium-dev libjpeg62-turbo-dev libpng-dev libfreetype6-dev; \
     docker-php-ext-configure gd --with-freetype --with-jpeg; \
     docker-php-ext-install -j"$(nproc)" \
-    bz2 ffi gd gmp intl exif mysqli pdo_mysql pdo_pgsql pgsql shmop soap sockets zip; \
+      bz2 ffi gd gmp intl exif mysqli pdo_mysql pdo_pgsql pgsql shmop soap sockets zip; \
+    pecl install rdkafka; \
+    docker-php-ext-enable rdkafka; \
+    rm -rf /tmp/pear; \
     rm -rf /var/lib/apt/lists/*
 
 COPY docker/linux/php-${APP_ENV}.ini /usr/local/etc/php/conf.d/42-custom-php.ini
